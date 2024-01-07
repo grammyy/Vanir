@@ -6,83 +6,87 @@
 #include <string.h>
 #include "hooks.h"
 
-struct hook think = { "think", NULL, 0};
+struct hookPool pool;
 
-void addHook(struct hook *instance, const char *name, void (*func)(lua_State*, int), int ref) {
+struct hook think = { "think", NULL, 0, &think};
+
+//input.c
+struct hook inputPress = { "inputPress", NULL, 0, &inputPress};
+
+void addHook(struct hook *instance, const char *name, void (*func)(lua_State*, int, struct hook *instance), int ref) {
     for (size_t i = 0; i < instance->pool; ++i) {
-        if (strcmp(instance->hooks[i].name, name) == 0) {
-            instance->hooks[i].func = func;
-            instance->hooks[i].ref = ref;
+        if (strcmp(instance->stack[i].name, name) == 0) {
+            instance->stack[i].func = func;
+            instance->stack[i].ref = ref;
 
             return;
         }
     }
 
-    struct hooks *temp = realloc(instance->hooks, (instance->pool + 1) * sizeof(struct hooks));
+    struct stack *temp = realloc(instance->stack, (instance->pool + 1) * sizeof(struct stack));
 
     if (temp != NULL) {
-        instance->hooks = temp;
-        instance->hooks[instance->pool].name = name;
-        instance->hooks[instance->pool].func = func;
-        instance->hooks[instance->pool].ref = ref;
+        instance->stack = temp;
+        instance->stack[instance->pool].name = strdup(name); // Use strdup to make a copy
+        instance->stack[instance->pool].func = func;
+        instance->stack[instance->pool].ref = ref;
         instance->pool += 1;
     } else {
-        printf("Hook \"%s\" errored with: Failed to add hook \"%s\". Memory allocation error.\n", instance->hookName, name);
+        fprintf(stderr, "Hook \"%s\" errored with: Failed to add hook \"%s\". Memory allocation error.\n", instance->hookName, name);
     }
 }
 
-void runHook(const struct hook *instance, lua_State *L) {
+void runHook(struct hook *instance, lua_State *L) {
     for (size_t i = 0; i < instance->pool; ++i) {
-        if (instance->hooks[i].func != NULL) {
-            instance->hooks[i].func(instance->hooks[i].name, L, instance->hooks[i].ref);  // Adjust parameters as needed
+        if (instance->stack[i].func != NULL) {
+            instance->stack[i].func(L, instance->stack[i].ref, instance);
         }
     }
 }
 
 void freeHook(struct hook *instance, lua_State *L) {
     for (size_t i = 0; i < instance->pool; ++i) {
-        if (instance->hooks[i].ref != LUA_NOREF) {
-            luaL_unref(L, LUA_REGISTRYINDEX, instance->hooks[i].ref);
+        if (instance->stack[i].ref != LUA_NOREF) {
+            luaL_unref(L, LUA_REGISTRYINDEX, instance->stack[i].ref);
         }
     }
 
-    free(instance->hooks);
-    instance->hooks = NULL;
+    free(instance->stack);
+    instance->stack = NULL;
 }
 
-void luaFunctionCaller(const char *name, lua_State *L, int ref) {
+void luaWrapper(lua_State *L, int ref, struct hook *instance) {
     lua_rawgeti(L, LUA_REGISTRYINDEX, ref);
 
     if (lua_pcall(L, 0, 0, 0) != LUA_OK) {
-        //printf("Hook \"%s\" errored with: %s.\n", name, lua_tostring(L, -1));
+        printf("Hook \"%s\" errored with: %s.\n", instance->hookName, lua_tostring(L, -1));
     }
 
     lua_pop(L, 1);
 }
 
-struct hook *findHookByName(const char *name) {
-    // Implement your logic to find the hook by name
-    // Return a pointer to the hook if found, or NULL otherwise
-    if (strcmp(name, "think") == 0) {
-        return &think;
+struct hook* findHookByName(const struct hookPool* pool, const char* hookName) {
+    for (size_t i = 0; i < pool->count; ++i) {
+        if (strcmp(pool->hooks[i].hookName, hookName) == 0) {
+            return &pool->hooks[i];
+        }
     }
 
     return NULL;
 }
 
 int add(lua_State *L) {
-    const char *hookName = luaL_checkstring(L, 1); // First argument is the hook name
-    const char *name = luaL_checkstring(L, 2);    // Second argument is the hook function name
+    const char *hookName = luaL_checkstring(L, 1);
+    const char *name = luaL_checkstring(L, 2);
 
-    // Find the hook struct by name
-    struct hook *instance = findHookByName(hookName);
-
+    struct hook *instance = findHookByName(&pool, hookName);
+    
     if (instance != NULL) {
         if (lua_isfunction(L, 3)) {
             lua_pushvalue(L, 3);
             int ref = luaL_ref(L, LUA_REGISTRYINDEX);
 
-            addHook(instance, name, luaFunctionCaller, ref);
+            addHook(instance->address, name, luaWrapper, ref);
         } else {
             fprintf(stderr, "Hook \"%s\" errored with: Third argument must be a function.\n", instance->hookName);
         }
@@ -94,7 +98,11 @@ int add(lua_State *L) {
 }
 
 int run(lua_State *L) {
-    runHook(&think, L);
+    const char *hookName = luaL_checkstring(L, 1);
+
+    struct hook *instance = findHookByName(&pool, hookName);
+
+    runHook(instance->address, L);
 
     return 0;
 }
@@ -107,6 +115,14 @@ const luaL_Reg luaHooks[] = {
 
 int hooksInit(lua_State* L) {
     luaL_newlib(L, luaHooks);
+
+    pool.count = 2;
+
+    pool.hooks = (struct hook *)malloc(pool.count * sizeof(struct hook));
+    pool.hooks[0] = think;
+
+    //input.c
+    pool.hooks[1] = inputPress;
 
     // Example usage
     //addHook(&think, "examplehook1", hookfunc1, 0);

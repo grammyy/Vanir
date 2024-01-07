@@ -5,21 +5,29 @@
 
 int hooksInit(lua_State* L);
 
-struct hooks {
-    const char *name;
-    void (*func)(lua_State*, int);
-    int ref;  // Store Lua function reference
+struct hookPool {
+    struct hook *hooks;
+    int count;
 };
 
 struct hook {
     const char *hookName;
-    struct hooks *hooks;
+    struct stack *stack;
     size_t pool;
+    struct hook *address;
 };
 
-void addHook(struct hook *instance, const char *name, void (*func)(lua_State*, int), int ref);
-void runHook(const struct hook *instance, lua_State *L);
+struct stack {
+    const char *name;
+    void (*func)(lua_State*, int, struct hook *instance);
+    int ref;
+};
+
+void addHook(struct hook *instance, const char *name, void (*func)(lua_State*, int, struct hook *instance), int ref);
+void runHook(struct hook *instance, lua_State *L);
 void freeHook(struct hook *instance, lua_State *L);
+
+extern struct hookPool pool;
 
 extern struct hook think;
 
