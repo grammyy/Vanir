@@ -54,6 +54,20 @@ void* getCallback(const struct callbacks* callback) {
     return callback->data;
 }
 
+void registerHook(struct hookPool* pool, struct hook hookData) {
+    size_t newCount = pool->count + 1;
+
+    struct hook* temp = (struct hook*)realloc(pool->hooks, newCount * sizeof(struct hook));
+
+    if (temp != NULL) {
+        pool->hooks = temp;
+        pool->hooks[pool->count] = hookData;
+        pool->count = newCount;
+    } else {
+        fprintf(stderr, "Hook pool failed to reallocate memory.\n");
+    }
+}
+
 void addHook(struct hook *instance, const char *name, void (*func)(lua_State*, int, struct hook *instance, struct callbacks* callback), int ref) {
     for (size_t i = 0; i < instance->pool; ++i) {
         if (strcmp(instance->stack[i].name, name) == 0) {
@@ -99,7 +113,7 @@ void freeHook(struct hook *instance, lua_State *L) {
 void luaWrapper(lua_State *L, int ref, struct hook *instance, struct callbacks* callback) {
     lua_rawgeti(L, LUA_REGISTRYINDEX, ref);
 
-    if (callback->dataSize > 0 && callback->data != NULL) {
+    if (callback!=NULL && callback->data != NULL) {
         for (size_t i = 0; i < callback->dataSize; ++i) {
             void* value = ((char*)callback->data) + (i * callback->dataSize);
 
@@ -112,17 +126,16 @@ void luaWrapper(lua_State *L, int ref, struct hook *instance, struct callbacks* 
                     lua_pushstring(L, (const char*)value);
 
                     break;
+                //add function callback later
                 default:
                     lua_pushnil(L);
 
                     break;
             }
         }
-    } else {
-        lua_pushnil(L);
     }
 
-    if (lua_pcall(L, callback->dataSize, 0, 0) != LUA_OK) {
+    if (lua_pcall(L, callback ? callback->dataSize : 0, 0, 0) != LUA_OK) {
         printf("Hook \"%s\" errored with: %s.\n", instance->hookName, lua_tostring(L, -1));
     }
 
@@ -163,11 +176,11 @@ int add(lua_State *L) {
 
 int run(lua_State *L) {
     const char *hookName = luaL_checkstring(L, 1);
-
+    
     struct hook *instance = findHookByName(&pool, hookName);
-
+    
     runHook(instance->address, L, NULL);
-
+    
     return 0;
 }
 
@@ -180,12 +193,9 @@ const luaL_Reg luaHooks[] = {
 int hooksInit(lua_State* L) {
     luaL_newlib(L, luaHooks);
 
-    pool.count = 3; //change to function to increment automatically
+    registerHook(&pool, think);
 
-    pool.hooks = (struct hook *)malloc(pool.count * sizeof(struct hook));
-    pool.hooks[0] = think;
-
-    // Example usage
+    // Example usage for using in c
     //addHook(&think, "examplehook1", hookfunc1, 0);
 
     return 1;

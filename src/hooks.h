@@ -35,6 +35,7 @@ struct stack {
     int ref;
 };
 
+void registerHook(struct hookPool* pool, struct hook hookData);
 void addHook(struct hook *instance, const char *name, void (*func)(lua_State*, int, struct hook *instance, struct callbacks* callback), int ref);
 void runHook(struct hook *instance, lua_State *L, struct callbacks* callback);
 void freeHook(struct hook *instance, lua_State *L);

@@ -66,9 +66,9 @@ int inputInit(lua_State* L) {
 
     luaL_newlib(L, luaInput);
 
-    pool.hooks[1] = inputPressed;
-    pool.hooks[2] = inputReleased;
-
+    registerHook(&pool, inputPressed);
+    registerHook(&pool, inputReleased);
+    
     pthread_create(&thread, NULL, inputChanged, (void *)L);
     
     return 1;
