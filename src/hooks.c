@@ -11,9 +11,50 @@ struct hookPool pool;
 struct hook think = { "think", NULL, 0, &think};
 
 //input.c
-struct hook inputPress = { "inputPress", NULL, 0, &inputPress};
+struct hook inputPressed = { "inputPressed", NULL, 0, &inputPressed};
+struct hook inputReleased = { "inputReleased", NULL, 0, &inputReleased};
 
-void addHook(struct hook *instance, const char *name, void (*func)(lua_State*, int, struct hook *instance), int ref) {
+struct callbacks* createCallback(size_t dataSize, enum dataTypes dataType) {
+    struct callbacks* callback = malloc(sizeof(struct callbacks));
+    callback->dataSize = dataSize;
+    callback->data = malloc(dataSize);
+    callback->dataType = dataType;
+
+    // If the type is CALLBACK_TYPE_TABLE, initialize the table
+    //if (dataType == function) {
+    //    lua_newtable(L);
+    //    lua_rawseti(L, -2, 1);  // Set the table to the data field
+    //}
+
+    return callback;
+}
+
+
+void setCallback(struct callbacks* callback, const void* data) {
+    switch (callback->dataType) {
+        case number:
+            memcpy(callback->data, data, callback->dataSize);
+            break;
+        case string:
+            // Assuming data is a string
+            strncpy(callback->data, data, callback->dataSize);
+            break;
+        //case function:
+        //    // Assuming data is a Lua table
+        //    lua_rawgeti(L, LUA_REGISTRYINDEX, *((int*)data));  // Retrieve the Lua table
+        //    lua_rawseti(L, -2, 1);  // Set the table to the data field
+        //    break;
+        default:
+            // Handle unknown data type
+            break;
+    }
+}
+
+void* getCallback(const struct callbacks* callback) {
+    return callback->data;
+}
+
+void addHook(struct hook *instance, const char *name, void (*func)(lua_State*, int, struct hook *instance, struct callbacks* callback), int ref) {
     for (size_t i = 0; i < instance->pool; ++i) {
         if (strcmp(instance->stack[i].name, name) == 0) {
             instance->stack[i].func = func;
@@ -27,7 +68,7 @@ void addHook(struct hook *instance, const char *name, void (*func)(lua_State*, i
 
     if (temp != NULL) {
         instance->stack = temp;
-        instance->stack[instance->pool].name = strdup(name); // Use strdup to make a copy
+        instance->stack[instance->pool].name = strdup(name);
         instance->stack[instance->pool].func = func;
         instance->stack[instance->pool].ref = ref;
         instance->pool += 1;
@@ -36,10 +77,10 @@ void addHook(struct hook *instance, const char *name, void (*func)(lua_State*, i
     }
 }
 
-void runHook(struct hook *instance, lua_State *L) {
+void runHook(struct hook *instance, lua_State *L, struct callbacks* callback) {
     for (size_t i = 0; i < instance->pool; ++i) {
         if (instance->stack[i].func != NULL) {
-            instance->stack[i].func(L, instance->stack[i].ref, instance);
+            instance->stack[i].func(L, instance->stack[i].ref, instance, callback);
         }
     }
 }
@@ -55,10 +96,33 @@ void freeHook(struct hook *instance, lua_State *L) {
     instance->stack = NULL;
 }
 
-void luaWrapper(lua_State *L, int ref, struct hook *instance) {
+void luaWrapper(lua_State *L, int ref, struct hook *instance, struct callbacks* callback) {
     lua_rawgeti(L, LUA_REGISTRYINDEX, ref);
 
-    if (lua_pcall(L, 0, 0, 0) != LUA_OK) {
+    if (callback->dataSize > 0 && callback->data != NULL) {
+        for (size_t i = 0; i < callback->dataSize; ++i) {
+            void* value = ((char*)callback->data) + (i * callback->dataSize);
+
+            switch (callback->dataType) {
+                case number:
+                    lua_pushinteger(L, *(int*)value);
+
+                    break;
+                case string:
+                    lua_pushstring(L, (const char*)value);
+
+                    break;
+                default:
+                    lua_pushnil(L);
+
+                    break;
+            }
+        }
+    } else {
+        lua_pushnil(L);
+    }
+
+    if (lua_pcall(L, callback->dataSize, 0, 0) != LUA_OK) {
         printf("Hook \"%s\" errored with: %s.\n", instance->hookName, lua_tostring(L, -1));
     }
 
@@ -102,7 +166,7 @@ int run(lua_State *L) {
 
     struct hook *instance = findHookByName(&pool, hookName);
 
-    runHook(instance->address, L);
+    runHook(instance->address, L, NULL);
 
     return 0;
 }
@@ -116,13 +180,10 @@ const luaL_Reg luaHooks[] = {
 int hooksInit(lua_State* L) {
     luaL_newlib(L, luaHooks);
 
-    pool.count = 2;
+    pool.count = 3; //change to function to increment automatically
 
     pool.hooks = (struct hook *)malloc(pool.count * sizeof(struct hook));
     pool.hooks[0] = think;
-
-    //input.c
-    pool.hooks[1] = inputPress;
 
     // Example usage
     //addHook(&think, "examplehook1", hookfunc1, 0);

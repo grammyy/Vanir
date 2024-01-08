@@ -1,2 +1,5 @@
 hooks
-    hooks that require specifc stacks -> temp solution: manual run function exposed
+    -> hooks that require specifc stacks -> temp solution: manual run function exposed
+    -> add function support for callbacks (just didnt get around to it yet)
+    -> add error checks to callback functions
+-> optimize running hooks to only run when needed

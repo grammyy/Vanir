@@ -5,4 +5,7 @@
 
 int inputInit(lua_State* L);
 
+extern struct hook inputPressed;
+extern struct hook inputReleased;
+
 #endif
