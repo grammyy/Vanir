@@ -1,0 +1,22 @@
+# Compiler and flags
+CC = gcc
+CFLAGS = -shared -O2 -mno-clwb
+LDFLAGS = -LC:\lua
+LIBS = -llua54 -lgdi32
+
+# Directories
+INCLUDE_DIR = -I C:\lua\include
+
+# Source files
+SRCS = vanir.c input.c hooks.c
+
+# Output file
+TARGET = vanir.dll
+
+all: $(TARGET)
+
+$(TARGET): $(SRCS)
+	$(CC) $(CFLAGS) $(INCLUDE_DIR) $(SRCS) -o $(TARGET) $(LDFLAGS) $(LIBS)
+
+clean:
+	rm -f $(TARGET)
