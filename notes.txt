@@ -1,27 +1,7 @@
 hooks
-    -> hooks that require specifc stacks -> temp solution: manual run function exposed
-    -> add function support for callbacks (just didnt get around to it yet)
+    -> add function support for callbacks (maybe supported already)
     -> add error checks to callback functions
 -> optimize running hooks to only run when needed
--> convert to using luajit after recode
--> make colored logs later
+-> make colored logs later and throw function
 
-windows
-    -> default window in replacement of null maybe?
-
-dll export->main
-    -> load preload
-    -> register modules (pre-defined)
-        -> init functions triggered
-
--> window.c init
--> input.c init
--> hooks.c init
-    -> add -> addHook(c function)
-        lua func ^
-    -> run -> runHook(c function)
-        -> c function <- hook struct c func
-        -> hook function <- hook struct lua func
-            -> push c function results
-            -> call
-                error -> print & pop
+-->log execution below, removed old routine
