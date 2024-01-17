@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "vanir.h"
 #include "hooks.h"
 
 struct hookPool pool = {NULL, 0};
@@ -63,7 +64,7 @@ void registerHook(struct hookPool* pool, struct hook hookData) {
         pool->hooks[pool->count] = hookData;
         pool->count = newCount;
     } else {
-        fprintf(stderr, "Hook pool failed to reallocate memory.\n");
+        throw("Hook", "pool", "Memory allocation error");
     }
 }
 
@@ -87,13 +88,14 @@ void addHook(struct hook *instance, const char *name, void (*func)(lua_State*, s
         instance->stack[instance->pool].ref = ref;
         instance->pool += 1;
     } else {
-        fprintf(stderr, "Hook \"%s\" errored with: Failed to add hook \"%s\". Memory allocation error.\n", instance->hookName, name);
+        throw("Hook", instance->hookName, "Memory allocation error");
     }
 }
 
 void runHook(struct hook *instance, lua_State *L) {
     if (!instance || !L) {
-        //throw error here
+        throw("Hook", "?", "Failed to get hook instance");
+
         return;
     }
 
@@ -102,7 +104,7 @@ void runHook(struct hook *instance, lua_State *L) {
             if (&instance->stack[i] != NULL) {
                 instance->handle(&instance->stack[i], L);
             } else {
-                //throw error here
+                throw("Hook", instance->hookName, "Memory allocation error");
             }
         }
 
@@ -115,7 +117,7 @@ void runHook(struct hook *instance, lua_State *L) {
                 }
             }
         } else {
-            //throw error here
+            throw("Hook", instance->hookName, "Could not find function reference");
         }
     }
 }
@@ -162,7 +164,7 @@ void luaWrapper(lua_State *L, struct hook *instance, int index, struct callbacks
     }
 
     if (lua_pcall(L, callback ? callback->dataSize : 0, LUA_MULTRET, 0) != LUA_OK) {
-        printf("Hook \"%s\" errored with: %s.\n", instance->hookName, lua_tostring(L, -1));
+        throw("Hook", instance->hookName, lua_tostring(L, -1));
     
         lua_pop(L, 1);
         
@@ -193,10 +195,10 @@ int add(lua_State *L) {
 
             addHook(instance->address, name, luaWrapper, ref);
         } else {
-            fprintf(stderr, "Hook \"%s\" errored with: Third argument must be a function.\n", instance->hookName);
+            throw("Hook", instance->hookName, "Third argument must be a function");
         }
     } else {
-        fprintf(stderr, "Hook \"%s\" not found.\n", hookName);
+        throw("Hook", hookName, "Not found");
     }
 
     return 0;

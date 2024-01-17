@@ -19,6 +19,10 @@ void registerModules(lua_State* L, const luaL_reg* funcs) {
     }
 }
 
+void throw(const char* type, const char* name, const char* error) {
+    printf("%s \"%s\" errored with: %s.\n", type, name, error);
+}
+
 __declspec(dllexport) int luaopen_vanir(lua_State * L) {
     luaL_dofile(L, "preload.lua");
 
