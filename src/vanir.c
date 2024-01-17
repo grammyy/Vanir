@@ -1,9 +1,10 @@
 #include <lua.h>
 #include <lauxlib.h>
 #include <lualib.h>
+#include <Windows.h>
 #include <stdio.h>
-#include "hooks.h"
-#include "input.h"
+#include "modules/hooks.h"
+#include "modules/input.h"
 
 typedef struct {
     const char* name;
@@ -19,15 +20,15 @@ void registerModules(lua_State* L, const luaL_reg* funcs) {
 }
 
 __declspec(dllexport) int luaopen_vanir(lua_State * L) {
-    luaL_dofile(L,"preload.lua");
+    luaL_dofile(L, "preload.lua");
 
-	const luaL_reg luaReg[] = {
-		{"hooks", hooksInit},
+    const luaL_reg luaReg[] = {
+        {"hooks", hooksInit},
         {"input", inputInit},
         {NULL, NULL}
     };
 
     registerModules(L, luaReg);
 
-	return 1;
+    return 1;
 }

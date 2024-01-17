@@ -1,26 +1,37 @@
 require("vanir")
 --requiredir("test")
 
-hooks.add("think", "test", function()
-    print("hii :3")
-end)
+--hooks.add("think", "test", function()
+--    print("hii :3")
+--end)
 
 --hooks.add("inputPressed","test",function(key)
---    print("pressed -> "..key)
---end)
+--    if key==69 then
+--        print("pressed -> "..key)
+--    elseif key==70 then
+--        print("test")
+--        print("returning..")
 --
---hooks.add("inputReleased","test",function(key)
---    print("released -> "..key)
+--        if true then  -- Replace with your actual condition
+--            return
+--        end
+--
+--        print("failed :(")
+--    end
 --end)
+
+hooks.add("inputReleased","test",function(key)
+    print("released -> "..key)
+end)
 
 while true do
     local keyHeld = input.getKey(85)
-    
+
     if keyHeld then
         print("Key is held down")
     else
-        print("Key is not held down")
+        --print("Key is not held down")
     end
 
-    hooks.run("think")
+    hooks.run()
 end

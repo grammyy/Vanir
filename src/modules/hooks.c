@@ -6,16 +6,13 @@
 #include <string.h>
 #include "hooks.h"
 
-struct hookPool pool;
+struct hookPool pool = {NULL, 0};
 
-struct hook think = { "think", NULL, 0, &think};
-
-//input.c
-struct hook inputPressed = { "inputPressed", NULL, 0, &inputPressed};
-struct hook inputReleased = { "inputReleased", NULL, 0, &inputReleased};
+struct hook think = { "think", NULL, 0, &think, NULL, hook_update};
 
 struct callbacks* createCallback(size_t dataSize, enum dataTypes dataType) {
     struct callbacks* callback = malloc(sizeof(struct callbacks));
+    
     callback->dataSize = dataSize;
     callback->data = malloc(dataSize);
     callback->dataType = dataType;
@@ -29,26 +26,28 @@ struct callbacks* createCallback(size_t dataSize, enum dataTypes dataType) {
     return callback;
 }
 
-
 void setCallback(struct callbacks* callback, const void* data) {
     switch (callback->dataType) {
         case number:
+        case integer:
+        case lua_bool:
             memcpy(callback->data, data, callback->dataSize);
+
             break;
         case string:
-            // Assuming data is a string
-            strncpy(callback->data, data, callback->dataSize);
+            strncpy((char*)callback->data, (const char*)data, callback->dataSize - 1);
+            ((char*)callback->data)[callback->dataSize - 1] = '\0';
+            
             break;
-        //case function:
-        //    // Assuming data is a Lua table
-        //    lua_rawgeti(L, LUA_REGISTRYINDEX, *((int*)data));  // Retrieve the Lua table
-        //    lua_rawseti(L, -2, 1);  // Set the table to the data field
-        //    break;
+        case function:
+            memcpy(callback->data, data, callback->dataSize);
+            
+            break;
         default:
-            // Handle unknown data type
             break;
     }
 }
+
 
 void* getCallback(const struct callbacks* callback) {
     return callback->data;
@@ -68,7 +67,7 @@ void registerHook(struct hookPool* pool, struct hook hookData) {
     }
 }
 
-void addHook(struct hook *instance, const char *name, void (*func)(lua_State*, int, struct hook *instance, struct callbacks* callback), int ref) {
+void addHook(struct hook *instance, const char *name, void (*func)(lua_State*, struct hook *instance, int, struct callbacks* callback), int ref) {
     for (size_t i = 0; i < instance->pool; ++i) {
         if (strcmp(instance->stack[i].name, name) == 0) {
             instance->stack[i].func = func;
@@ -84,6 +83,7 @@ void addHook(struct hook *instance, const char *name, void (*func)(lua_State*, i
         instance->stack = temp;
         instance->stack[instance->pool].name = strdup(name);
         instance->stack[instance->pool].func = func;
+        instance->stack[instance->pool].status=instance->status;
         instance->stack[instance->pool].ref = ref;
         instance->pool += 1;
     } else {
@@ -91,10 +91,31 @@ void addHook(struct hook *instance, const char *name, void (*func)(lua_State*, i
     }
 }
 
-void runHook(struct hook *instance, lua_State *L, struct callbacks* callback) {
+void runHook(struct hook *instance, lua_State *L) {
+    if (!instance || !L) {
+        //throw error here
+        return;
+    }
+
     for (size_t i = 0; i < instance->pool; ++i) {
+        if (instance->handle != NULL) {
+            if (&instance->stack[i] != NULL) {
+                instance->handle(&instance->stack[i], L);
+            } else {
+                //throw error here
+            }
+        }
+
         if (instance->stack[i].func != NULL) {
-            instance->stack[i].func(L, instance->stack[i].ref, instance, callback);
+            if (instance->stack[i].status!=hook_idle) {
+                instance->stack[i].func(L, instance, i, instance->stack[i].callback);
+
+                if (instance->stack[i].status==hook_awaiting) {
+                    instance->stack[i].status=hook_idle;
+                }
+            }
+        } else {
+            //throw error here
         }
     }
 }
@@ -110,8 +131,8 @@ void freeHook(struct hook *instance, lua_State *L) {
     instance->stack = NULL;
 }
 
-void luaWrapper(lua_State *L, int ref, struct hook *instance, struct callbacks* callback) {
-    lua_rawgeti(L, LUA_REGISTRYINDEX, ref);
+void luaWrapper(lua_State *L, struct hook *instance, int index, struct callbacks* callback) {
+    lua_rawgeti(L, LUA_REGISTRYINDEX, instance->stack[index].ref);
 
     if (callback!=NULL && callback->data != NULL) {
         for (size_t i = 0; i < callback->dataSize; ++i) {
@@ -119,27 +140,34 @@ void luaWrapper(lua_State *L, int ref, struct hook *instance, struct callbacks* 
 
             switch (callback->dataType) {
                 case number:
-                    lua_pushinteger(L, *(int*)value);
-
+                    lua_pushnumber(L, *(double*)value);
                     break;
                 case string:
                     lua_pushstring(L, (const char*)value);
-
                     break;
-                //add function callback later
+                case integer:
+                    lua_pushinteger(L, *(int*)value);
+                    break;
+                case lua_bool:
+                    lua_pushboolean(L, *(int*)value);
+                    break;
+                case function:
+                    lua_rawgeti(L, LUA_REGISTRYINDEX, *((int*)value));
+                    break;
                 default:
                     lua_pushnil(L);
-
                     break;
             }
         }
     }
 
-    if (lua_pcall(L, callback ? callback->dataSize : 0, 0, 0) != LUA_OK) {
+    if (lua_pcall(L, callback ? callback->dataSize : 0, LUA_MULTRET, 0) != LUA_OK) {
         printf("Hook \"%s\" errored with: %s.\n", instance->hookName, lua_tostring(L, -1));
+    
+        lua_pop(L, 1);
+        
+        return;
     }
-
-    lua_pop(L, 1);
 }
 
 struct hook* findHookByName(const struct hookPool* pool, const char* hookName) {
@@ -148,7 +176,7 @@ struct hook* findHookByName(const struct hookPool* pool, const char* hookName) {
             return &pool->hooks[i];
         }
     }
-
+    
     return NULL;
 }
 
@@ -175,12 +203,10 @@ int add(lua_State *L) {
 }
 
 int run(lua_State *L) {
-    const char *hookName = luaL_checkstring(L, 1);
-    
-    struct hook *instance = findHookByName(&pool, hookName);
-    
-    runHook(instance->address, L, NULL);
-    
+    for (size_t i = 0; i < pool.count; ++i) {
+        runHook(pool.hooks[i].address, L);
+    }
+
     return 0;
 }
 

@@ -8,7 +8,15 @@ int hooksInit(lua_State* L);
 enum dataTypes {
     number,
     string,
-    function,
+    integer,
+    lua_bool, //rename later, boolean & bool are protected
+    function
+};
+
+enum status {
+    hook_awaiting,
+    hook_update,
+    hook_idle
 };
 
 struct callbacks {
@@ -27,17 +35,21 @@ struct hook {
     struct stack *stack;
     size_t pool;
     struct hook *address;
+    void (*handle)(struct stack *, lua_State *);
+    enum status status;
 };
 
 struct stack {
     const char *name;
-    void (*func)(lua_State*, int, struct hook *instance, struct callbacks* callback);
+    void (*func)(lua_State*, struct hook *instance, int, struct callbacks* callback);
+    struct callbacks *callback;
     int ref;
+    enum status status;
 };
 
 void registerHook(struct hookPool* pool, struct hook hookData);
-void addHook(struct hook *instance, const char *name, void (*func)(lua_State*, int, struct hook *instance, struct callbacks* callback), int ref);
-void runHook(struct hook *instance, lua_State *L, struct callbacks* callback);
+void addHook(struct hook *instance, const char *name, void (*func)(lua_State*, struct hook *instance, int, struct callbacks* callback), int ref);
+void runHook(struct hook *instance, lua_State *L);
 void freeHook(struct hook *instance, lua_State *L);
 
 struct callbacks* createCallback(size_t dataSize, enum dataTypes dataType);

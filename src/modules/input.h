@@ -5,6 +5,8 @@
 
 int inputInit(lua_State* L);
 
+#define keyBitmask 0x80
+
 extern struct hook inputPressed;
 extern struct hook inputReleased;
 
