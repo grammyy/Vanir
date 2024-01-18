@@ -55,14 +55,12 @@ void* getCallback(const struct callbacks* callback) {
 }
 
 void registerHook(struct hookPool* pool, struct hook hookData) {
-    size_t newCount = pool->count + 1;
-
-    struct hook* temp = (struct hook*)realloc(pool->hooks, newCount * sizeof(struct hook));
+    struct hook* temp = (struct hook*)realloc(pool->hooks, (pool->count + 1) * sizeof(struct hook));
 
     if (temp != NULL) {
         pool->hooks = temp;
         pool->hooks[pool->count] = hookData;
-        pool->count = newCount;
+        pool->count += 1;
     } else {
         throw("Hook", "pool", "Memory allocation error");
     }
@@ -84,7 +82,6 @@ void addHook(struct hook *instance, const char *name, void (*func)(lua_State*, s
         instance->stack = temp;
         instance->stack[instance->pool].name = strdup(name);
         instance->stack[instance->pool].func = func;
-        instance->stack[instance->pool].status=instance->status;
         instance->stack[instance->pool].ref = ref;
         instance->pool += 1;
     } else {
@@ -99,26 +96,22 @@ void runHook(struct hook *instance, lua_State *L) {
         return;
     }
 
+    if (instance->handle != NULL) {
+        instance->handle(instance, L);
+    }
+
     for (size_t i = 0; i < instance->pool; ++i) {
-        if (instance->handle != NULL) {
-            if (&instance->stack[i] != NULL) {
-                instance->handle(&instance->stack[i], L);
-            } else {
-                throw("Hook", instance->hookName, "Memory allocation error");
-            }
-        }
-
         if (instance->stack[i].func != NULL) {
-            if (instance->stack[i].status!=hook_idle) {
-                instance->stack[i].func(L, instance, i, instance->stack[i].callback);
-
-                if (instance->stack[i].status==hook_awaiting) {
-                    instance->stack[i].status=hook_idle;
-                }
+            if (instance->status!=hook_idle) {
+                instance->stack[i].func(L, instance, i, instance->callback);
             }
         } else {
             throw("Hook", instance->hookName, "Could not find function reference");
         }
+    }
+
+    if (instance->status==hook_awaiting) {
+        instance->status=hook_idle;
     }
 }
 

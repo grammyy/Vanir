@@ -12,7 +12,7 @@ hooks.add("inputPressed","test",function(key)
         print("test")
         print("returning..")
 
-        if true then  -- Replace with your actual condition
+        if true then
             return
         end
 
@@ -22,6 +22,10 @@ end)
 
 hooks.add("inputReleased","test",function(key)
     print("released -> "..key)
+end)
+
+hooks.add("inputReleased","test2",function(key)
+    print("released2 -> "..key)
 end)
 
 while true do

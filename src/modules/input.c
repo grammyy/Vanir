@@ -20,32 +20,32 @@ int getKey(lua_State *L) {
     return 1;
 }
 
-void inputPressedHandle(struct stack *stack, lua_State *L){
+void inputPressedHandle(struct hook *instance, lua_State *L){
     for (int key = 0; key < 256; ++key) {
         SHORT currentState = GetKeyState(key);
 
         if ((currentState & keyBitmask) && ((currentState & keyBitmask) != (keyStates[key] & keyBitmask))) {
-            stack->callback = createCallback(sizeof(int), integer);
-            setCallback(stack->callback, &key);
+            instance->callback = createCallback(sizeof(int), integer);
+            setCallback(instance->callback, &key);
 
-            stack->status=hook_awaiting;
-            
             keyStates[key] = currentState;
+
+            instance->status=hook_awaiting;
         }
     }
 }
 
-void inputReleasedHandle(struct stack *stack, lua_State *L){
+void inputReleasedHandle(struct hook *instance, lua_State *L){
     for (int key = 0; key < 256; ++key) {
         SHORT currentState = GetKeyState(key);
 
         if (!(currentState & keyBitmask) && ((currentState & keyBitmask) != (keyStates[key] & keyBitmask))) {
-            stack->callback = createCallback(sizeof(int), integer);
-            setCallback(stack->callback, &key);
+            instance->callback = createCallback(sizeof(int), integer);
+            setCallback(instance->callback, &key);
 
-            stack->status=hook_awaiting;
-            
             keyStates[key] = currentState;
+
+            instance->status=hook_awaiting;
         }
     }
 }

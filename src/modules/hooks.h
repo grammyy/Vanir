@@ -35,16 +35,15 @@ struct hook {
     struct stack *stack;
     size_t pool;
     struct hook *address;
-    void (*handle)(struct stack *, lua_State *);
+    void (*handle)(struct hook *, lua_State *);
     enum status status;
+    struct callbacks *callback;
 };
 
 struct stack {
     const char *name;
     void (*func)(lua_State*, struct hook *instance, int, struct callbacks* callback);
-    struct callbacks *callback;
     int ref;
-    enum status status;
 };
 
 void registerHook(struct hookPool* pool, struct hook hookData);
