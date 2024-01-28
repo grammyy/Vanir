@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include "modules/hooks.h"
 #include "modules/input.h"
+#include "modules/windows.h"
 
 typedef struct {
     const char* name;
@@ -14,7 +15,9 @@ typedef struct {
 void registerModules(lua_State* L, const luaL_reg* funcs) {
     for (; funcs->name != NULL; ++funcs) {
         lua_pushstring(L, funcs->name);
+        
         funcs->func(L);
+
         lua_setglobal(L, funcs->name);
     }
 }
@@ -29,6 +32,7 @@ __declspec(dllexport) int luaopen_vanir(lua_State * L) {
     const luaL_reg luaReg[] = {
         {"hooks", hooksInit},
         {"input", inputInit},
+        {"windows", windowsInit},
         {NULL, NULL}
     };
 

@@ -5,9 +5,13 @@ require("vanir")
 --    print("hii :3")
 --end)
 
+windows.createWindow(400,400,400,200,"nya")
+
 hooks.add("inputPressed","test",function(key)
     if key==69 then
         print("pressed -> "..key)
+
+        windows.createWindow(400,400,400,200,"nya")
     elseif key==70 then
         print("test")
         print("returning..")

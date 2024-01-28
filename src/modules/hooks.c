@@ -11,7 +11,7 @@ struct hookPool pool = {NULL, 0};
 
 struct hook think = { "think", NULL, 0, &think, NULL, hook_update};
 
-struct callbacks* createCallback(size_t dataSize, enum dataTypes dataType) {
+struct callbacks* createCallback(size_t dataSize, enum dataType dataType) {
     struct callbacks* callback = malloc(sizeof(struct callbacks));
     
     callback->dataSize = dataSize;
