@@ -102,7 +102,7 @@ void runHook(struct hook *instance, lua_State *L) {
 
     for (size_t i = 0; i < instance->pool; ++i) {
         if (instance->stack[i].func != NULL) {
-            if (instance->status!=hook_idle) {
+            if (instance->status!=hook_idle && instance->status!=hook_managed) {
                 instance->stack[i].func(L, instance, i, instance->callback);
             }
         } else {

@@ -19,4 +19,6 @@ struct sdlWindow {
     Uint32 id;
 };
 
+extern struct hook render;
+
 #endif

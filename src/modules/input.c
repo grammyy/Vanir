@@ -55,8 +55,8 @@ const luaL_Reg luaInput[] = {
     {NULL, NULL}
 };
 
-struct hook inputPressed = { "inputPressed", NULL, 0, &inputPressed, inputPressedHandle, hook_idle};
-struct hook inputReleased = { "inputReleased", NULL, 0, &inputReleased, inputReleasedHandle, hook_idle};
+struct hook inputPressed = {"inputPressed", NULL, 0, &inputPressed, inputPressedHandle, hook_idle};
+struct hook inputReleased = {"inputReleased", NULL, 0, &inputReleased, inputReleasedHandle, hook_idle};
 
 int inputInit(lua_State* L) {
     luaL_newlib(L, luaInput);

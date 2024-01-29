@@ -6,8 +6,16 @@
 #include <stdio.h>
 #include <pthread.h>
 #include "windows.h"
+#include "hooks.h"
 
 struct windowPool windowPool = {NULL, 0};
+
+void renderHandle(struct hook *instance, lua_State *L){
+    if (windowPool.count>0) {
+    }
+}
+
+struct hook render = {"render", NULL, 0, &render, renderHandle, hook_update};
 
 void drawSmoothLine(float x1, float y1, float x2, float y2) {
     glEnable(GL_BLEND);
@@ -75,18 +83,22 @@ void* newWindow(void* data) {
     }
 
     while (!window->quit) {
-        SDL_GL_MakeCurrent(window->window, window->context);
-        
+        SDL_GL_MakeCurrent(windowPool.windows[0].window, windowPool.windows[0].context);
+
         SDL_Event event;
         
         while (SDL_PollEvent(&event) != 0) { //doesnt work for multiple windows, but moving it to a pool system breaks it completely <3 fixing later
-            if (event.type == SDL_WINDOWEVENT && event.window.windowID == window->id) {
+            if (event.window.windowID != window->id) {
+                //SDL_PushEvent()
+            } else if (event.type == SDL_WINDOWEVENT) {
                 switch(event.window.event){
                     case SDL_WINDOWEVENT_RESIZED:
                         int newWidth = event.window.data1;
                         int newHeight = event.window.data2;
 
                         glViewport(0, 0, newWidth, newHeight);
+                        
+                        SDL_GL_SwapWindow(window->window);
 
                         break;
                     case SDL_WINDOWEVENT_CLOSE:
@@ -97,12 +109,6 @@ void* newWindow(void* data) {
             }
         }
 
-        glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
-
-        drawSmoothLine(-1.0f, -1.0f, 1.0f, 1.0f);
-
-        SDL_GL_SwapWindow(window->window);
 
         //SDL_Delay(16); suggested for fps gain
 
@@ -149,8 +155,35 @@ int createWindow(lua_State *L) {
     return 1;
 }
 
+int drawLine(lua_State *L) {
+    if (windowPool.count > 0) {
+        if (lua_gettop(L) == 4) {
+            SDL_GL_MakeCurrent(windowPool.windows[0].window, windowPool.windows[0].context);
+
+            float x1 = lua_tonumber(L, 1);
+            float y1 = lua_tonumber(L, 2);
+            float x2 = lua_tonumber(L, 3);
+            float y2 = lua_tonumber(L, 4);
+
+            glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+            glClear(GL_COLOR_BUFFER_BIT);
+
+            drawSmoothLine(x1, y1, x2, y2);
+
+            SDL_GL_SwapWindow(windowPool.windows[0].window);
+
+            SDL_GL_MakeCurrent(NULL, NULL);
+        } else {
+            //fprintf(stderr, "drawLine requires exactly 4 number arguments\n");
+        }
+    }
+
+    return 0;
+}
+
 const luaL_Reg luaWindows[] = {
     {"createWindow", createWindow},
+    {"drawLine", drawLine},
     {NULL, NULL}
 };
 
@@ -162,6 +195,8 @@ int windowsInit(lua_State* L) {
     }
     
     luaL_newlib(L, luaWindows);
+
+    registerHook(&pool, render);
 
     return 1;
 }
