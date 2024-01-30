@@ -83,34 +83,38 @@ void* newWindow(void* data) {
     }
 
     while (!window->quit) {
-        SDL_GL_MakeCurrent(windowPool.windows[0].window, windowPool.windows[0].context);
+        SDL_GL_MakeCurrent(window->window, window->context);
 
         SDL_Event event;
         
-        while (SDL_PollEvent(&event) != 0) { //doesnt work for multiple windows, but moving it to a pool system breaks it completely <3 fixing later
-            if (event.window.windowID != window->id) {
-                //SDL_PushEvent()
-            } else if (event.type == SDL_WINDOWEVENT) {
-                switch(event.window.event){
-                    case SDL_WINDOWEVENT_RESIZED:
-                        int newWidth = event.window.data1;
-                        int newHeight = event.window.data2;
-
-                        glViewport(0, 0, newWidth, newHeight);
-                        
-                        SDL_GL_SwapWindow(window->window);
-
-                        break;
-                    case SDL_WINDOWEVENT_CLOSE:
-                        window->quit=1;
-
-                        break;
+        if (SDL_PollEvent(&event)) {
+            while (event.window.windowID != window->id) {
+                if (!SDL_WaitEvent(&event)) {
+                    fprintf(stderr, "SDL_WaitEvent error: %s\n", SDL_GetError());
+                    
+                    return NULL;
                 }
             }
         }
 
+        if (event.type == SDL_WINDOWEVENT) {
+            switch(event.window.event){
+                case SDL_WINDOWEVENT_RESIZED:
+                case SDL_WINDOWEVENT_SIZE_CHANGED:
+                    int newWidth = event.window.data1;
+                    int newHeight = event.window.data2;
 
-        //SDL_Delay(16); suggested for fps gain
+                    glViewport(0, 0, newWidth, newHeight);
+
+                    SDL_GL_SwapWindow(window->window);
+
+                    break;
+                case SDL_WINDOWEVENT_CLOSE:
+                    window->quit=1;
+
+                    break;
+            }
+        }
 
         SDL_GL_MakeCurrent(NULL, NULL);
     }
