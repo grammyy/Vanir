@@ -16,8 +16,7 @@ enum dataType {
 enum status {
     hook_awaiting,
     hook_update,
-    hook_idle,
-    hook_managed
+    hook_idle
 };
 
 struct callbacks {

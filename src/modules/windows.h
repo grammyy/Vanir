@@ -19,6 +19,8 @@ struct sdlWindow {
     Uint32 id;
 };
 
+extern struct windowPool windowPool;
+
 extern struct hook render;
 
 #endif

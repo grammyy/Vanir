@@ -6,6 +6,7 @@
 #include "modules/hooks.h"
 #include "modules/input.h"
 #include "modules/windows.h"
+#include "modules/render.h"
 #include "modules/timer.h"
 
 typedef struct {
@@ -34,6 +35,7 @@ __declspec(dllexport) int luaopen_vanir(lua_State * L) {
         {"hooks", hooksInit},
         {"input", inputInit},
         {"windows", windowsInit},
+        {"render", renderInit},
         {"timer", timerInit},
         {NULL, NULL}
     };
