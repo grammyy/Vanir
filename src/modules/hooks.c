@@ -89,6 +89,41 @@ void addHook(struct hook *instance, const char *name, void (*func)(lua_State*, s
     }
 }
 
+void removeHook(struct hook *instance, const char *name) {
+    for (size_t i = 0; i < instance->pool; ++i) {
+        if (strcmp(instance->stack[i].name, name) == 0) {
+            for (size_t j = i; j < instance->pool - 1; ++j) {
+                instance->stack[j] = instance->stack[j + 1];
+            }
+
+            struct stack *temp = malloc((instance->pool - 1) * sizeof(struct stack));
+
+            if (temp != NULL) {
+                memcpy(temp, instance->stack, i * sizeof(struct stack));
+                memcpy(temp + i, instance->stack + i + 1, (instance->pool - i - 1) * sizeof(struct stack));
+
+                free(instance->stack);
+
+                instance->stack = temp;
+                instance->pool -= 1;
+            } else {
+                throw("Hook", instance->hookName, "Memory allocation error");
+            }
+
+            return;
+        }
+    }
+
+    char temp[strlen(name) + 12];
+
+    strcpy(temp, "'");
+    strcpy(temp, name);
+    strcat(temp, "' not found");
+
+    throw("Hook", instance->hookName, temp);
+}
+
+
 void runHook(struct hook *instance, lua_State *L) {
     if (!instance || !L) {
         throw("Hook", "?", "Failed to get hook instance");
@@ -175,7 +210,7 @@ struct hook* findHookByName(const struct hookPool* pool, const char* hookName) {
     return NULL;
 }
 
-int add(lua_State *L) {
+int luaAdd(lua_State *L) {
     const char *hookName = luaL_checkstring(L, 1);
     const char *name = luaL_checkstring(L, 2);
 
@@ -197,7 +232,22 @@ int add(lua_State *L) {
     return 0;
 }
 
-int run(lua_State *L) {
+int luaRemove(lua_State *L) {
+    const char *hookName = luaL_checkstring(L, 1);
+    const char *name = luaL_checkstring(L, 2);
+
+    struct hook *instance = findHookByName(&pool, hookName);
+    
+    if (instance != NULL) {
+        removeHook(instance->address, name);
+    } else {
+        throw("Hook", hookName, "Not found");
+    }
+
+    return 0;
+}
+
+int luaRun(lua_State *L) {
     for (size_t i = 0; i < pool.count; ++i) {
         runHook(pool.hooks[i].address, L);
     }
@@ -206,8 +256,9 @@ int run(lua_State *L) {
 }
 
 const luaL_Reg luaHooks[] = {
-    {"add",add},
-    {"run",run},
+    {"add",luaAdd},
+    {"remove",luaRemove},
+    {"run",luaRun},
     {NULL, NULL}
 };
 

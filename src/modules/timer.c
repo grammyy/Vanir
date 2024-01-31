@@ -5,16 +5,17 @@
 #include "timer.h"
 
 long long timeInMilliseconds(void) {
-    struct timeval tv;
+    struct timeval time;
 
-    gettimeofday(&tv, NULL);
-    return (((long long)tv.tv_sec) * 1000) + (tv.tv_usec / 1000);
+    gettimeofday(&time, NULL);
+
+    return (((long long)time.tv_sec) * 1000) + (time.tv_usec / 1000);
 }
 
 int realtime(lua_State *L) {
-    long long result = timeInMilliseconds();
-    lua_pushinteger(L, result);
-    return 1;  // Number of return values
+    lua_pushinteger(L, timeInMilliseconds());
+
+    return 1;
 }
 
 const luaL_Reg luaTimer[] = {
