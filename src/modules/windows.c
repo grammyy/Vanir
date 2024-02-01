@@ -9,6 +9,7 @@
 #include "vanir.h"
 #include "windows.h"
 #include "hooks.h"
+#include "render.h"
 
 struct windowPool windowPool = {NULL, 0};
 
@@ -89,7 +90,7 @@ void* newWindow(void* data) {
 
                     glViewport(0, 0, newWidth, newHeight);
 
-                    SDL_GL_SwapWindow(window->window);
+                    //SDL_GL_SwapWindow(window->window);
 
                     break;
                 case SDL_WINDOWEVENT_CLOSE:
@@ -143,7 +144,22 @@ int createWindow(lua_State *L) {
         free(window);
     }
 
-    //TODO -> push lua methods here
+    struct sdlWindow **udata = (struct sdlWindow **)lua_newuserdata(L, sizeof(struct sdlWindow *));
+    *udata = window;
+
+    luaL_newmetatable(L, "window");
+    
+    lua_pushstring(L, "__index"); //use function defined methods later
+    lua_newtable(L);
+    lua_pushcfunction(L, selectRender);
+    lua_setfield(L, -2, "selectRender");
+    lua_pushcfunction(L, stopRender);
+    lua_setfield(L, -2, "stopRender");
+    lua_pushcfunction(L, update);
+    lua_setfield(L, -2, "update");
+    lua_settable(L, -3);
+
+    lua_setmetatable(L, -2);
 
     return 1;
 }

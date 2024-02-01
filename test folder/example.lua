@@ -5,13 +5,15 @@ require("vanir")
 --    print("hii :3")
 --end)
 
-windows.createWindow(400,400,400,200,"nya")
+local test={}
+
+test[#test+1]=windows.createWindow(400,400,400,200,"nya")
 
 hooks.add("inputPressed","test",function(key)
     if key==69 then
         print("pressed -> "..key)
 
-        windows.createWindow(400,400,400,200,"nya")
+        test[#test+1]=windows.createWindow(400,400,400,200,"nya")
     elseif key==70 then
         print("test")
         print("returning..")
@@ -32,9 +34,23 @@ hooks.add("inputReleased","test2",function(key)
     print("released2 -> "..key)
 end)
 
+hooks.add("render","main",function()
+    for i, window in ipairs(test) do
+        window:selectRender()
+    
+        render.clear()
+        --render.setQuality(GL_LINE_SMOOTH_HINT, GL_NICEST)
+        render.drawLine(math.cos(timer.realtime()/1000), -1.0, math.sin(timer.realtime()/1000), 1.0)
+
+        window:update()
+
+        window:stopRender()
+    end
+end)
+
 while true do
     local keyHeld = input.getKey(85)
-
+    
     if keyHeld then
         print("Key is held down")
     else
