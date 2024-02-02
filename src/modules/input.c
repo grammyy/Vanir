@@ -6,7 +6,7 @@
 #include <stdio.h>
 #include <pthread.h>
 #include <unistd.h>
-#include "vanir.h"
+#include "../vanir.h"
 #include "hooks.h"
 #include "input.h"
 

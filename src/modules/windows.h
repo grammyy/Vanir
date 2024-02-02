@@ -1,5 +1,5 @@
-#ifndef WINDOWS_H
-#define WINDOWS_H
+#ifndef WINDOWS
+#define WINDOWS
 
 #include <lua.h>
 #include <SDL.h>

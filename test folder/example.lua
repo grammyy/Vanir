@@ -39,8 +39,16 @@ hooks.add("render","main",function()
         window:selectRender()
     
         render.clear()
-        --render.setQuality(GL_LINE_SMOOTH_HINT, GL_NICEST)
+    
+        window:enable(gl.blend)
+        window:setBlend(gl.srcAlpha, 8)
+        window:enable(gl.lineSmooth)
+        window:setQuality(gl.lines, gl.nicest)
+
         render.drawLine(math.cos(timer.realtime()/1000), -1.0, math.sin(timer.realtime()/1000), 1.0)
+
+        window:disable(gl.blend)
+        window:disable(gl.lineSmooth)
 
         window:update()
 

@@ -6,7 +6,7 @@
 #include <stdio.h>
 #include <pthread.h>
 #include <stdbool.h>
-#include "vanir.h"
+#include "../vanir.h"
 #include "windows.h"
 #include "hooks.h"
 #include "render.h"
@@ -157,6 +157,14 @@ int createWindow(lua_State *L) {
     lua_setfield(L, -2, "stopRender");
     lua_pushcfunction(L, update);
     lua_setfield(L, -2, "update");
+    lua_pushcfunction(L, setQuality);
+    lua_setfield(L, -2, "setQuality");
+    lua_pushcfunction(L, setBlend);
+    lua_setfield(L, -2, "setBlend");
+    lua_pushcfunction(L, enable);
+    lua_setfield(L, -2, "enable");
+    lua_pushcfunction(L, disable);
+    lua_setfield(L, -2, "disable");
     lua_settable(L, -3);
 
     lua_setmetatable(L, -2);

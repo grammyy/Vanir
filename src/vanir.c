@@ -8,16 +8,13 @@
 #include "modules/windows.h"
 #include "modules/render.h"
 #include "modules/timer.h"
+#include "enums.h"
+#include "vanir.h"
 
-typedef struct {
-    const char* name;
-    lua_CFunction func;
-} luaL_reg;
-
-void registerModules(lua_State* L, const luaL_reg* funcs) {
+void registerGlobals(lua_State* L, const luaL_reg* funcs) {
     for (; funcs->name != NULL; ++funcs) {
         lua_pushstring(L, funcs->name);
-        
+
         funcs->func(L);
 
         lua_setglobal(L, funcs->name);
@@ -37,10 +34,15 @@ __declspec(dllexport) int luaopen_vanir(lua_State * L) {
         {"windows", windowsInit},
         {"render", renderInit},
         {"timer", timerInit},
+        // ↑ modules ↑ ///
+
+        {"gl", renderEnums},
+        // ↑ enums ↑ ///
+
         {NULL, NULL}
     };
 
-    registerModules(L, luaReg);
+    registerGlobals(L, luaReg);
 
     return 1;
 }

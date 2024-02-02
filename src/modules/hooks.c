@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "vanir.h"
+#include "../vanir.h"
 #include "hooks.h"
 
 struct hookPool pool = {NULL, 0};
