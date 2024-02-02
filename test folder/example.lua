@@ -40,15 +40,15 @@ hooks.add("render","main",function()
     
         render.clear()
     
-        window:enable(gl.blend)
-        window:setBlend(gl.srcAlpha, 8)
-        window:enable(gl.lineSmooth)
-        window:setQuality(gl.lines, gl.nicest)
+        render.enable(gl.blend)
+        render.setBlend(gl.srcAlpha, gl["1-srcAlpha"])
+        render.enable(gl.lineSmooth)
+        render.setQuality(gl.lines, gl.nicest)
 
         render.drawLine(math.cos(timer.realtime()/1000), -1.0, math.sin(timer.realtime()/1000), 1.0)
 
-        window:disable(gl.blend)
-        window:disable(gl.lineSmooth)
+        render.disable(gl.blend)
+        render.disable(gl.lineSmooth)
 
         window:update()
 
