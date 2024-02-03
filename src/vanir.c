@@ -29,16 +29,15 @@ __declspec(dllexport) int luaopen_vanir(lua_State * L) {
     luaL_dofile(L, "preload.lua");
 
     const luaL_reg luaReg[] = {
+        // ↓ modules ↓ ///
         {"hooks", hooksInit},
         {"input", inputInit},
         {"windows", windowsInit},
         {"render", renderInit},
         {"timer", timerInit},
-        // ↑ modules ↑ ///
 
+        // ↓ enums ↓ ///
         {"gl", renderEnums},
-        // ↑ enums ↑ ///
-
         {NULL, NULL}
     };
 
