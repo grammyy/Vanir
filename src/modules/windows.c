@@ -164,8 +164,6 @@ void* newWindow(void* data) {
         }
     }
 
-    window = {};
-
     SDL_DestroyWindow(window->window);
     SDL_GL_DeleteContext(window->context);
     SDL_FlushEvent(SDL_WINDOWEVENT);
