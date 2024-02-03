@@ -23,6 +23,40 @@ void renderHandle(struct hook *instance, lua_State *L) {
 
 struct hook render = {"render", NULL, 0, &render, renderHandle, hook_update};
 
+// window methods ↓↓↓ window methods ///
+int isHovering(lua_State *L) {
+    struct sdlWindow **window = (struct sdlWindow **)luaL_checkudata(L, 1, "window");
+    
+    lua_pushboolean(L, (*window)->hovering);
+
+    return 1;
+}
+
+int isFocused(lua_State *L) {
+    struct sdlWindow **window = (struct sdlWindow **)luaL_checkudata(L, 1, "window");
+    
+    lua_pushboolean(L, (*window)->focused);
+
+    return 1;
+}
+
+int getTitle(lua_State *L) {
+    struct sdlWindow **window = (struct sdlWindow **)luaL_checkudata(L, 1, "window");
+
+    lua_pushstring(L, (*window)->name);
+
+    return 1;
+}
+
+int getID(lua_State *L) {
+    struct sdlWindow **window = (struct sdlWindow **)luaL_checkudata(L, 1, "window");
+    
+    lua_pushinteger(L, (*window)->id);
+
+    return 1;
+}
+// window methods ↑↑↑ window methods ///
+
 void* newWindow(void* data) {
     struct sdlWindow* window = (struct sdlWindow*)data;
     
@@ -94,7 +128,23 @@ void* newWindow(void* data) {
 
                     break;
                 case SDL_WINDOWEVENT_CLOSE:
-                    window->quit=1;
+                    window->quit = true;
+
+                    break;
+                case SDL_WINDOWEVENT_ENTER:
+                    window->hovering = true;
+                    
+                    break;
+                case SDL_WINDOWEVENT_LEAVE:
+                    window->hovering = false;
+                    
+                    break;
+                case SDL_WINDOWEVENT_FOCUS_GAINED:
+                    window->focused = true;
+
+                    break;
+                case SDL_WINDOWEVENT_FOCUS_LOST:
+                    window->focused = false;
 
                     break;
             }
@@ -102,6 +152,19 @@ void* newWindow(void* data) {
 
         SDL_GL_MakeCurrent(NULL, NULL);
     }
+
+    for (int i = 0; i < windowPool.count; ++i) {
+        if (windowPool.windows[i].id == window->id) {
+            for (int j = i; j < windowPool.count - 1; ++j) {
+                windowPool.windows[j] = windowPool.windows[j + 1];
+            }
+            windowPool.count -= 1;
+            
+            break;
+        }
+    }
+
+    window = {};
 
     SDL_DestroyWindow(window->window);
     SDL_GL_DeleteContext(window->context);
@@ -157,6 +220,14 @@ int createWindow(lua_State *L) {
     lua_setfield(L, -2, "stopRender");
     lua_pushcfunction(L, update);
     lua_setfield(L, -2, "update");
+    lua_pushcfunction(L, isHovering);
+    lua_setfield(L, -2, "isHovering");
+    lua_pushcfunction(L, isFocused);
+    lua_setfield(L, -2, "isFocused");
+    lua_pushcfunction(L, getTitle);
+    lua_setfield(L, -2, "getTitle");
+    lua_pushcfunction(L, getID);
+    lua_setfield(L, -2, "getID");
     lua_settable(L, -3);
 
     lua_setmetatable(L, -2);

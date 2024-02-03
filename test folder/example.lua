@@ -36,23 +36,27 @@ end)
 
 hooks.add("render","main",function()
     for i, window in ipairs(test) do
-        window:selectRender()
-    
-        render.clear()
-    
-        render.enable(gl.blend)
-        render.setBlend(gl.srcAlpha, gl["1-srcAlpha"])
-        render.enable(gl.lineSmooth)
-        render.setQuality(gl.lines, gl.nicest)
+        if window and window:isFocused() then
+            window:selectRender()
+            
+            render.clear()
+            
+            print(window:getTitle(),window:getID())
 
-        render.drawLine(math.cos(timer.realtime()/1000), -1.0, math.sin(timer.realtime()/1000), 1.0)
+            render.enable(gl.blend)
+            render.setBlend(gl.srcAlpha, gl["1-srcAlpha"])
+            render.enable(gl.lineSmooth)
+            render.setQuality(gl.lines, gl.nicest)
 
-        render.disable(gl.blend)
-        render.disable(gl.lineSmooth)
+            render.drawLine(math.cos(timer.realtime()/1000), -1.0, math.sin(timer.realtime()/1000), 1.0)
 
-        window:update()
+            render.disable(gl.blend)
+            render.disable(gl.lineSmooth)
 
-        window:stopRender()
+            window:update()
+            
+            window:stopRender()
+        end
     end
 end)
 

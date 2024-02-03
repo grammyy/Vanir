@@ -66,16 +66,22 @@ int selectRender(lua_State *L) {
     struct sdlWindow **window = (struct sdlWindow **)luaL_checkudata(L, 1, "window");
     
     SDL_GL_MakeCurrent((*window)->window, (*window)->context);
+
+    return 0;
 }
 
 int stopRender(lua_State *L) {
     SDL_GL_MakeCurrent(NULL, NULL);
+
+    return 0;
 }
 
 int update(lua_State *L) {
     struct sdlWindow **window = (struct sdlWindow **)luaL_checkudata(L, 1, "window");
     
     SDL_GL_SwapWindow((*window)->window);
+
+    return 0;
 }
 // window methods ↑↑↑ window methods ///
 
@@ -111,6 +117,8 @@ int setQuality(lua_State *L) {
     }
 
     glHint(target, quality);
+
+    return 0;
 }
 
 int setBlend(lua_State *L) {
@@ -121,6 +129,8 @@ int setBlend(lua_State *L) {
     blend=blendSwitch(blend);
     
     glBlendFunc(source, blend);
+
+    return 0;
 }
 
 int enable(lua_State *L) {
@@ -129,6 +139,8 @@ int enable(lua_State *L) {
     cap=capSwitch(cap);
 
     glEnable(cap);
+
+    return 0;
 }
 
 int disable(lua_State *L) {
@@ -137,6 +149,8 @@ int disable(lua_State *L) {
     cap=capSwitch(cap);
 
     glDisable(cap);
+
+    return 0;
 }
 
 int line(lua_State *L) {
