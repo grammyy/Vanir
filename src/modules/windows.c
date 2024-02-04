@@ -62,8 +62,8 @@ void* newWindow(void* data) {
     
     window->window = SDL_CreateWindow(
         window->name,
-        window->x ? window->x : SDL_WINDOWPOS_UNDEFINED,
-        window->y ? window->y : SDL_WINDOWPOS_UNDEFINED,
+        window->x,
+        window->y,
         window->width,
         window->height,
         SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL
@@ -174,11 +174,11 @@ void* newWindow(void* data) {
 }
 
 int createWindow(lua_State *L) {
-    int x = luaL_checkinteger(L, 1);
-    int y = luaL_checkinteger(L, 2);
-    int width = luaL_checkinteger(L, 3);
-    int height = luaL_checkinteger(L, 4);
-    const char *name = luaL_checkstring(L, 5);
+    int x = luaL_optinteger(L, 1, 300);
+    int y = luaL_optinteger(L, 2, 300);
+    int width = luaL_optinteger(L, 3, 300);
+    int height = luaL_optinteger(L, 4, 200);
+    const char *name = luaL_optstring(L, 5, "Vanir window");
 
     struct sdlWindow *window = malloc(sizeof(struct sdlWindow));
 

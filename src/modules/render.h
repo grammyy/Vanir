@@ -2,6 +2,7 @@
 #define RENDER
 
 #include <lua.h>
+#include "../vanir.h"
 
 int renderInit(lua_State* L);
 
@@ -14,5 +15,8 @@ int setBlend(lua_State *L);
 int enable(lua_State *L);
 int disable(lua_State *L);
 // window methods ↑↑↑ window methods ///
+
+void getGlobalColor(lua_State *L, struct color *color);
+void getColor(lua_State *L, struct color *color);
 
 #endif

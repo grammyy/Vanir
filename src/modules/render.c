@@ -4,8 +4,9 @@
 #include <SDL.h>
 #include <SDL_opengl.h>
 #include "windows.h"
-#include "../graphics/render.h"
 #include "render.h"
+#include "../graphics/render.h"
+#include "../vanir.h"
 
 GLenum blendSwitch(int blend) {
     switch (blend) {
@@ -85,6 +86,44 @@ int update(lua_State *L) {
 }
 // window methods ↑↑↑ window methods ///
 
+void getGlobalColor(lua_State *L, struct color *color) {
+    lua_getglobal(L, "_rendercolor");
+
+    lua_getfield(L, -1, "r");
+    color->r = lua_tointeger(L, -1) / 255.0f;
+    lua_pop(L, 1);
+
+    lua_getfield(L, -1, "g");
+    color->g = lua_tointeger(L, -1) / 255.0f;
+    lua_pop(L, 1);
+
+    lua_getfield(L, -1, "b");
+    color->b = lua_tointeger(L, -1) / 255.0f;
+    lua_pop(L, 1);
+
+    lua_getfield(L, -1, "a");
+    color->a = lua_tointeger(L, -1) / 255.0f;
+    lua_pop(L, 2);
+}
+
+void getColor(lua_State *L, struct color *color) {
+    lua_getfield(L, 1, "r");
+    color->r = lua_tointeger(L, -1) / 255.0f;
+    lua_pop(L, 1);
+
+    lua_getfield(L, 1, "g");
+    color->g = lua_tointeger(L, -1) / 255.0f;
+    lua_pop(L, 1);
+
+    lua_getfield(L, 1, "b");
+    color->b = lua_tointeger(L, -1) / 255.0f;
+    lua_pop(L, 1);
+
+    lua_getfield(L, 1, "a");
+    color->a = lua_tointeger(L, -1) / 255.0f;
+    lua_pop(L, 1);
+}
+
 int setQuality(lua_State *L) {
     int target = lua_tonumber(L, 1);
     int quality = lua_tonumber(L, 2);
@@ -153,26 +192,19 @@ int disable(lua_State *L) {
     return 0;
 }
 
-int line(lua_State *L) {
-    float x1 = lua_tonumber(L, 1);
-    float y1 = lua_tonumber(L, 2);
-    float x2 = lua_tonumber(L, 3);
-    float y2 = lua_tonumber(L, 4);
+int clear(lua_State *L) {
+    struct color color;
 
-    drawLine(x1, y1, x2, y2);
+    getColor(L, &color);
 
-    return 0;
-}
-
-int clear() {
-    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+    glClearColor(color.r, color.g, color.b, color.a);
     glClear(GL_COLOR_BUFFER_BIT);
     
     return 0;
 }
 
 const luaL_Reg luaRender[] = {
-    {"drawLine", line},
+    {"drawLine", drawLine},
     {"clear", clear},
     {"setQuality", setQuality},
     {"setBlend", setBlend},

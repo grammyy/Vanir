@@ -34,14 +34,16 @@ hooks.add("inputReleased","test2",function(key)
     print("released2 -> "..key)
 end)
 
+red=Color(255,0,0)
+
 hooks.add("render","main",function()
     for i, window in ipairs(test) do
         if window and window:isFocused() then
             window:selectRender()
             
-            render.clear()
+            render.clear(Color(255,255,255))
             
-            print(window:getTitle(),window:getID())
+            --print(window:getTitle(),window:getID())
 
             render.enable(gl.blend)
             render.setBlend(gl.srcAlpha, gl["1-srcAlpha"])
