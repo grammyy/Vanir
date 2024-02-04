@@ -13,29 +13,29 @@
 
 int Color(lua_State* L) {
     //might need to automantically handle values to their gl counterpart for performance
-    int r = luaL_optinteger(L, 1, 255);
-    int g = luaL_optinteger(L, 2, 255);
-    int b = luaL_optinteger(L, 3, 255);
-    int a = luaL_optinteger(L, 4, 255);
+    int r = luaL_optnumber(L, 1, 255.0f);
+    int g = luaL_optnumber(L, 2, 255.0f);
+    int b = luaL_optnumber(L, 3, 255.0f);
+    int a = luaL_optnumber(L, 4, 255.0f);
 
     struct color color = {r, g, b, a};
 
     lua_newtable(L);
 
     lua_pushstring(L, "r");
-    lua_pushinteger(L, color.r);
+    lua_pushnumber(L, color.r);
     lua_settable(L, -3);
 
     lua_pushstring(L, "g");
-    lua_pushinteger(L, color.g);
+    lua_pushnumber(L, color.g);
     lua_settable(L, -3);
 
     lua_pushstring(L, "b");
-    lua_pushinteger(L, color.b);
+    lua_pushnumber(L, color.b);
     lua_settable(L, -3);
 
     lua_pushstring(L, "a");
-    lua_pushinteger(L, color.a);
+    lua_pushnumber(L, color.a);
     lua_settable(L, -3);
 
     return 1;
@@ -61,19 +61,19 @@ __declspec(dllexport) int luaopen_vanir(lua_State * L) {
     lua_newtable(L);
 
     lua_pushstring(L, "r");
-    lua_pushinteger(L, 0);
+    lua_pushnumber(L, 255.0f);
     lua_settable(L, -3);
 
     lua_pushstring(L, "g");
-    lua_pushinteger(L, 0);
+    lua_pushnumber(L, 255.0f);
     lua_settable(L, -3);
 
     lua_pushstring(L, "b");
-    lua_pushinteger(L, 0);
+    lua_pushnumber(L, 255.0f);
     lua_settable(L, -3);
 
     lua_pushstring(L, "a");
-    lua_pushinteger(L, 255);
+    lua_pushnumber(L, 255.0f);
     lua_settable(L, -3);
 
     lua_setglobal(L, "_rendercolor");

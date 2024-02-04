@@ -124,6 +124,28 @@ void getColor(lua_State *L, struct color *color) {
     lua_pop(L, 1);
 }
 
+int setColor(lua_State *L) {
+    struct color color;
+
+    getColor(L, &color);
+
+    lua_getglobal(L, "_rendercolor");
+
+    lua_pushnumber(L, color.r * 255.0f);
+    lua_setfield(L, -2, "r");
+
+    lua_pushnumber(L, color.g * 255.0f);
+    lua_setfield(L, -2, "g");
+
+    lua_pushnumber(L, color.b * 255.0f);
+    lua_setfield(L, -2, "b");
+
+    lua_pushnumber(L, color.a * 255.0f);
+    lua_setfield(L, -2, "a");
+
+    lua_pop(L, 1);
+}
+
 int setQuality(lua_State *L) {
     int target = lua_tonumber(L, 1);
     int quality = lua_tonumber(L, 2);
@@ -210,6 +232,7 @@ const luaL_Reg luaRender[] = {
     {"setBlend", setBlend},
     {"enable", enable},
     {"disable", disable},
+    {"setColor", setColor},
     {NULL, NULL}
 };
 

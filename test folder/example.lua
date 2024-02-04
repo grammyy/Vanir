@@ -41,8 +41,10 @@ hooks.add("render","main",function()
         if window and window:isFocused() then
             window:selectRender()
             
-            render.clear(Color(255,255,255))
+            render.clear(Color(0,0,0))
             
+            render.setColor(Color(255+((255/2)*math.cos(timer.realtime()/1000)),255,255))
+
             --print(window:getTitle(),window:getID())
 
             render.enable(gl.blend)
@@ -50,7 +52,9 @@ hooks.add("render","main",function()
             render.enable(gl.lineSmooth)
             render.setQuality(gl.lines, gl.nicest)
 
-            render.drawLine(math.cos(timer.realtime()/1000), -1.0, math.sin(timer.realtime()/1000), 1.0)
+            for i=1, 500 do
+                render.drawLine(math.cos((timer.realtime()/1000)+i), -1.0, math.sin((timer.realtime()/1000)+i), 1.0)
+            end
 
             render.disable(gl.blend)
             render.disable(gl.lineSmooth)
