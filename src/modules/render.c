@@ -126,7 +126,6 @@ void getColor(lua_State *L, struct color *color) {
 
 int setColor(lua_State *L) {
     struct color color;
-
     getColor(L, &color);
 
     lua_getglobal(L, "_rendercolor");
@@ -147,8 +146,8 @@ int setColor(lua_State *L) {
 }
 
 int setQuality(lua_State *L) {
-    int target = lua_tonumber(L, 1);
-    int quality = lua_tonumber(L, 2);
+    int target = luaL_checkinteger(L, 1);
+    int quality = luaL_checkinteger(L, 2);
 
     switch (target) {
         case 4:
@@ -183,8 +182,8 @@ int setQuality(lua_State *L) {
 }
 
 int setBlend(lua_State *L) {
-    int source = lua_tonumber(L, 1);
-    int blend = lua_tonumber(L, 2);
+    int source = luaL_checkinteger(L, 1);
+    int blend = luaL_checkinteger(L, 2);
 
     source=blendSwitch(source);
     blend=blendSwitch(blend);
@@ -195,8 +194,7 @@ int setBlend(lua_State *L) {
 }
 
 int enable(lua_State *L) {
-    int cap = lua_tonumber(L, 1);
-
+    int cap = luaL_checkinteger(L, 1);
     cap=capSwitch(cap);
 
     glEnable(cap);
@@ -205,8 +203,7 @@ int enable(lua_State *L) {
 }
 
 int disable(lua_State *L) {
-    int cap = lua_tonumber(L, 1);
-
+    int cap = luaL_checkinteger(L, 1);
     cap=capSwitch(cap);
 
     glDisable(cap);
@@ -216,23 +213,95 @@ int disable(lua_State *L) {
 
 int clear(lua_State *L) {
     struct color color;
-
     getColor(L, &color);
 
-    glClearColor(color.r, color.g, color.b, color.a);
-    glClear(GL_COLOR_BUFFER_BIT);
+    int buffer = lua_tointeger(L, 2);
     
+    switch (buffer) {
+        case 3:
+            buffer=GL_STENCIL_BUFFER_BIT;
+            break;
+        case 2:
+            buffer=GL_DEPTH_BUFFER_BIT;
+            break;
+        case 1:
+        default:
+            buffer=GL_COLOR_BUFFER_BIT;
+            break;
+    }
+
+    glClearColor(color.r, color.g, color.b, color.a);
+    glClear(buffer);
+    
+    return 0;
+}
+
+int force(lua_State *L) {
+    glFlush();
+    
+    return 0;
+}
+
+int begin(lua_State *L) {
+    int group = luaL_checkinteger(L, 1);
+
+    switch (group) {
+        case 10:
+            group=GL_POINTS;
+            break;
+        case 9:
+            group=GL_LINES;
+            break;
+        case 8:
+            group=GL_LINE_STRIP;
+            break;
+        case 7:
+            group=GL_LINE_LOOP;
+            break;
+        case 6:
+            group=GL_TRIANGLES;
+            break;
+        case 5:
+            group=GL_TRIANGLE_STRIP;
+            break;
+        case 4:
+            group=GL_TRIANGLE_FAN;
+            break;
+        case 3:
+            group=GL_QUADS;
+            break;
+        case 2:
+            group=GL_QUAD_STRIP;
+            break;
+        case 1:
+            group=GL_POLYGON;
+            break;
+    }
+
+    glBegin(group);
+
+    return 0;
+}
+
+int end(lua_State *L) {
+    glEnd();
+
     return 0;
 }
 
 const luaL_Reg luaRender[] = {
     {"drawLine", drawLine},
+    {"drawVertex", drawVertex},
+
     {"clear", clear},
     {"setQuality", setQuality},
     {"setBlend", setBlend},
     {"enable", enable},
     {"disable", disable},
     {"setColor", setColor},
+    {"force", force},
+    {"begin", begin},
+    {"exit", end},
     {NULL, NULL}
 };
 

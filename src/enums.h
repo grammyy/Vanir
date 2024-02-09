@@ -11,7 +11,22 @@ typedef struct {
 } enums;
 
 int renderEnums(lua_State* L) {
-    enums render[] = {
+    static  enums render[] = {
+        {"point", 10},
+        {"line", 9},
+        {"lineStrip", 8},
+        {"lineLoop", 7},
+        {"triangle", 6},
+        {"triangleStrip", 5},
+        {"triangleFan", 4},
+        {"quad", 3},
+        {"quadStrip", 2},
+        {"polygon", 1},
+
+        {"stencil", 3},
+        {"depth", 2},
+        {"color", 1},
+
         {"1-alpha", 14},
         {"alpha", 13},
         {"1-color", 12},

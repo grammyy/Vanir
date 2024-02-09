@@ -9,8 +9,8 @@ int drawLine(lua_State *L) {
     float y1 = lua_tonumber(L, 2);
     float x2 = lua_tonumber(L, 3);
     float y2 = lua_tonumber(L, 4);
-    struct color color;
 
+    struct color color;
     getGlobalColor(L, &color);
     
     glColor4f(color.r, color.g, color.b, color.a);
@@ -19,6 +19,21 @@ int drawLine(lua_State *L) {
     glVertex2f(x1, y1);
     glVertex2f(x2, y2);
     glEnd();
+
+    return 0;
+}
+
+int drawVertex(lua_State *L) {
+    float x = lua_tonumber(L, 1);
+    float y = lua_tonumber(L, 2);
+    float z = lua_tonumber(L, 3);
+
+    struct color color;
+    getGlobalColor(L, &color);
+    
+    glColor4f(color.r, color.g, color.b, color.a);
+
+    glVertex3f(x, y, z);
 
     return 0;
 }
