@@ -99,6 +99,33 @@ void* newWindow(void* data) {
     } else {
         throw("Window", window->name, "Memory allocation error");
     }
+    
+    SDL_GL_MakeCurrent(window->window, window->context);
+    
+    glEnable(GL_BLEND);
+    glEnable(GL_LINE_SMOOTH);
+    glEnable(GL_POLYGON_SMOOTH);
+
+    // Enable anti-aliasing for lines
+    glEnable(GL_BLEND);
+    glEnable(GL_LINE_SMOOTH);
+    glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    // Enable anti-aliasing for polygons
+    glEnable(GL_POLYGON_SMOOTH);
+    glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
+
+    // Enable anti-aliasing for textures
+    glEnable(GL_TEXTURE_2D);
+    glEnable(GL_TEXTURE_RECTANGLE_ARB);
+    glHint(GL_TEXTURE_COMPRESSION_HINT, GL_NICEST);
+
+    // Enable anti-aliasing for fragment shader derivatives
+    glEnable(GL_FRAGMENT_SHADER_DERIVATIVE_HINT);
+    glHint(GL_FRAGMENT_SHADER_DERIVATIVE_HINT, GL_NICEST);
+
+    SDL_GL_MakeCurrent(NULL, NULL);
 
     while (!window->quit) {
         SDL_GL_MakeCurrent(window->window, window->context);

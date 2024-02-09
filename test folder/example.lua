@@ -47,13 +47,6 @@ hooks.add("render","main",function()
             --print(window:getTitle(),window:getID())
 
             if keyHeld then
-                render.enable(gl.blend);
-                render.enable(gl.lineSmooth);
-                render.enable(gl.polygonSmooth);
-                render.setQuality(gl.lineSmooth, gl.nicest);
-                render.setQuality(gl.polygonSmooth, gl.nicest);
-                render.setBlend(gl.srcAlpha, gl["1-srcAlpha"])
-
                 render.begin(gl.polygon)
 
                 render.setColor(Color(255,0,0)); render.drawVertex(-0.6, -0.75, 0.5)
@@ -64,17 +57,9 @@ hooks.add("render","main",function()
             else
                 render.setColor(Color(255-((255/2)*math.cos(timer.realtime()/1000)),255,255))
 
-                render.enable(gl.blend)
-                render.setBlend(gl.srcAlpha, gl["1-srcAlpha"])
-                render.enable(gl.lineSmooth)
-                render.setQuality(gl.lines, gl.nicest)
-
                 for i=1, 500 do
                     render.drawLine(math.cos((timer.realtime()/1000)+i), -1.0, math.sin((timer.realtime()/1000)+i), 1.0)
                 end
-
-                render.disable(gl.blend)
-                render.disable(gl.lineSmooth)
             end
 
             window:update()
