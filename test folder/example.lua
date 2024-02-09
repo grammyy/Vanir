@@ -47,6 +47,13 @@ hooks.add("render","main",function()
             --print(window:getTitle(),window:getID())
 
             if keyHeld then
+                render.enable(gl.blend);
+                render.enable(gl.lineSmooth);
+                render.enable(gl.polygonSmooth);
+                render.setQuality(gl.lineSmooth, gl.nicest);
+                render.setQuality(gl.polygonSmooth, gl.nicest);
+                render.setBlend(gl.srcAlpha, gl["1-srcAlpha"])
+
                 render.begin(gl.polygon)
 
                 render.setColor(Color(255,0,0)); render.drawVertex(-0.6, -0.75, 0.5)
