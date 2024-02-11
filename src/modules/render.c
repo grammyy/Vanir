@@ -142,7 +142,7 @@ int setColor(lua_State *L) {
     lua_pushnumber(L, color.a * 255.0f);
     lua_setfield(L, -2, "a");
 
-    lua_pop(L, 1);
+    return 0;
 }
 
 int setQuality(lua_State *L) {

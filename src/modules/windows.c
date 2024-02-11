@@ -102,10 +102,6 @@ void* newWindow(void* data) {
     
     SDL_GL_MakeCurrent(window->window, window->context);
     
-    glEnable(GL_BLEND);
-    glEnable(GL_LINE_SMOOTH);
-    glEnable(GL_POLYGON_SMOOTH);
-
     // Enable anti-aliasing for lines
     glEnable(GL_BLEND);
     glEnable(GL_LINE_SMOOTH);
@@ -200,6 +196,18 @@ void* newWindow(void* data) {
     return NULL;
 }
 
+static const luaL_Reg windowMethods[] = {
+    {"selectRender", selectRender},
+    {"stopRender", stopRender},
+    {"update", update},
+
+    {"isHovering", isHovering},
+    {"isFocused", isFocused},
+    {"getTitle", getTitle},
+    {"getID", getID},
+    {NULL, NULL}
+};
+
 int createWindow(lua_State *L) {
     int x = luaL_optinteger(L, 1, 300);
     int y = luaL_optinteger(L, 2, 300);
@@ -210,8 +218,6 @@ int createWindow(lua_State *L) {
     struct sdlWindow *window = malloc(sizeof(struct sdlWindow));
 
     if (!window) {
-        fprintf(stderr, "Memory allocation for window failed\n");
-
         throw("Window", name, "Memory allocation error");
 
         return 0;
@@ -235,27 +241,7 @@ int createWindow(lua_State *L) {
     struct sdlWindow **udata = (struct sdlWindow **)lua_newuserdata(L, sizeof(struct sdlWindow *));
     *udata = window;
 
-    luaL_newmetatable(L, "window");
-    
-    lua_pushstring(L, "__index"); //use function defined methods later
-    lua_newtable(L);
-    lua_pushcfunction(L, selectRender);
-    lua_setfield(L, -2, "selectRender");
-    lua_pushcfunction(L, stopRender);
-    lua_setfield(L, -2, "stopRender");
-    lua_pushcfunction(L, update);
-    lua_setfield(L, -2, "update");
-    lua_pushcfunction(L, isHovering);
-    lua_setfield(L, -2, "isHovering");
-    lua_pushcfunction(L, isFocused);
-    lua_setfield(L, -2, "isFocused");
-    lua_pushcfunction(L, getTitle);
-    lua_setfield(L, -2, "getTitle");
-    lua_pushcfunction(L, getID);
-    lua_setfield(L, -2, "getID");
-    lua_settable(L, -3);
-
-    lua_setmetatable(L, -2);
+    addMethods(L, "window", windowMethods);
 
     return 1;
 }

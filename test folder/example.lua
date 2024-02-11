@@ -44,14 +44,12 @@ hooks.add("render","main",function()
             
             render.clear(Color(0,0,0))
 
-            --print(window:getTitle(),window:getID())
-
             if keyHeld then
                 render.begin(gl.polygon)
 
-                render.setColor(Color(255,0,0)); render.drawVertex(-0.6, -0.75, 0.5)
-                render.setColor(Color(0,255,0)); render.drawVertex(0.6, -0.75, 0)
-                render.setColor(Color(0,0,255)); render.drawVertex(0, 0.75, 0)
+                render.setColor(Color((timer.realtime()/10)%360,100,100):hsvToRGB()); render.drawVertex(-0.6, -0.75, 0.5)
+                render.setColor(Color((120+timer.realtime()/10)%360,100,100):hsvToRGB()); render.drawVertex(0.6, -0.75, 0)
+                render.setColor(Color((240+timer.realtime()/10)%360,100,100):hsvToRGB()); render.drawVertex(0, 0.75, 0)
 
                 render.exit()
             else
