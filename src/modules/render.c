@@ -289,8 +289,22 @@ int end(lua_State *L) {
     return 0;
 }
 
+int scissor(lua_State *L) {
+    float x = lua_tonumber(L, 1);
+    float y = lua_tonumber(L, 2);
+    float width = lua_tonumber(L, 3);
+    float height = lua_tonumber(L, 4);
+
+    glScissor(x, y, width, height);
+
+    return 0;
+}
+
 const luaL_Reg luaRender[] = {
     {"drawLine", drawLine},
+    {"drawRect", drawRect},
+    {"drawCircle", drawCircle},
+    {"drawFilledCircle", drawFilledCircle},
     {"drawVertex", drawVertex},
 
     {"clear", clear},
@@ -302,6 +316,7 @@ const luaL_Reg luaRender[] = {
     {"force", force},
     {"begin", begin},
     {"exit", end},
+    {"scissor", scissor},
     {NULL, NULL}
 };
 

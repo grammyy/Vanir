@@ -14,11 +14,10 @@
 struct windowPool windowPool = {NULL, 0};
 
 void renderHandle(struct hook *instance, lua_State *L) {
-    if (windowPool.count==0) {
+    if (windowPool.count==0)
         instance->status=hook_idle;
-    } else {
+    else
         instance->status=hook_update;
-    }
 }
 
 struct hook render = {"render", NULL, 0, &render, renderHandle, hook_update};
@@ -181,6 +180,7 @@ void* newWindow(void* data) {
             for (int j = i; j < windowPool.count - 1; ++j) {
                 windowPool.windows[j] = windowPool.windows[j + 1];
             }
+            
             windowPool.count -= 1;
             
             break;
