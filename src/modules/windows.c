@@ -56,6 +56,24 @@ int getID(lua_State *L) {
 }
 // window methods ↑↑↑ window methods ///
 
+void glAspectRatio(int width, int height) {
+    float aspectRatio = (float) width / (float) height;
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+
+    if (aspectRatio >= 1.0) {
+        glOrtho(-aspectRatio, aspectRatio, -1.0, 1.0, -1.0, 1.0);
+    } else {
+        float halfHeight = 1.0 / aspectRatio;
+
+        glOrtho(-1.0, 1.0, -halfHeight, halfHeight, -1.0, 1.0);
+    }
+
+    glMatrixMode(GL_MODELVIEW);
+}
+
+
 void* newWindow(void* data) {
     struct sdlWindow* window = (struct sdlWindow*)data;
     
@@ -100,7 +118,9 @@ void* newWindow(void* data) {
     }
     
     SDL_GL_MakeCurrent(window->window, window->context);
-    
+
+    glAspectRatio(window->width, window->height);
+
     // Enable anti-aliasing for lines
     glEnable(GL_BLEND);
     glEnable(GL_LINE_SMOOTH);
@@ -141,10 +161,12 @@ void* newWindow(void* data) {
             switch(event.window.event){
                 case SDL_WINDOWEVENT_RESIZED:
                 case SDL_WINDOWEVENT_SIZE_CHANGED:
-                    int newWidth = event.window.data1;
-                    int newHeight = event.window.data2;
+                    int width = event.window.data1;
+                    int height = event.window.data2;
 
-                    glViewport(0, 0, newWidth, newHeight);
+                    glViewport(0, 0, width, height);
+
+                    glAspectRatio(width, height);
 
                     //SDL_GL_SwapWindow(window->window);
 

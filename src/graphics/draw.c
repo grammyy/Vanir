@@ -6,12 +6,19 @@
 #include "../vanir.h"
 
 void circle(float x, float y, float radius, int segments) {
-    for (int i = 0; i <= segments; i++) {
-        float theta = (2.0f * M_PI * (float)i) / (float)segments;
-        float cx = radius * cosf(theta);
-        float cy = radius * sinf(theta);
+    float theta = (2.0f * M_PI) / (float)segments;
+    float c = cosf(theta);
+    float s = sinf(theta);
+    float cx = radius;
+    float cy = 0;
 
+    for (int i = 0; i < segments; ++i) {
         glVertex2f(cx + x, cy + y);
+
+        float new_x = cx * c - cy * s;
+        float new_y = cx * s + cy * c;
+        cx = new_x;
+        cy = new_y;
     }
 }
 
@@ -94,21 +101,25 @@ int drawFilledCircle(lua_State *L) {
     return 0;
 }
 
-int drawPoly(lua_State *L) { //add callback function for each vertex
+int drawPoly(lua_State *L) { //add callback for each vertex later
     int vertexes = lua_rawlen(L, 1);
 
     glBegin(GL_POLYGON);
 
-    for (int i = 1; i <= vertexes; i += 2) {
+    for (int i = 1; i <= vertexes; i++) {
         lua_rawgeti(L, 1, i);
-        lua_rawgeti(L, 1, i + 1);
 
-        float x = lua_tonumber(L, -2);
-        float y = lua_tonumber(L, -1);
+        lua_rawgeti(L, -1, 1);
+        lua_rawgeti(L, -2, 2);
+        lua_rawgeti(L, -3, 3);
 
-        glVertex2f(x, y);
+        float x = lua_tonumber(L, -3);
+        float y = lua_tonumber(L, -2);
+        float z = lua_tonumber(L, -1);
 
-        lua_pop(L, 2);
+        glVertex3f(x, y, z);
+
+        lua_pop(L, 4);
     }
 
     glEnd();

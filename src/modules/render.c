@@ -305,6 +305,7 @@ const luaL_Reg luaRender[] = {
     {"drawRect", drawRect},
     {"drawCircle", drawCircle},
     {"drawFilledCircle", drawFilledCircle},
+    {"drawPoly", drawPoly},
     {"drawVertex", drawVertex},
 
     {"clear", clear},

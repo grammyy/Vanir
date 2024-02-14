@@ -37,6 +37,12 @@ end)
 
 red=Color(255,0,0)
 
+local triangle = {
+    {0, 0, 0},  -- Vertex 1: (0, 0)
+    {1, 1, 0},  -- Vertex 2: (0.5, 1.0)
+    {1, 0, 0}  -- Vertex 3: (1.0, 0.0)
+}
+
 hooks.add("render","main",function()
     for i, window in ipairs(test) do
         if window and window:isFocused() then
@@ -44,19 +50,23 @@ hooks.add("render","main",function()
             
             render.clear(Color(0,0,0))
 
+            render.drawPoly(triangle)
+
             if keyHeld then
                 render.begin(gl.polygon)
 
-                render.setColor(Color((timer.realtime()/10)%360,100,100):hsvToRGB()); render.drawVertex(-0.6, -0.75, 0.5)
-                render.setColor(Color((120+timer.realtime()/10)%360,100,100):hsvToRGB()); render.drawVertex(0.6, -0.75, 0)
+                render.setColor(Color((timer.realtime()/10)%360,100,100):hsvToRGB()); render.drawVertex(-0.85, -0.75, 0.5)
+                render.setColor(Color((120+timer.realtime()/10)%360,100,100):hsvToRGB()); render.drawVertex(0.85, -0.75, 0)
                 render.setColor(Color((240+timer.realtime()/10)%360,100,100):hsvToRGB()); render.drawVertex(0, 0.75, 0)
 
                 render.exit()
             else
                 render.setColor(Color(255-((255/2)*math.cos(timer.realtime()/1000)),255,255))
 
+                render.drawCircle(0,0,20,100)
+
                 for i=1, 500 do
-                    render.drawLine(math.cos((timer.realtime()/1000)+i), -1.0, math.sin((timer.realtime()/1000)+i), 1.0)
+                    render.drawLine(math.cos((timer.realtime()/1000)+i), -1.0, math.sin((timer.realtime()/1000)+i), 1.0, math.sin(timer.realtime()/1000)*5)
                 end
             end
 
