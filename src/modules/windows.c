@@ -36,8 +36,6 @@ void renderHandle(struct hook *instance, lua_State *L) {
     while (SDL_PollEvent(&event)) {
         if (event.type == SDL_WINDOWEVENT) {
             for (size_t i = 0; i < windowPool.count; ++i) {
-                printf("%d %d\n",windowPool.windows[i]->id, event.window.windowID);
-
                 if (windowPool.windows[i]->id == event.window.windowID) {
                     SDL_GL_MakeCurrent(windowPool.windows[i]->window, windowPool.windows[i]->context);
 
@@ -50,8 +48,6 @@ void renderHandle(struct hook *instance, lua_State *L) {
                             glViewport(0, 0, width, height);
 
                             glAspectRatio(width, height);
-
-                            //SDL_GL_SwapWindow(window->window);
 
                             break;
                         case SDL_WINDOWEVENT_CLOSE:
@@ -131,6 +127,25 @@ int getID(lua_State *L) {
 
     return 1;
 }
+
+int getMousePos(lua_State *L) {
+    struct sdlWindow **window = (struct sdlWindow **)luaL_checkudata(L, 1, "window");
+    int x, y, width, height;
+
+    SDL_GetMouseState(&x, &y);
+    SDL_GetWindowSize((*window)->window, &width, &height);
+
+    width /= 2;
+    height /= 2;
+
+    double normalizedX = ((double)x - width) / width;
+    double normalizedY = ((double)y - height) / height;
+
+    lua_pushnumber(L, normalizedX);
+    lua_pushnumber(L, -normalizedY);
+
+    return 2;
+}
 // window methods ↑↑↑ window methods ///
 
 void newWindow(struct sdlWindow *window) {
@@ -199,48 +214,6 @@ void newWindow(struct sdlWindow *window) {
     glHint(GL_FRAGMENT_SHADER_DERIVATIVE_HINT, GL_NICEST);
 
     SDL_GL_MakeCurrent(NULL, NULL);
-
-    //while (!window->quit) {
-    //    SDL_GL_MakeCurrent(window->window, window->context);
-//
-    //    SDL_Event event;
-//
-    //    if (SDL_PollEvent(&event)) {
-    //        while (event.window.windowID != window->id) {
-    //            if (!SDL_WaitEvent(&event)) {
-    //                throw("Window", window->name, SDL_GetError());
-//
-    //                return NULL;
-    //            }
-    //        }
-    //    }
-//
-    //    if (event.type == SDL_WINDOWEVENT) {
-            
-    //    }
-//
-    //    SDL_GL_MakeCurrent(NULL, NULL);
-    //}
-//
-    //for (int i = 0; i < windowPool.count; ++i) {
-    //    if (windowPool.windows[i].id == window->id) {
-    //        for (int j = i; j < windowPool.count - 1; ++j) {
-    //            windowPool.windows[j] = windowPool.windows[j + 1];
-    //        }
-    //        
-    //        windowPool.count -= 1;
-    //        
-    //        break;
-    //    }
-    //}
-//
-    //SDL_DestroyWindow(window->window);
-    //SDL_GL_DeleteContext(window->context);
-    //SDL_FlushEvent(SDL_WINDOWEVENT);
-//
-    //free(window);
-//
-    //return NULL;
 }
 
 static const luaL_Reg windowMethods[] = {
@@ -252,6 +225,7 @@ static const luaL_Reg windowMethods[] = {
     {"isFocused", isFocused},
     {"getTitle", getTitle},
     {"getID", getID},
+    {"getMousePos", getMousePos},
     {NULL, NULL}
 };
 

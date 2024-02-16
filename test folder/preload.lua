@@ -1,40 +1,5 @@
 print("Preload loading...\n")
 
---move below to c module
-
-function printAllGlobals()
-	local seen={}
-	local function dump(t,i)
-		seen[t]=true
-		local s={}
-		local n=0
-		for k, v in pairs(t) do
-			n=n+1
-			s[n]=tostring(k)
-		end
-		table.sort(s)
-		for k,v in ipairs(s) do
-			print(i .. v)
-			v=t[v]
-			if type(v)=="table" and not seen[v] then
-				dump(v,i.."\t")
-			end
-		end
-	end
-
-	dump(_G,"")
-end
-
---printAllGlobals()
-
-function requiredir(path)
-    local path=io.popen("cd"):read().."\\"..path
-
-    for file in io.popen('dir \"'..path..'\" /b'):lines() do
-        dofile(path.."\\"..file)
-    end
-end
-
 local middleclass = {}
 
 local function _createIndexWrapper(aClass, f)

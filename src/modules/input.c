@@ -52,6 +52,7 @@ void inputReleasedHandle(struct hook *instance, lua_State *L){
 
 const luaL_Reg luaInput[] = {
     {"getKey", getKey},
+    //{"getMousePos", getMousePos},
     {NULL, NULL}
 };
 

@@ -50,6 +50,9 @@ hooks.add("render","main",function()
             
             render.clear(Color(0,0,0))
 
+            x,y=window:getMousePos()
+            render.drawCircle(x,y,4)
+
             render.drawPoly(triangle)
 
             if keyHeld then

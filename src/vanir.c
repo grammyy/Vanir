@@ -2,8 +2,9 @@
 #include <lauxlib.h>
 #include <lualib.h>
 #include <Windows.h>
-#include <stdio.h>
 #include <math.h>
+#include <dirent.h>
+#include <sys/stat.h>
 #include "modules/hooks.h"
 #include "modules/input.h"
 #include "modules/windows.h"
@@ -226,6 +227,43 @@ void throw(const char* type, const char* name, const char* error) {
     printf("%s \"%s\" errored with: %s\n", type, name, error);
 }
 
+int requiredir(lua_State *L) {
+    const char *path = luaL_checkstring(L, 1);
+    char full_path[512];
+    DIR *dir;
+    struct dirent *ent;
+
+    snprintf(full_path, sizeof(full_path), "%s/%s", getenv("PWD"), path);
+
+    if ((dir = opendir(full_path)) != NULL) {
+        while ((ent = readdir(dir)) != NULL) {
+            char file_path[512];
+            struct stat file_stat;
+            
+            snprintf(file_path, sizeof(file_path), "%s/%s", full_path, ent->d_name);
+            
+            if (stat(file_path, &file_stat) == 0 && S_ISREG(file_stat.st_mode)) {
+                
+                char *ext = strrchr(ent->d_name, '.');
+                
+                if (ext != NULL && (strcmp(ext, ".lua") == 0 || strcmp(ext, ".dll") == 0)) {
+                    if (luaL_dofile(L, file_path) != LUA_OK) {
+                        fprintf(stderr, "Error loading file: %s\n", lua_tostring(L, -1));
+                        
+                        lua_pop(L, 1);
+                    }
+                }
+            }
+        }
+
+        closedir(dir);
+    } else {
+        fprintf(stderr, "Failed to open directory: %s\n", full_path);
+    }
+
+    return 0;
+}
+
 __declspec(dllexport) int luaopen_vanir(lua_State * L) {
     luaL_dofile(L, "preload.lua");
 
@@ -251,6 +289,9 @@ __declspec(dllexport) int luaopen_vanir(lua_State * L) {
 
     lua_pushcfunction(L, Color);
     lua_setglobal(L, "Color");
+
+    lua_pushcfunction(L, requiredir);
+    lua_setglobal(L, "requiredir");
 
     const luaL_reg luaReg[] = {
         // ↓ modules ↓ ///
