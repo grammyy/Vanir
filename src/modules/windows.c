@@ -13,7 +13,84 @@
 
 struct windowPool windowPool = {NULL, 0};
 
+void glAspectRatio(int width, int height) {
+    float aspectRatio = (float) width / (float) height;
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+
+    if (aspectRatio >= 1.0) {
+        glOrtho(-aspectRatio, aspectRatio, -1.0, 1.0, -1.0, 1.0);
+    } else {
+        float halfHeight = 1.0 / aspectRatio;
+
+        glOrtho(-1.0, 1.0, -halfHeight, halfHeight, -1.0, 1.0);
+    }
+
+    glMatrixMode(GL_MODELVIEW);
+}
+
 void renderHandle(struct hook *instance, lua_State *L) {
+    SDL_Event event;
+
+    while (SDL_PollEvent(&event)) {
+        if (event.type == SDL_WINDOWEVENT) {
+            for (size_t i = 0; i < windowPool.count; ++i) {
+                printf("%d %d\n",windowPool.windows[i]->id, event.window.windowID);
+
+                if (windowPool.windows[i]->id == event.window.windowID) {
+                    SDL_GL_MakeCurrent(windowPool.windows[i]->window, windowPool.windows[i]->context);
+
+                    switch(event.window.event){
+                        case SDL_WINDOWEVENT_RESIZED:
+                        case SDL_WINDOWEVENT_SIZE_CHANGED:
+                            int width = event.window.data1;
+                            int height = event.window.data2;
+
+                            glViewport(0, 0, width, height);
+
+                            glAspectRatio(width, height);
+
+                            //SDL_GL_SwapWindow(window->window);
+
+                            break;
+                        case SDL_WINDOWEVENT_CLOSE:
+                            windowPool.windows[i]->quit = true;
+                            
+                            SDL_DestroyWindow(windowPool.windows[i]->window);
+                            SDL_GL_DeleteContext(windowPool.windows[i]->context);
+                            
+                            for (int j = i; j < windowPool.count - 1; ++j) {
+                                windowPool.windows[j] = windowPool.windows[j + 1];
+                            }
+                            
+                            windowPool.count -= 1;
+
+                            break;
+                        case SDL_WINDOWEVENT_ENTER:
+                            windowPool.windows[i]->hovering = true;
+                            
+                            break;
+                        case SDL_WINDOWEVENT_LEAVE:
+                            windowPool.windows[i]->hovering = false;
+                            
+                            break;
+                        case SDL_WINDOWEVENT_FOCUS_GAINED:
+                            windowPool.windows[i]->focused = true;
+
+                            break;
+                        case SDL_WINDOWEVENT_FOCUS_LOST:
+                            windowPool.windows[i]->focused = false;
+
+                            break;
+                    }
+
+                    SDL_GL_MakeCurrent(NULL, NULL);
+                }
+            }
+        }
+    }
+    
     if (windowPool.count==0)
         instance->status=hook_idle;
     else
@@ -56,27 +133,7 @@ int getID(lua_State *L) {
 }
 // window methods ↑↑↑ window methods ///
 
-void glAspectRatio(int width, int height) {
-    float aspectRatio = (float) width / (float) height;
-
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-
-    if (aspectRatio >= 1.0) {
-        glOrtho(-aspectRatio, aspectRatio, -1.0, 1.0, -1.0, 1.0);
-    } else {
-        float halfHeight = 1.0 / aspectRatio;
-
-        glOrtho(-1.0, 1.0, -halfHeight, halfHeight, -1.0, 1.0);
-    }
-
-    glMatrixMode(GL_MODELVIEW);
-}
-
-
-void* newWindow(void* data) {
-    struct sdlWindow* window = (struct sdlWindow*)data;
-    
+void newWindow(struct sdlWindow *window) {
     window->window = SDL_CreateWindow(
         window->name,
         window->x,
@@ -93,7 +150,7 @@ void* newWindow(void* data) {
 
         SDL_Quit();
         
-        return NULL;
+        return;
     }
 
     window->context = SDL_GL_CreateContext(window->window);
@@ -104,17 +161,18 @@ void* newWindow(void* data) {
         SDL_DestroyWindow(window->window);
         SDL_Quit();
         
-        return NULL;
+        return;
     }
 
-    struct sdlWindow* temp = (struct sdlWindow*)realloc(windowPool.windows, (windowPool.count + 1) * sizeof(struct sdlWindow));
+    struct sdlWindow **temp = (struct sdlWindow **)realloc(windowPool.windows, (windowPool.count + 1) * sizeof(struct sdlWindow *));
 
     if (temp != NULL) {
         windowPool.windows = temp;
-        windowPool.windows[windowPool.count] = *window;
+        windowPool.windows[windowPool.count] = window; // Store the pointer directly
         windowPool.count += 1;
     } else {
-        throw("Window", window->name, "Memory allocation error");
+        // Handle memory allocation error
+        fprintf(stderr, "Window Memory allocation error\n");
     }
     
     SDL_GL_MakeCurrent(window->window, window->context);
@@ -142,80 +200,47 @@ void* newWindow(void* data) {
 
     SDL_GL_MakeCurrent(NULL, NULL);
 
-    while (!window->quit) {
-        SDL_GL_MakeCurrent(window->window, window->context);
-
-        SDL_Event event;
-        
-        if (SDL_PollEvent(&event)) {
-            while (event.window.windowID != window->id) {
-                if (!SDL_WaitEvent(&event)) {
-                    throw("Window", window->name, SDL_GetError());
-
-                    return NULL;
-                }
-            }
-        }
-
-        if (event.type == SDL_WINDOWEVENT) {
-            switch(event.window.event){
-                case SDL_WINDOWEVENT_RESIZED:
-                case SDL_WINDOWEVENT_SIZE_CHANGED:
-                    int width = event.window.data1;
-                    int height = event.window.data2;
-
-                    glViewport(0, 0, width, height);
-
-                    glAspectRatio(width, height);
-
-                    //SDL_GL_SwapWindow(window->window);
-
-                    break;
-                case SDL_WINDOWEVENT_CLOSE:
-                    window->quit = true;
-
-                    break;
-                case SDL_WINDOWEVENT_ENTER:
-                    window->hovering = true;
-                    
-                    break;
-                case SDL_WINDOWEVENT_LEAVE:
-                    window->hovering = false;
-                    
-                    break;
-                case SDL_WINDOWEVENT_FOCUS_GAINED:
-                    window->focused = true;
-
-                    break;
-                case SDL_WINDOWEVENT_FOCUS_LOST:
-                    window->focused = false;
-
-                    break;
-            }
-        }
-
-        SDL_GL_MakeCurrent(NULL, NULL);
-    }
-
-    for (int i = 0; i < windowPool.count; ++i) {
-        if (windowPool.windows[i].id == window->id) {
-            for (int j = i; j < windowPool.count - 1; ++j) {
-                windowPool.windows[j] = windowPool.windows[j + 1];
-            }
+    //while (!window->quit) {
+    //    SDL_GL_MakeCurrent(window->window, window->context);
+//
+    //    SDL_Event event;
+//
+    //    if (SDL_PollEvent(&event)) {
+    //        while (event.window.windowID != window->id) {
+    //            if (!SDL_WaitEvent(&event)) {
+    //                throw("Window", window->name, SDL_GetError());
+//
+    //                return NULL;
+    //            }
+    //        }
+    //    }
+//
+    //    if (event.type == SDL_WINDOWEVENT) {
             
-            windowPool.count -= 1;
-            
-            break;
-        }
-    }
-
-    SDL_DestroyWindow(window->window);
-    SDL_GL_DeleteContext(window->context);
-    SDL_FlushEvent(SDL_WINDOWEVENT);
-
-    free(window);
-
-    return NULL;
+    //    }
+//
+    //    SDL_GL_MakeCurrent(NULL, NULL);
+    //}
+//
+    //for (int i = 0; i < windowPool.count; ++i) {
+    //    if (windowPool.windows[i].id == window->id) {
+    //        for (int j = i; j < windowPool.count - 1; ++j) {
+    //            windowPool.windows[j] = windowPool.windows[j + 1];
+    //        }
+    //        
+    //        windowPool.count -= 1;
+    //        
+    //        break;
+    //    }
+    //}
+//
+    //SDL_DestroyWindow(window->window);
+    //SDL_GL_DeleteContext(window->context);
+    //SDL_FlushEvent(SDL_WINDOWEVENT);
+//
+    //free(window);
+//
+    //return NULL;
 }
 
 static const luaL_Reg windowMethods[] = {
@@ -250,20 +275,16 @@ int createWindow(lua_State *L) {
     window->width = width;
     window->height = height;
     window->name = name;
-    window->quit=0;
-
-    pthread_t glThread;
-
-    if (pthread_create(&glThread, NULL, newWindow, (void *)window) != 0) {
-        throw("Window", name, "OpenGL thread error");
-        
-        free(window);
-    }
+    window->quit = false;
+    window->hovering = true;
+    window->focused = true;
 
     struct sdlWindow **udata = (struct sdlWindow **)lua_newuserdata(L, sizeof(struct sdlWindow *));
     *udata = window;
 
     addMethods(L, "window", windowMethods);
+    
+    newWindow(window);
 
     return 1;
 }

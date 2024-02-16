@@ -8,7 +8,7 @@
 int windowsInit(lua_State* L);
 
 struct windowPool {
-    struct sdlWindow *windows;
+    struct sdlWindow **windows;
     int count;
 };
 
