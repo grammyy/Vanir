@@ -4,6 +4,7 @@
 #include <Windows.h>
 #include <math.h>
 #include <dirent.h>
+#include <unistd.h>
 #include <sys/stat.h>
 #include "modules/hooks.h"
 #include "modules/input.h"
@@ -229,37 +230,63 @@ void throw(const char* type, const char* name, const char* error) {
 
 int requiredir(lua_State *L) {
     const char *path = luaL_checkstring(L, 1);
-    char full_path[512];
-    DIR *dir;
+    char cwd[PATH_MAX];
     struct dirent *ent;
+    DIR *dir;
 
-    snprintf(full_path, sizeof(full_path), "%s/%s", getenv("PWD"), path);
+    if (getcwd(cwd, sizeof(cwd)) == NULL) {
+        throw("Startup", "requiredir", "Failed to get the current working directory");
+        
+        return 0;
+    }
+
+    size_t path_length = strlen(path);
+    char *full_path = (char *)malloc(strlen(cwd) + path_length + 2);
+    
+    if (full_path == NULL) {
+        throw("Startup", "requiredir", "Memory allocation error.");
+        
+        return 0;
+    }
+
+    snprintf(full_path, strlen(cwd) + path_length + 2, "%s/%s", cwd, path);
 
     if ((dir = opendir(full_path)) != NULL) {
         while ((ent = readdir(dir)) != NULL) {
-            char file_path[512];
-            struct stat file_stat;
+            char *file_name = ent->d_name;
+            char *file_path = (char *)malloc(strlen(full_path) + strlen(file_name) + 2);
             
-            snprintf(file_path, sizeof(file_path), "%s/%s", full_path, ent->d_name);
-            
-            if (stat(file_path, &file_stat) == 0 && S_ISREG(file_stat.st_mode)) {
+            if (file_path == NULL) {
+                throw("requiredir", file_name, "Memory allocation error.");
                 
-                char *ext = strrchr(ent->d_name, '.');
+                break;
+            }
+            
+            snprintf(file_path, strlen(full_path) + strlen(file_name) + 2, "%s/%s", full_path, file_name);
+            
+            struct stat file_stat;
+
+            if (stat(file_path, &file_stat) == 0 && S_ISREG(file_stat.st_mode)) {
+                char *ext = strrchr(file_name, '.');
                 
                 if (ext != NULL && (strcmp(ext, ".lua") == 0 || strcmp(ext, ".dll") == 0)) {
                     if (luaL_dofile(L, file_path) != LUA_OK) {
-                        fprintf(stderr, "Error loading file: %s\n", lua_tostring(L, -1));
-                        
+                        throw("Startup", "requiredir", lua_tostring(L, -1));
+
                         lua_pop(L, 1);
                     }
                 }
             }
+
+            free(file_path);
         }
 
         closedir(dir);
     } else {
-        fprintf(stderr, "Failed to open directory: %s\n", full_path);
+        throw("requiredir", full_path, "Failed to open directory.");
     }
+
+    free(full_path);
 
     return 0;
 }

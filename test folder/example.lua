@@ -1,5 +1,5 @@
 require("vanir")
---requiredir("test")
+requiredir("test")
 
 --hooks.add("think", "test", function()
 --    print("hii :3")
