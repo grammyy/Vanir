@@ -13,6 +13,12 @@
 
 struct windowPool windowPool = {NULL, 0};
 
+struct hook onHoverChange = { "onHoverChange", NULL, 0, &onHoverChange, NULL, hook_idle};
+struct hook onFocusChange = { "onFocusChange", NULL, 0, &onFocusChange, NULL, hook_idle};
+struct hook onClose = { "onClose", NULL, 0, &onClose, NULL, hook_idle};
+struct hook onOpen = { "onOpen", NULL, 0, &onOpen, NULL, hook_idle};
+struct hook onSizeChange = { "onSizeChange", NULL, 0, &onSizeChange, NULL, hook_idle};
+
 void glAspectRatio(int width, int height) {
     float aspectRatio = (float) width / (float) height;
 
@@ -53,34 +59,57 @@ void renderHandle(struct hook *instance, lua_State *L) {
 
                             glAspectRatio(width, height);
 
+                            onSizeChange.status=hook_awaiting;
+
                             break;
                         case SDL_WINDOWEVENT_CLOSE:
                             windowPool.windows[i]->quit = true;
-                            
+                            onClose.status=hook_awaiting;
+
                             SDL_DestroyWindow(windowPool.windows[i]->window);
                             SDL_GL_DeleteContext(windowPool.windows[i]->context);
                             
+                            lua_pushnil(L);
+                            lua_rawseti(L, LUA_REGISTRYINDEX, windowPool.windows[i]->ref);
+
                             for (int j = i; j < windowPool.count - 1; ++j) {
                                 windowPool.windows[j] = windowPool.windows[j + 1];
                             }
-                            
+
+                            windowPool.windows[windowPool.count]=NULL;
                             windowPool.count -= 1;
 
                             break;
                         case SDL_WINDOWEVENT_ENTER:
                             windowPool.windows[i]->hovering = true;
                             
+                            setCallback(onHoverChange.callback, &(bool){true});
+                            
+                            onHoverChange.status=hook_awaiting;
+
                             break;
                         case SDL_WINDOWEVENT_LEAVE:
                             windowPool.windows[i]->hovering = false;
                             
+                            setCallback(onHoverChange.callback, &(bool){false});
+                            
+                            onHoverChange.status=hook_awaiting;
+
                             break;
                         case SDL_WINDOWEVENT_FOCUS_GAINED:
                             windowPool.windows[i]->focused = true;
 
+                            setCallback(onFocusChange.callback, &(bool){true});
+
+                            onFocusChange.status=hook_awaiting;
+
                             break;
                         case SDL_WINDOWEVENT_FOCUS_LOST:
                             windowPool.windows[i]->focused = false;
+
+                            setCallback(onFocusChange.callback, &(bool){false});
+
+                            onFocusChange.status=hook_awaiting;
 
                             break;
                     }
@@ -264,17 +293,18 @@ int createWindow(lua_State *L) {
     window->width = width;
     window->height = height;
     window->name = name;
-    window->quit = false;
-    window->hovering = true;
-    window->focused = true;
+    window->ref = luaL_ref(L, LUA_REGISTRYINDEX); //doesnt seem to push nil to tables, fix later
 
     struct sdlWindow **udata = (struct sdlWindow **)lua_newuserdata(L, sizeof(struct sdlWindow *));
     *udata = window;
 
     addMethods(L, "window", windowMethods);
-    
     newWindow(window);
 
+    onHoverChange.callback = createCallback(sizeof(bool), lua_bool);
+    onFocusChange.callback = createCallback(sizeof(bool), lua_bool);
+    onOpen.status=hook_awaiting;
+    
     return 1;
 }
 
@@ -293,6 +323,11 @@ int windowsInit(lua_State* L) {
     luaL_newlib(L, luaWindows);
 
     registerHook(&pool, render);
+    registerHook(&pool, onHoverChange);
+    registerHook(&pool, onFocusChange);
+    registerHook(&pool, onClose);
+    registerHook(&pool, onOpen);
+    registerHook(&pool, onSizeChange);
 
     return 1;
 }

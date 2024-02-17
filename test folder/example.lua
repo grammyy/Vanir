@@ -46,6 +46,7 @@ local triangle = {
 hooks.add("render","main",function()
     for i, window in ipairs(test) do
         if window and window:isFocused() then
+        if window then
             window:selectRender()
             
             render.clear(Color(0,0,0))
@@ -55,7 +56,7 @@ hooks.add("render","main",function()
             width=width/2
 
             render.drawCircle(x,y,20,100)
-            print(x,y)
+            --print(x,y)
 
             render.drawPoly(triangle,function(i)
                 render.setColor(Color((i*(360/3)+(timer.realtime()/10))%360,100,100):hsvToRGB())

@@ -13,16 +13,12 @@ struct windowPool {
 };
 
 struct sdlWindow {
-    int x, y, width, height;
+    int x, y, width, height, ref;
     const char *name;
     bool quit, hovering, focused;
     SDL_Window* window;
     SDL_GLContext context;
     Uint32 id;
 };
-
-extern struct windowPool windowPool;
-
-extern struct hook render;
 
 #endif

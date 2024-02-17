@@ -1,7 +1,46 @@
-hooks
-    -> add function support for callbacks (maybe supported already)
-    -> add error checks to callback functions
--> optimize running hooks to only run when needed
--> make colored logs later and throw function
-
--->log execution below, removed old routine
+high:
+    -> finish adding opengl functions to everything, like textured squares etc
+    -> shaders.
+    -> documentation site both js and static
+    -> update the README.md mf
+mid:
+    -> add viewporting and other matrix opengl functions
+    -> add per-vertex callbacks to the rest of the opengl functions (see drawCircle and etc)
+    -> finish attaching hooks to internal states
+    -> audio
+    -> debug stuff (displaying lua stack, etc)
+    -> custom user defined hook instances
+    -> see if theres a way to detect loops and run hook.run automantically instead of manual
+    -> memory accessing
+    -> add classes to lua via c
+    -> windowless rendering via opengl (maybe via renderoffscreen hook?)
+    -> easy 3d stuff, like rendertargets, skyboxes, and matrixes
+    -> play testing
+    -> threading (optional, plenty of modules already do it)
+    -> filesystem and fonts
+low:
+    hooks
+        -> add function support for callbacks (maybe supported already)
+        -> add userdata support
+    windows
+        -> add changing icon, moving, title, etc
+        -> add easy window docking
+        -> transparency
+    render
+        -> layering for hooks and related (predrawopaque, postdrawtranslucent, etc)
+    -> colored logs and related like alignment
+    -> message boxes and related functions
+    -> meshes, joints, and rigbodys (seperate when started work)
+    -> physics (should be done last)
+    -> maybe a lua based shader language? likely compiled
+    -> add timers to timers.c (currently only returns time)
+    -> support all platforms (will likely be done soon)
+    -> add user based functions such as returning user's name and settings
+    -> add internal variables to lua that indicate platform and related
+    -> optional config, perhaps using preload.lua
+    -> http stuff, will likely just use a premade library
+    -> vr?
+    -> streaming
+    -> vectors, localToWorld, and related
+    -> websockets, joysticks, touch, and binary related stuff
+    -> data encoding/decoding stuff, maybe add json
