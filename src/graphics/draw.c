@@ -5,14 +5,30 @@
 #include "../modules/render.h"
 #include "../vanir.h"
 
-void circle(float x, float y, float radius, int segments) {
+void circle(float x, float y, float radius, int segments, lua_State *L) {
     float theta = (2.0f * M_PI) / (float)segments;
     float c = cosf(theta);
     float s = sinf(theta);
     float cx = radius;
     float cy = 0;
+    struct color color;
 
-    for (int i = 0; i < segments; ++i) {
+    if (!lua_isfunction(L, 5)) {
+        getGlobalColor(L, &color);
+        glColor4f(color.r, color.g, color.b, color.a);
+    }
+
+    for (int i = 0; i <= segments; ++i) {
+        if (lua_isfunction(L, 5)) {
+            lua_pushvalue(L, 5);
+            lua_pushinteger(L, i);
+
+            lua_call(L, 1, 0);
+
+            getGlobalColor(L, &color);
+            glColor4f(color.r, color.g, color.b, color.a);
+        }
+
         glVertex2f(cx + x, cy + y);
 
         float new_x = cx * c - cy * s;
@@ -67,16 +83,11 @@ int drawRect(lua_State *L) {
 int drawCircle(lua_State *L) {
     float x = lua_tonumber(L, 1);
     float y = lua_tonumber(L, 2);
-    float radius = lua_tonumber(L, 3) / 100;
+    float radius = lua_tonumber(L, 3);
     int segments = luaL_optinteger(L, 4, 10);
-
-    struct color color;
-    getGlobalColor(L, &color);
     
-    glColor4f(color.r, color.g, color.b, color.a);
-
     glBegin(GL_LINE_LOOP);
-    circle(x, y, radius, segments);
+    circle(x, y, radius, segments, L);
     glEnd();
 
     return 0;
@@ -85,17 +96,12 @@ int drawCircle(lua_State *L) {
 int drawFilledCircle(lua_State *L) {
     float x = lua_tonumber(L, 1);
     float y = lua_tonumber(L, 2);
-    float radius = lua_tonumber(L, 3) / 100;
+    float radius = lua_tonumber(L, 3);
     int segments = luaL_optinteger(L, 4, 10);
 
-    struct color color;
-    getGlobalColor(L, &color);
-    
-    glColor4f(color.r, color.g, color.b, color.a);
-
-    glBegin(GL_TRIANGLE_FAN);
+    glBegin(GL_POLYGON);
     glVertex2f(x, y);
-    circle(x, y, radius, segments);
+    circle(x, y, radius, segments, L);
     glEnd();
 
     return 0;
@@ -103,6 +109,12 @@ int drawFilledCircle(lua_State *L) {
 
 int drawPoly(lua_State *L) { //add callback for each vertex later
     int vertexes = lua_rawlen(L, 1);
+    struct color color;
+
+    if (!lua_isfunction(L, 2)) {
+        getGlobalColor(L, &color);
+        glColor4f(color.r, color.g, color.b, color.a);
+    }
 
     glBegin(GL_POLYGON);
 
@@ -112,10 +124,20 @@ int drawPoly(lua_State *L) { //add callback for each vertex later
         lua_rawgeti(L, -1, 1);
         lua_rawgeti(L, -2, 2);
         lua_rawgeti(L, -3, 3);
-
+        
         float x = lua_tonumber(L, -3);
         float y = lua_tonumber(L, -2);
         float z = lua_tonumber(L, -1);
+
+        if (lua_isfunction(L, 2)) {
+            lua_pushvalue(L, 2);
+            lua_pushinteger(L, i);
+
+            lua_call(L, 1, 0);
+
+            getGlobalColor(L, &color);
+            glColor4f(color.r, color.g, color.b, color.a);
+        }
 
         glVertex3f(x, y, z);
 

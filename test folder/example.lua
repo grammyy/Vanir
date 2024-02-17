@@ -39,8 +39,8 @@ red=Color(255,0,0)
 
 local triangle = {
     {0, 0, 0},  -- Vertex 1: (0, 0)
-    {1, 1, 0},  -- Vertex 2: (0.5, 1.0)
-    {1, 0, 0}  -- Vertex 3: (1.0, 0.0)
+    {400, 400, 0},  -- Vertex 2: (0.5, 1.0)
+    {400, 0, 0}  -- Vertex 3: (1.0, 0.0)
 }
 
 hooks.add("render","main",function()
@@ -50,26 +50,38 @@ hooks.add("render","main",function()
             
             render.clear(Color(0,0,0))
 
-            x,y=window:getMousePos()
-            render.drawCircle(x,y,4)
+            x,y=window:getMouse()
+            width,height=window:getSize()
+            width=width/2
 
-            render.drawPoly(triangle)
+            render.drawCircle(x,y,20,100)
+            print(x,y)
+
+            render.drawPoly(triangle,function(i)
+                render.setColor(Color((i*(360/3)+(timer.realtime()/10))%360,100,100):hsvToRGB())
+            end)
 
             if keyHeld then
-                render.begin(gl.polygon)
+                render.disable(gl.polygonSmooth)
 
-                render.setColor(Color((timer.realtime()/10)%360,100,100):hsvToRGB()); render.drawVertex(-0.85, -0.75, 0.5)
-                render.setColor(Color((120+timer.realtime()/10)%360,100,100):hsvToRGB()); render.drawVertex(0.85, -0.75, 0)
-                render.setColor(Color((240+timer.realtime()/10)%360,100,100):hsvToRGB()); render.drawVertex(0, 0.75, 0)
+                render.drawFilledCircle(width, height/2, 100, 100, function(i)
+                    render.setColor(Color((i*(360/100)+(timer.realtime()/10))%360,100,100):hsvToRGB())
+                end)
 
-                render.exit()
+                --render.begin(gl.polygon)
+
+                --render.setColor(Color((timer.realtime()/10)%360,100,100):hsvToRGB()); render.drawVertex(-0.85, -0.75, 0.5)
+                --render.setColor(Color((120+timer.realtime()/10)%360,100,100):hsvToRGB()); render.drawVertex(0.85, -0.75, 0)
+                --render.setColor(Color((240+timer.realtime()/10)%360,100,100):hsvToRGB()); render.drawVertex(0, 0.75, 0)
+
+                --render.exit()
             else
                 render.setColor(Color(255-((255/2)*math.cos(timer.realtime()/1000)),255,255))
 
-                render.drawCircle(0,0,20,100)
+                render.drawCircle(0,0,200,100)
 
                 for i=1, 500 do
-                    render.drawLine(math.cos((timer.realtime()/1000)+i), -1.0, math.sin((timer.realtime()/1000)+i), 1.0, math.sin(timer.realtime()/1000)*5)
+                    render.drawLine(math.cos((timer.realtime()/1000)+i)*width+width, 0, math.sin((timer.realtime()/1000)+i)*width+width, height, math.sin(timer.realtime()/1000)*5)
                 end
             end
 

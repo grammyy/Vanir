@@ -20,11 +20,12 @@ void glAspectRatio(int width, int height) {
     glLoadIdentity();
 
     if (aspectRatio >= 1.0) {
-        glOrtho(-aspectRatio, aspectRatio, -1.0, 1.0, -1.0, 1.0);
+        glOrtho(0, width, height, 0, -1.0, 1.0);
     } else {
-        float halfHeight = 1.0 / aspectRatio;
-
-        glOrtho(-1.0, 1.0, -halfHeight, halfHeight, -1.0, 1.0);
+        float halfHeight = (float) width / (2 * aspectRatio);
+        float halfWidth = halfHeight * aspectRatio;
+        
+        glOrtho(0, width, height, 0, -1.0, 1.0);
     }
 
     glMatrixMode(GL_MODELVIEW);
@@ -44,7 +45,10 @@ void renderHandle(struct hook *instance, lua_State *L) {
                         case SDL_WINDOWEVENT_SIZE_CHANGED:
                             int width = event.window.data1;
                             int height = event.window.data2;
-
+                            
+                            windowPool.windows[i]->width = width;
+                            windowPool.windows[i]->height = height;
+                            
                             glViewport(0, 0, width, height);
 
                             glAspectRatio(width, height);
@@ -128,21 +132,31 @@ int getID(lua_State *L) {
     return 1;
 }
 
-int getMousePos(lua_State *L) {
+int getMouse(lua_State *L) { //ensure its the hovered window
     struct sdlWindow **window = (struct sdlWindow **)luaL_checkudata(L, 1, "window");
-    int x, y, width, height;
+
+    if (SDL_GetMouseFocus() != (*window)->window) {
+        lua_pushnil(L);
+        lua_pushnil(L);
+    
+        return 2;
+    }
+    
+    int x, y;
 
     SDL_GetMouseState(&x, &y);
-    SDL_GetWindowSize((*window)->window, &width, &height);
 
-    width /= 2;
-    height /= 2;
+    lua_pushnumber(L, x);
+    lua_pushnumber(L, y);
 
-    double normalizedX = ((double)x - width) / width;
-    double normalizedY = ((double)y - height) / height;
+    return 2;
+}
 
-    lua_pushnumber(L, normalizedX);
-    lua_pushnumber(L, -normalizedY);
+int getSize(lua_State *L) { // Ensure it's the hovered window
+    struct sdlWindow **window = (struct sdlWindow **)luaL_checkudata(L, 1, "window");
+
+    lua_pushinteger(L, (*window)->width);
+    lua_pushinteger(L, (*window)->height);
 
     return 2;
 }
@@ -200,7 +214,7 @@ void newWindow(struct sdlWindow *window) {
     glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    // Enable anti-aliasing for polygons
+    // Enable anti-aliasing for polygons -> also causes weird lines for filled polygons - fix later
     glEnable(GL_POLYGON_SMOOTH);
     glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
 
@@ -225,7 +239,8 @@ static const luaL_Reg windowMethods[] = {
     {"isFocused", isFocused},
     {"getTitle", getTitle},
     {"getID", getID},
-    {"getMousePos", getMousePos},
+    {"getMouse", getMouse},
+    {"getSize", getSize},
     {NULL, NULL}
 };
 
