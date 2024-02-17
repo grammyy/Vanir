@@ -45,7 +45,6 @@ local triangle = {
 
 hooks.add("render","main",function()
     for i, window in ipairs(test) do
-        if window and window:isFocused() then
         if window then
             window:selectRender()
             
