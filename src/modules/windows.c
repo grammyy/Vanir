@@ -15,9 +15,10 @@ struct windowPool windowPool = {NULL, 0};
 
 struct hook onHoverChange = { "onHoverChange", NULL, 0, &onHoverChange, NULL, hook_idle};
 struct hook onFocusChange = { "onFocusChange", NULL, 0, &onFocusChange, NULL, hook_idle};
+struct hook onSizeChange = { "onSizeChange", NULL, 0, &onSizeChange, NULL, hook_idle};
+struct hook onEvent = { "onEvent", NULL, 0, &onEvent, NULL, hook_idle};
 struct hook onClose = { "onClose", NULL, 0, &onClose, NULL, hook_idle};
 struct hook onOpen = { "onOpen", NULL, 0, &onOpen, NULL, hook_idle};
-struct hook onSizeChange = { "onSizeChange", NULL, 0, &onSizeChange, NULL, hook_idle};
 
 void glAspectRatio(int width, int height) {
     float aspectRatio = (float) width / (float) height;
@@ -41,11 +42,15 @@ void renderHandle(struct hook *instance, lua_State *L) {
     SDL_Event event;
 
     while (SDL_PollEvent(&event)) {
+        onEvent.status=hook_awaiting;
+                    
+        setCallback(onEvent.callback, &(int){event.type});
+
         if (event.type == SDL_WINDOWEVENT) {
             for (size_t i = 0; i < windowPool.count; ++i) {
                 if (windowPool.windows[i]->id == event.window.windowID) {
                     SDL_GL_MakeCurrent(windowPool.windows[i]->window, windowPool.windows[i]->context);
-
+                    
                     switch(event.window.event){
                         case SDL_WINDOWEVENT_RESIZED:
                         case SDL_WINDOWEVENT_SIZE_CHANGED:
@@ -54,12 +59,10 @@ void renderHandle(struct hook *instance, lua_State *L) {
                             
                             windowPool.windows[i]->width = width;
                             windowPool.windows[i]->height = height;
+                            onSizeChange.status=hook_awaiting;
                             
                             glViewport(0, 0, width, height);
-
                             glAspectRatio(width, height);
-
-                            onSizeChange.status=hook_awaiting;
 
                             break;
                         case SDL_WINDOWEVENT_CLOSE:
@@ -82,34 +85,30 @@ void renderHandle(struct hook *instance, lua_State *L) {
                             break;
                         case SDL_WINDOWEVENT_ENTER:
                             windowPool.windows[i]->hovering = true;
+                            onHoverChange.status=hook_awaiting;
                             
                             setCallback(onHoverChange.callback, &(bool){true});
-                            
-                            onHoverChange.status=hook_awaiting;
 
                             break;
                         case SDL_WINDOWEVENT_LEAVE:
                             windowPool.windows[i]->hovering = false;
+                            onHoverChange.status=hook_awaiting;
                             
                             setCallback(onHoverChange.callback, &(bool){false});
-                            
-                            onHoverChange.status=hook_awaiting;
 
                             break;
                         case SDL_WINDOWEVENT_FOCUS_GAINED:
                             windowPool.windows[i]->focused = true;
+                            onFocusChange.status=hook_awaiting;
 
                             setCallback(onFocusChange.callback, &(bool){true});
-
-                            onFocusChange.status=hook_awaiting;
 
                             break;
                         case SDL_WINDOWEVENT_FOCUS_LOST:
                             windowPool.windows[i]->focused = false;
+                            onFocusChange.status=hook_awaiting;
 
                             setCallback(onFocusChange.callback, &(bool){false});
-
-                            onFocusChange.status=hook_awaiting;
 
                             break;
                     }
@@ -303,6 +302,7 @@ int createWindow(lua_State *L) {
 
     onHoverChange.callback = createCallback(sizeof(bool), lua_bool);
     onFocusChange.callback = createCallback(sizeof(bool), lua_bool);
+    onEvent.callback = createCallback(sizeof(int), integer);
     onOpen.status=hook_awaiting;
     
     return 1;
@@ -325,9 +325,10 @@ int windowsInit(lua_State* L) {
     registerHook(&pool, render);
     registerHook(&pool, onHoverChange);
     registerHook(&pool, onFocusChange);
+    registerHook(&pool, onSizeChange);
+    registerHook(&pool, onEvent);
     registerHook(&pool, onClose);
     registerHook(&pool, onOpen);
-    registerHook(&pool, onSizeChange);
 
     return 1;
 }

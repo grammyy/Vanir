@@ -28,27 +28,8 @@ struct callbacks* createCallback(size_t dataSize, enum dataType dataType) {
 }
 
 void setCallback(struct callbacks* callback, const void* data) {
-    switch (callback->dataType) {
-        case number:
-        case integer:
-        case lua_bool:
-            memcpy(callback->data, data, callback->dataSize);
-
-            break;
-        case string:
-            strncpy((char*)callback->data, (const char*)data, callback->dataSize - 1);
-            ((char*)callback->data)[callback->dataSize - 1] = '\0';
-            
-            break;
-        case function:
-            memcpy(callback->data, data, callback->dataSize);
-            
-            break;
-        default:
-            break;
-    }
+memcpy(callback->data, data, callback->dataSize);
 }
-
 
 void* getCallback(const struct callbacks* callback) {
     return callback->data;

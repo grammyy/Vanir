@@ -329,7 +329,8 @@ __declspec(dllexport) int luaopen_vanir(lua_State * L) {
         {"timer", timerInit},
 
         // ↓ enums ↓ ///
-        {"gl", renderEnums},
+        {"gl", glEnums},
+        {"sdl", sdlEnums},
         {NULL, NULL}
     };
 
