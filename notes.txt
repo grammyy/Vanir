@@ -26,6 +26,8 @@ low:
         -> add changing icon, moving, title, etc
         -> add easy window docking
         -> transparency
+    system
+        -> add all settings from display settings
     render
         -> layering for hooks and related (predrawopaque, postdrawtranslucent, etc)
     -> colored logs and related like alignment

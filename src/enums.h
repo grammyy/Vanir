@@ -84,6 +84,12 @@ static Enums gl[] = {
 };
 
 static Enums sdl[] = {
+    {"flipped portrait", 4},
+    {"portrait", 3},
+    {"flipped landscape", 2},
+    {"landscape", 1},
+    {"unknown", 0},
+    
     {"first", 0},
     {"quit", 256},
     {"terminating", 257},

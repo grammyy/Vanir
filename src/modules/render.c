@@ -151,29 +151,22 @@ int setQuality(lua_State *L) {
 
     switch (target) {
         case 4:
-            target=GL_FRAGMENT_SHADER_DERIVATIVE_HINT;
-            break;
+            target=GL_FRAGMENT_SHADER_DERIVATIVE_HINT; break;
         case 3:
-            target=GL_LINE_SMOOTH_HINT;
-            break;
+            target=GL_LINE_SMOOTH_HINT; break;
         case 2:
-            target=GL_POLYGON_SMOOTH_HINT;
-            break;
+            target=GL_POLYGON_SMOOTH_HINT; break;
         case 1:
-            target=GL_TEXTURE_COMPRESSION_HINT;
-            break;
+            target=GL_TEXTURE_COMPRESSION_HINT; break;
     }
 
     switch (quality) {
         case 3:
-            quality=GL_FASTEST;
-            break;
+            quality=GL_FASTEST; break;
         case 2:
-            quality=GL_NICEST;
-            break;
+            quality=GL_NICEST; break;
         case 1:
-            quality=GL_DONT_CARE;
-            break;
+            quality=GL_DONT_CARE; break;
     }
 
     glHint(target, quality);
@@ -219,15 +212,12 @@ int clear(lua_State *L) {
     
     switch (buffer) {
         case 3:
-            buffer=GL_STENCIL_BUFFER_BIT;
-            break;
+            buffer=GL_STENCIL_BUFFER_BIT; break;
         case 2:
-            buffer=GL_DEPTH_BUFFER_BIT;
-            break;
+            buffer=GL_DEPTH_BUFFER_BIT; break;
         case 1:
         default:
-            buffer=GL_COLOR_BUFFER_BIT;
-            break;
+            buffer=GL_COLOR_BUFFER_BIT; break;
     }
 
     glClearColor(color.r, color.g, color.b, color.a);
@@ -247,35 +237,25 @@ int begin(lua_State *L) {
 
     switch (group) {
         case 10:
-            group=GL_POINTS;
-            break;
+            group=GL_POINTS; break;
         case 9:
-            group=GL_LINES;
-            break;
+            group=GL_LINES; break;
         case 8:
-            group=GL_LINE_STRIP;
-            break;
+            group=GL_LINE_STRIP; break;
         case 7:
-            group=GL_LINE_LOOP;
-            break;
+            group=GL_LINE_LOOP; break;
         case 6:
-            group=GL_TRIANGLES;
-            break;
+            group=GL_TRIANGLES; break;
         case 5:
-            group=GL_TRIANGLE_STRIP;
-            break;
+            group=GL_TRIANGLE_STRIP; break;
         case 4:
-            group=GL_TRIANGLE_FAN;
-            break;
+            group=GL_TRIANGLE_FAN; break;
         case 3:
-            group=GL_QUADS;
-            break;
+            group=GL_QUADS; break;
         case 2:
-            group=GL_QUAD_STRIP;
-            break;
+            group=GL_QUAD_STRIP; break;
         case 1:
-            group=GL_POLYGON;
-            break;
+            group=GL_POLYGON; break;
     }
 
     glBegin(group);

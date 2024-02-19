@@ -160,7 +160,7 @@ int getID(lua_State *L) {
     return 1;
 }
 
-int getMouse(lua_State *L) { //ensure its the hovered window
+int getMouse(lua_State *L) {
     struct sdlWindow **window = (struct sdlWindow **)luaL_checkudata(L, 1, "window");
 
     if (SDL_GetMouseFocus() != (*window)->window) {
@@ -180,13 +180,23 @@ int getMouse(lua_State *L) { //ensure its the hovered window
     return 2;
 }
 
-int getSize(lua_State *L) { // Ensure it's the hovered window
+int getSize(lua_State *L) {
     struct sdlWindow **window = (struct sdlWindow **)luaL_checkudata(L, 1, "window");
 
     lua_pushinteger(L, (*window)->width);
     lua_pushinteger(L, (*window)->height);
 
     return 2;
+}
+
+int getMonitorIndex(lua_State *L) {
+    struct sdlWindow **window = (struct sdlWindow **)luaL_checkudata(L, 1, "window");
+
+    int index = SDL_GetWindowDisplayIndex((*window)->window);
+
+    lua_pushinteger(L, index);
+    
+    return 1;
 }
 // window methods ↑↑↑ window methods ///
 
@@ -269,6 +279,7 @@ static const luaL_Reg windowMethods[] = {
     {"getID", getID},
     {"getMouse", getMouse},
     {"getSize", getSize},
+    {"getMonitorIndex", getMonitorIndex},
     {NULL, NULL}
 };
 

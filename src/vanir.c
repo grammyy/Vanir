@@ -10,6 +10,7 @@
 #include "modules/input.h"
 #include "modules/windows.h"
 #include "modules/render.h"
+#include "modules/system.h"
 #include "modules/timer.h"
 #include "enums.h"
 #include "vanir.h"
@@ -291,50 +292,57 @@ int requiredir(lua_State *L) {
     return 0;
 }
 
-__declspec(dllexport) int luaopen_vanir(lua_State * L) {
+const luaL_Reg luaVanir[] = {
+    {"Color", Color},
+    {"requiredir", requiredir},
+    {NULL, NULL}
+};
+
+const luaL_reg luaReg[] = {
+    // ↓ modules ↓ ///
+    {"hooks", hooksInit},
+    {"input", inputInit},
+    {"windows", windowsInit},
+    {"render", renderInit},
+    {"timer", timerInit},
+    {"system", systemInit},
+
+    // ↓ enums ↓ ///
+    {"gl", glEnums},
+    {"sdl", sdlEnums},
+    {NULL, NULL}
+};
+
+int vanirInit(lua_State *L) {
     luaL_dofile(L, "preload.lua");
 
     lua_newtable(L);
 
-    lua_pushstring(L, "r");
     lua_pushnumber(L, 255.0f);
-    lua_settable(L, -3);
+    lua_setfield(L, -2, "r");
 
-    lua_pushstring(L, "g");
     lua_pushnumber(L, 255.0f);
-    lua_settable(L, -3);
+    lua_setfield(L, -2, "g");
 
-    lua_pushstring(L, "b");
     lua_pushnumber(L, 255.0f);
-    lua_settable(L, -3);
+    lua_setfield(L, -2, "b");
 
-    lua_pushstring(L, "a");
     lua_pushnumber(L, 255.0f);
-    lua_settable(L, -3);
+    lua_setfield(L, -2, "a");
 
     lua_setglobal(L, "_rendercolor");
 
-    lua_pushcfunction(L, Color);
-    lua_setglobal(L, "Color");
-
-    lua_pushcfunction(L, requiredir);
-    lua_setglobal(L, "requiredir");
-
-    const luaL_reg luaReg[] = {
-        // ↓ modules ↓ ///
-        {"hooks", hooksInit},
-        {"input", inputInit},
-        {"windows", windowsInit},
-        {"render", renderInit},
-        {"timer", timerInit},
-
-        // ↓ enums ↓ ///
-        {"gl", glEnums},
-        {"sdl", sdlEnums},
-        {NULL, NULL}
-    };
-
     registerGlobals(L, luaReg);
+
+    for (const luaL_Reg *reg = luaVanir; reg->name != NULL && reg->func != NULL; ++reg) {
+        lua_pushcfunction(L, reg->func);
+        lua_setglobal(L, reg->name);
+    }
+}
+
+__declspec(dllexport) int luaopen_vanir(lua_State * L) {
+    vanirInit(L);
+    systemInit(L);
 
     return 0;
 }
