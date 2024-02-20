@@ -28,7 +28,7 @@ struct callbacks* createCallback(size_t dataSize, enum dataType dataType) {
 }
 
 void setCallback(struct callbacks* callback, const void* data) {
-memcpy(callback->data, data, callback->dataSize);
+    memcpy(callback->data, data, callback->dataSize);
 }
 
 void* getCallback(const struct callbacks* callback) {
