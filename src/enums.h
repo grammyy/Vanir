@@ -13,7 +13,7 @@ typedef struct {
 } Enums;
 
 static Enums gl[] = {
-    {"point", 10},
+    {"points", 10},
     {"line", 9},
     {"lineStrip", 8},
     {"lineLoop", 7},

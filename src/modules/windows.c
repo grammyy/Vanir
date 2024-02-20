@@ -209,6 +209,7 @@ void newWindow(struct sdlWindow *window) {
         window->height,
         SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL
     );
+    //SDL_WINDOW_BORDERLESS
 
     window->id=SDL_GetWindowID(window->window);
 
@@ -248,6 +249,7 @@ void newWindow(struct sdlWindow *window) {
 
     // Enable anti-aliasing for lines
     glEnable(GL_BLEND);
+
     glEnable(GL_LINE_SMOOTH);
     glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -264,6 +266,8 @@ void newWindow(struct sdlWindow *window) {
     // Enable anti-aliasing for fragment shader derivatives
     glEnable(GL_FRAGMENT_SHADER_DERIVATIVE_HINT);
     glHint(GL_FRAGMENT_SHADER_DERIVATIVE_HINT, GL_NICEST);
+
+    glDisable(GL_BLEND);
 
     SDL_GL_MakeCurrent(NULL, NULL);
 }

@@ -292,9 +292,14 @@ int requiredir(lua_State *L) {
     return 0;
 }
 
+int quit(lua_State *L) {
+    lua_close(L);
+}
+
 const luaL_Reg luaVanir[] = {
     {"Color", Color},
     {"requiredir", requiredir},
+    {"quit", quit},
     {NULL, NULL}
 };
 

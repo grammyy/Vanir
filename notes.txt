@@ -3,6 +3,7 @@ high:
     -> shaders.
     -> documentation site both js and static
     -> update the README.md mf
+    -> decrease the amount of calls needed for enums, currently it maps every enum to a custom value and checks that value - try to elimate the entire step of mapping enum to value
 mid:
     -> add viewporting and other matrix opengl functions
     -> add per-vertex callbacks to the rest of the opengl functions (see drawCircle and etc)
