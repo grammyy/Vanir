@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  <img src="" alt="Vanir Icon">
+  <img src="https://github.com/grammyy/Elias.github.io/blob/main/packaging/vanir.png?raw=true" alt="Vanir Icon">
 </p>
 
 Vanir is an engine similar to Love2D and related engines, however, it is more structured and crafted for the general experience. Providing a huge vanity of features and modules with customization and comfort in mind.
