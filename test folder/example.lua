@@ -31,8 +31,8 @@ hooks.add("inputReleased","test",function(key)
     print("released -> "..key)
 end)
 
-hooks.add("onEvent","test2",function(key)
-    print("event -> "..sdl[key])
+hooks.add("inputReleased","test2",function(key)
+    print("released #2 -> "..key)
 end)
 
 red=Color(255,0,0)
