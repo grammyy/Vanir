@@ -1,15 +1,13 @@
 #ifndef HOOKS
 #define HOOKS
 
-#include <lua.h>
-
 int hooksInit(lua_State* L);
 
 enum dataType {
     number,
     string,
     integer,
-    lua_bool, //rename later, boolean & bool are protected
+    lua_bool,
     function
 };
 
@@ -56,7 +54,5 @@ void* getCallback(const struct callbacks* callback);
 void setCallback(struct callbacks* callback, const void* data);
 
 extern struct hookPool pool;
-
-extern struct hook think;
 
 #endif

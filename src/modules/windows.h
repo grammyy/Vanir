@@ -1,7 +1,6 @@
 #ifndef WINDOWS
 #define WINDOWS
 
-#include <lua.h>
 #include <SDL.h>
 #include <stdbool.h>
 

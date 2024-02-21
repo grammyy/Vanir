@@ -1,7 +1,5 @@
-#include <lua.h>
-#include <lauxlib.h>
-#include <lualib.h>
 #include <sys/time.h>
+#include "../vanir.h"
 #include "timer.h"
 
 long long timeInMilliseconds(void) {

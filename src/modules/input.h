@@ -1,8 +1,6 @@
 #ifndef INPUT
 #define INPUT
 
-#include <lua.h>
-
 int inputInit(lua_State* L);
 
 #define keyBitmask 0x80

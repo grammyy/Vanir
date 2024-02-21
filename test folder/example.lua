@@ -31,8 +31,8 @@ hooks.add("inputReleased","test",function(key)
     print("released -> "..key)
 end)
 
-hooks.add("inputReleased","test2",function(key)
-    print("released2 -> "..key)
+hooks.add("onEvent","test2",function(key)
+    print("event -> "..sdl[key])
 end)
 
 red=Color(255,0,0)
@@ -48,7 +48,7 @@ hooks.add("render","main",function()
         if window then
             window:selectRender()
             
-            render.clear(Color(0,0,0))
+            render.clear(Color(0,0,0,0))
 
             x,y=window:getMouse()
             width,height=window:getSize()
@@ -62,8 +62,6 @@ hooks.add("render","main",function()
             end)
 
             if keyHeld then
-                render.disable(gl.polygonSmooth)
-
                 render.drawFilledCircle(width, height/2, 100, 100, function(i)
                     render.setColor(Color((i*(360/100)+(timer.realtime()/10))%360,100,100):hsvToRGB())
                 end)

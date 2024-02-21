@@ -31,10 +31,10 @@ void circle(float x, float y, float radius, int segments, lua_State *L) {
 
         glVertex2f(cx + x, cy + y);
 
-        float new_x = cx * c - cy * s;
-        float new_y = cx * s + cy * c;
-        cx = new_x;
-        cy = new_y;
+        float newX = cx * c - cy * s;
+        float newY = cx * s + cy * c;
+        cx = newX;
+        cy = newY;
     }
 }
 
@@ -59,7 +59,7 @@ int drawLine(lua_State *L) {
     return 0;
 }
 
-int drawRect(lua_State *L) {
+int drawRect(lua_State *L) { //add callback for each vertex maybe?
     float x = lua_tonumber(L, 1);
     float y = lua_tonumber(L, 2);
     float width = lua_tonumber(L, 3);
@@ -107,7 +107,7 @@ int drawFilledCircle(lua_State *L) {
     return 0;
 }
 
-int drawPoly(lua_State *L) { //add callback for each vertex later
+int drawPoly(lua_State *L) {
     int vertexes = lua_rawlen(L, 1);
     struct color color;
 

@@ -9,7 +9,8 @@
 #include "../vanir.h"
 
 GLenum blendSwitch(int blend) {
-    switch (blend) {
+    switch (blend) { //convert these to structs later
+        case 15: return GL_SRC_ALPHA_SATURATE;
         case 14: return GL_ONE_MINUS_CONSTANT_ALPHA;
         case 13: return GL_CONSTANT_ALPHA;
         case 12: return GL_ONE_MINUS_CONSTANT_COLOR;
@@ -29,9 +30,9 @@ GLenum blendSwitch(int blend) {
 }
 
 GLenum capSwitch(int cap) {
-    switch (cap) {
+    switch (cap) { //convert these to structs later
         case 28: return GL_BLEND;
-        //case 27: return GL_CLIP_DISTANCE;
+        //case 27: return GL_CLIP_DISTANCE; undefined for some reason
         case 26: return GL_COLOR_LOGIC_OP;
         case 25: return GL_CULL_FACE;
         case 24: return GL_DEBUG_OUTPUT;
@@ -81,6 +82,14 @@ int update(lua_State *L) {
     struct sdlWindow **window = (struct sdlWindow **)luaL_checkudata(L, 1, "window");
     
     SDL_GL_SwapWindow((*window)->window);
+
+    return 0;
+}
+
+int destroy(lua_State *L) {
+    struct sdlWindow **window = (struct sdlWindow **)luaL_checkudata(L, 1, "window");
+    
+    SDL_GL_DeleteContext((*window)->context);
 
     return 0;
 }
@@ -149,24 +158,17 @@ int setQuality(lua_State *L) {
     int target = luaL_checkinteger(L, 1);
     int quality = luaL_checkinteger(L, 2);
 
-    switch (target) {
-        case 4:
-            target=GL_FRAGMENT_SHADER_DERIVATIVE_HINT; break;
-        case 3:
-            target=GL_LINE_SMOOTH_HINT; break;
-        case 2:
-            target=GL_POLYGON_SMOOTH_HINT; break;
-        case 1:
-            target=GL_TEXTURE_COMPRESSION_HINT; break;
+    switch (target) { //convert these to structs later
+        case 4: target = GL_FRAGMENT_SHADER_DERIVATIVE_HINT; break;
+        case 3: target = GL_LINE_SMOOTH_HINT; break;
+        case 2: target = GL_POLYGON_SMOOTH_HINT; break;
+        case 1: target = GL_TEXTURE_COMPRESSION_HINT; break;
     }
 
     switch (quality) {
-        case 3:
-            quality=GL_FASTEST; break;
-        case 2:
-            quality=GL_NICEST; break;
-        case 1:
-            quality=GL_DONT_CARE; break;
+        case 3: quality = GL_FASTEST; break;
+        case 2: quality = GL_NICEST; break;
+        case 1: quality = GL_DONT_CARE; break;
     }
 
     glHint(target, quality);
@@ -210,14 +212,10 @@ int clear(lua_State *L) {
 
     int buffer = lua_tointeger(L, 2);
     
-    switch (buffer) {
-        case 3:
-            buffer=GL_STENCIL_BUFFER_BIT; break;
-        case 2:
-            buffer=GL_DEPTH_BUFFER_BIT; break;
-        case 1:
-        default:
-            buffer=GL_COLOR_BUFFER_BIT; break;
+    switch (buffer) { //convert these to structs later
+        case 3: buffer = GL_STENCIL_BUFFER_BIT; break;
+        case 2: buffer = GL_DEPTH_BUFFER_BIT; break;
+        case 1: default: buffer = GL_COLOR_BUFFER_BIT; break;
     }
 
     glClearColor(color.r, color.g, color.b, color.a);
@@ -235,27 +233,17 @@ int force(lua_State *L) {
 int begin(lua_State *L) {
     int group = luaL_checkinteger(L, 1);
 
-    switch (group) {
-        case 10:
-            group=GL_POINTS; break;
-        case 9:
-            group=GL_LINES; break;
-        case 8:
-            group=GL_LINE_STRIP; break;
-        case 7:
-            group=GL_LINE_LOOP; break;
-        case 6:
-            group=GL_TRIANGLES; break;
-        case 5:
-            group=GL_TRIANGLE_STRIP; break;
-        case 4:
-            group=GL_TRIANGLE_FAN; break;
-        case 3:
-            group=GL_QUADS; break;
-        case 2:
-            group=GL_QUAD_STRIP; break;
-        case 1:
-            group=GL_POLYGON; break;
+    switch (group) { //convert these to structs later
+        case 10: group = GL_POINTS; break;
+        case 9: group = GL_LINES; break;
+        case 8: group = GL_LINE_STRIP; break;
+        case 7: group = GL_LINE_LOOP; break;
+        case 6: group = GL_TRIANGLES; break;
+        case 5: group = GL_TRIANGLE_STRIP; break;
+        case 4: group = GL_TRIANGLE_FAN; break;
+        case 3: group = GL_QUADS; break;
+        case 2: group = GL_QUAD_STRIP; break;
+        case 1: group = GL_POLYGON; break;
     }
 
     glBegin(group);
@@ -280,6 +268,24 @@ int scissor(lua_State *L) {
     return 0;
 }
 
+int resetMatrix(lua_State *L) {
+    glLoadIdentity();
+
+    return 0;
+}
+
+int pushMatrix(lua_State *L) {
+    glPushMatrix();
+
+    return 0;
+}
+
+int popMatrix(lua_State *L) {
+    glPopMatrix();
+
+    return 0;
+}
+
 const luaL_Reg luaRender[] = {
     {"drawLine", drawLine},
     {"drawRect", drawRect},
@@ -298,6 +304,9 @@ const luaL_Reg luaRender[] = {
     {"begin", begin},
     {"exit", end},
     {"scissor", scissor},
+    {"resetMatrix", resetMatrix},
+    {"pushMatrix", pushMatrix},
+    {"popMatrix", popMatrix},
     {NULL, NULL}
 };
 

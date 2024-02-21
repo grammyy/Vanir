@@ -1,7 +1,6 @@
 #ifndef RENDER
 #define RENDER
 
-#include <lua.h>
 #include "../vanir.h"
 
 int renderInit(lua_State* L);

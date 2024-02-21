@@ -15,7 +15,7 @@
 #include "enums.h"
 #include "vanir.h"
 
-int rgbToHSV(lua_State *L) {
+int rgbToHSV(lua_State *L) { //test more later
     lua_getfield(L, 1, "r");
     lua_getfield(L, 1, "g");
     lua_getfield(L, 1, "b");
@@ -87,7 +87,7 @@ int hsvToRGB(lua_State *L) {
     double v = lua_tonumber(L, -2) / 100.0f;
     double a = lua_tonumber(L, -1);
 
-    double r = 0, g = 0, b = 0;
+    double r, g, b;
 
     if (s == 0) {
         r = v;
@@ -107,36 +107,12 @@ int hsvToRGB(lua_State *L) {
         double t = v * (1.0f - (s * (1.0f - f)));
 
         switch (i) {
-            case 0:
-                r = v;
-                g = t;
-                b = p;
-                break;
-            case 1:
-                r = q;
-                g = v;
-                b = p;
-                break;
-            case 2:
-                r = p;
-                g = v;
-                b = t;
-                break;
-            case 3:
-                r = p;
-                g = q;
-                b = v;
-                break;
-            case 4:
-                r = t;
-                g = p;
-                b = v;
-                break;
-            default:
-                r = v;
-                g = p;
-                b = q;
-                break;
+            case 0: r = v; g = t; b = p; break;
+            case 1: r = q; g = v; b = p; break;
+            case 2: r = p; g = v; b = t; break;
+            case 3: r = p; g = q; b = v; break;
+            case 4: r = t; g = p; b = v; break;
+            default: r = v; g = p; b = q; break;
         }
     }
     
@@ -318,7 +294,7 @@ const luaL_reg luaReg[] = {
     {NULL, NULL}
 };
 
-int vanirInit(lua_State *L) {
+void vanirInit(lua_State *L) {
     luaL_dofile(L, "preload.lua");
 
     lua_newtable(L);

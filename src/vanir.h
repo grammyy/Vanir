@@ -1,9 +1,9 @@
 #ifndef VANIR
 #define VANIR
 
-#include "modules/hooks.h"
 #include <lua.h>
 #include <lauxlib.h>
+#include <lualib.h>
 
 typedef struct {
     const char* name;

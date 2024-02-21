@@ -1,6 +1,3 @@
-#include <lua.h>
-#include <lauxlib.h>
-#include <lualib.h>
 #include <SDL.h>
 #include <SDL_opengl.h>
 #include <stdio.h>
@@ -75,11 +72,7 @@ void renderHandle(struct hook *instance, lua_State *L) {
                             lua_pushnil(L);
                             lua_rawseti(L, LUA_REGISTRYINDEX, windowPool.windows[i]->ref);
 
-                            for (int j = i; j < windowPool.count - 1; ++j) {
-                                windowPool.windows[j] = windowPool.windows[j + 1];
-                            }
-
-                            windowPool.windows[windowPool.count]=NULL;
+                            windowPool.windows[windowPool.count] = NULL;
                             windowPool.count -= 1;
 
                             break;

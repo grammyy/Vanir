@@ -1,7 +1,5 @@
-#include <lua.h>
-#include <lauxlib.h>
-#include <lualib.h>
 #include <SDL.h>
+#include "../vanir.h"
 #include "system.h"
 
 void queryMonitor(lua_State *L, int index) {

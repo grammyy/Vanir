@@ -1,6 +1,3 @@
-#include <lua.h>
-#include <lauxlib.h>
-#include <lualib.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -14,15 +11,13 @@ struct hook think = { "think", NULL, 0, &think, NULL, hook_update};
 struct callbacks* createCallback(size_t dataSize, enum dataType dataType) {
     struct callbacks* callback = malloc(sizeof(struct callbacks));
     
-    callback->dataSize = dataSize;
-    callback->data = malloc(dataSize);
-    callback->dataType = dataType;
-
-    // If the type is CALLBACK_TYPE_TABLE, initialize the table
-    //if (dataType == function) {
-    //    lua_newtable(L);
-    //    lua_rawseti(L, -2, 1);  // Set the table to the data field
-    //}
+    if (callback) {
+        callback->dataSize = dataSize;
+        callback->data = malloc(dataSize);
+        callback->dataType = dataType;
+    } else {
+        throw("Callback", "?", "Memory allocation error");
+    }
 
     return callback;
 }
@@ -38,7 +33,7 @@ void* getCallback(const struct callbacks* callback) {
 void registerHook(struct hookPool* pool, struct hook hookData) {
     struct hook* temp = (struct hook*)realloc(pool->hooks, (pool->count + 1) * sizeof(struct hook));
 
-    if (temp != NULL) {
+    if (temp) {
         pool->hooks = temp;
         pool->hooks[pool->count] = hookData;
         pool->count += 1;
@@ -59,7 +54,7 @@ void addHook(struct hook *instance, const char *name, void (*func)(lua_State*, s
 
     struct stack *temp = realloc(instance->stack, (instance->pool + 1) * sizeof(struct stack));
 
-    if (temp != NULL) {
+    if (temp) {
         instance->stack = temp;
         instance->stack[instance->pool].name = strdup(name);
         instance->stack[instance->pool].func = func;
@@ -79,7 +74,7 @@ void removeHook(struct hook *instance, const char *name) {
 
             struct stack *temp = malloc((instance->pool - 1) * sizeof(struct stack));
 
-            if (temp != NULL) {
+            if (temp) {
                 memcpy(temp, instance->stack, i * sizeof(struct stack));
                 memcpy(temp + i, instance->stack + i + 1, (instance->pool - i - 1) * sizeof(struct stack));
 
@@ -104,7 +99,6 @@ void removeHook(struct hook *instance, const char *name) {
     throw("Hook", instance->hookName, temp);
 }
 
-
 void runHook(struct hook *instance, lua_State *L) {
     if (!instance || !L) {
         throw("Hook", "?", "Failed to get hook instance");
@@ -112,13 +106,13 @@ void runHook(struct hook *instance, lua_State *L) {
         return;
     }
 
-    if (instance->handle != NULL) {
+    if (instance->handle) {
         instance->handle(instance, L);
     }
 
     for (size_t i = 0; i < instance->pool; ++i) {
-        if (instance->stack[i].func != NULL) {
-            if (instance->status!=hook_idle) {
+        if (instance->stack[i].func) {
+            if (instance->status != hook_idle) {
                 instance->stack[i].func(L, instance, i, instance->callback);
             }
         } else {
@@ -126,8 +120,8 @@ void runHook(struct hook *instance, lua_State *L) {
         }
     }
 
-    if (instance->status==hook_awaiting) {
-        instance->status=hook_idle;
+    if (instance->status == hook_awaiting) {
+        instance->status = hook_idle;
     }
 }
 
@@ -138,36 +132,32 @@ void freeHook(struct hook *instance, lua_State *L) {
         }
     }
 
-    free(instance->stack);
     instance->stack = NULL;
+    instance->pool = 0;
+    
+    free(instance->stack);
 }
 
 void luaWrapper(lua_State *L, struct hook *instance, int index, struct callbacks* callback) {
     lua_rawgeti(L, LUA_REGISTRYINDEX, instance->stack[index].ref);
 
-    if (callback!=NULL && callback->data != NULL) {
+    if (callback && callback->data) {
         for (size_t i = 0; i < callback->dataSize; ++i) {
             void* value = ((char*)callback->data) + (i * callback->dataSize);
 
             switch (callback->dataType) {
                 case number:
-                    lua_pushnumber(L, *(double*)value);
-                    break;
+                    lua_pushnumber(L, *(double*)value); break;
                 case string:
-                    lua_pushstring(L, (const char*)value);
-                    break;
+                    lua_pushstring(L, (const char*)value); break;
                 case integer:
-                    lua_pushinteger(L, *(int*)value);
-                    break;
+                    lua_pushinteger(L, *(int*)value); break;
                 case lua_bool:
-                    lua_pushboolean(L, *(int*)value);
-                    break;
+                    lua_pushboolean(L, *(int*)value); break;
                 case function:
-                    lua_rawgeti(L, LUA_REGISTRYINDEX, *((int*)value));
-                    break;
+                    lua_rawgeti(L, LUA_REGISTRYINDEX, *((int*)value)); break;
                 default:
-                    lua_pushnil(L);
-                    break;
+                    lua_pushnil(L); break;
             }
         }
     }
@@ -197,7 +187,7 @@ int luaAdd(lua_State *L) {
 
     struct hook *instance = findHookByName(&pool, hookName);
     
-    if (instance != NULL) {
+    if (instance) {
         if (lua_isfunction(L, 3)) {
             lua_pushvalue(L, 3);
             int ref = luaL_ref(L, LUA_REGISTRYINDEX);
@@ -219,7 +209,7 @@ int luaRemove(lua_State *L) {
 
     struct hook *instance = findHookByName(&pool, hookName);
     
-    if (instance != NULL) {
+    if (instance) {
         removeHook(instance->address, name);
     } else {
         throw("Hook", hookName, "Not found");
@@ -236,10 +226,25 @@ int luaRun(lua_State *L) {
     return 0;
 }
 
+int luaFree(lua_State *L) {
+    const char *hookName = luaL_checkstring(L, 1);
+    
+    struct hook *instance = findHookByName(&pool, hookName);
+
+    if (instance) {
+        freeHook(instance->address, L);
+    } else {
+        throw("Hook", hookName, "Not found");
+    }
+
+    return 0;
+}
+
 const luaL_Reg luaHooks[] = {
-    {"add",luaAdd},
-    {"remove",luaRemove},
-    {"run",luaRun},
+    {"add", luaAdd},
+    {"remove", luaRemove},
+    {"run", luaRun},
+    {"free", luaFree},
     {NULL, NULL}
 };
 

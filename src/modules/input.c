@@ -1,6 +1,3 @@
-#include <lua.h>
-#include <lauxlib.h>
-#include <lualib.h>
 #include <windows.h>
 #include <stdbool.h>
 #include <stdio.h>
