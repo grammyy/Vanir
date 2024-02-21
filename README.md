@@ -22,7 +22,7 @@ Vanir is an engine similar to Love2D and related engines, however, it is more st
 
 ## Documentation
 
-For detailed instructions on using and customizing Lilia for your roleplay server, refer to our comprehensive [Wiki](https://github.com/Lilia-Framework/Lilia/wiki). Feel free to contribute by making pull requests on the wiki.
+Documentation is not currently done, still looking for a good theme :)
 
 ## Acknowledgements
 
