@@ -13,6 +13,18 @@ typedef struct {
 } Enums;
 
 static Enums gl[] = {
+    {"multisample2DArray", 10},
+    {"multisample2D", 9},
+    {"buffer", 8},
+    {"cubemapArray", 7},
+    {"cubemap", 6},
+    {"rectangle", 5},
+    {"array2D", 4},
+    {"array1D", 3},
+    {"texture3D", 2},
+    {"texture2D", 1},
+    {"texture1D", 0},
+
     {"points", 9},
     {"line", 8},
     {"lineStrip", 7},
@@ -26,7 +38,7 @@ static Enums gl[] = {
 
     {"stencil", 2},
     {"depth", 1},
-    {"color", 0},
+    {"screen", 0},
 
     {"srcAlphaSaturate", 14},
     {"inverseAlpha", 13},
@@ -69,14 +81,14 @@ static Enums gl[] = {
     {"sampleShading", 5},
     {"sampleMask", 4},
     {"scissor", 3},
-    {"stencil", 2},
+    //{"stencil", 2}, duplicate
     {"texture", 1},
     {"pointSize", 0},
     
     {"shaders", 3},
     {"lines", 2},
     {"polygons", 1},
-    {"texture", 0},
+    {"textures", 0},
 
     {"fastest", 2},
     {"nicest", 1},

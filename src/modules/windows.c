@@ -12,7 +12,7 @@ struct windowPool windowPool = {NULL, 0};
 
 struct hook onHoverChange = { "onHoverChange", NULL, 0, &onHoverChange, NULL, hook_idle};
 struct hook onFocusChange = { "onFocusChange", NULL, 0, &onFocusChange, NULL, hook_idle};
-struct hook onSizeChange = { "onSizeChange", NULL, 0, &onSizeChange, NULL, hook_idle};
+struct hook onResize = { "onResize", NULL, 0, &onResize, NULL, hook_idle};
 struct hook onEvent = { "onEvent", NULL, 0, &onEvent, NULL, hook_idle};
 struct hook onClose = { "onClose", NULL, 0, &onClose, NULL, hook_idle};
 struct hook onOpen = { "onOpen", NULL, 0, &onOpen, NULL, hook_idle};
@@ -56,7 +56,7 @@ void renderHandle(struct hook *instance, lua_State *L) {
                             
                             windowPool.windows[i]->width = width;
                             windowPool.windows[i]->height = height;
-                            onSizeChange.status=hook_awaiting;
+                            onResize.status=hook_awaiting;
                             
                             glViewport(0, 0, width, height);
                             glAspectRatio(width, height);
@@ -66,11 +66,15 @@ void renderHandle(struct hook *instance, lua_State *L) {
                             windowPool.windows[i]->quit = true;
                             onClose.status=hook_awaiting;
 
-                            SDL_DestroyWindow(windowPool.windows[i]->window);
                             SDL_GL_DeleteContext(windowPool.windows[i]->context);
+                            SDL_DestroyWindow(windowPool.windows[i]->window);
                             
                             lua_pushnil(L);
                             lua_rawseti(L, LUA_REGISTRYINDEX, windowPool.windows[i]->ref);
+
+                            for (int j = i; j < windowPool.count - 1; ++j) {
+                                windowPool.windows[j] = windowPool.windows[j + 1];
+                            }
 
                             windowPool.windows[windowPool.count] = NULL;
                             windowPool.count -= 1;
@@ -333,7 +337,7 @@ int windowsInit(lua_State* L) {
     registerHook(&pool, render);
     registerHook(&pool, onHoverChange);
     registerHook(&pool, onFocusChange);
-    registerHook(&pool, onSizeChange);
+    registerHook(&pool, onResize);
     registerHook(&pool, onEvent);
     registerHook(&pool, onClose);
     registerHook(&pool, onOpen);

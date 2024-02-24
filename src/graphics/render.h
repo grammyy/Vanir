@@ -3,11 +3,17 @@
 
 #include <lua.h>
 
+// drawing ↓↓↓ drawing ///
 int drawLine(lua_State *L);
 int drawRect(lua_State *L);
 int drawCircle(lua_State *L);
 int drawFilledCircle(lua_State *L);
 int drawPoly(lua_State *L);
 int drawVertex(lua_State *L);
+// drawing ↑↑↑ drawing ///
+
+// textures ↓↓↓ textures ///
+
+// textures ↑↑↑ textures ///
 
 #endif
