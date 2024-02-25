@@ -13,7 +13,9 @@ int drawVertex(lua_State *L);
 // drawing ↑↑↑ drawing ///
 
 // textures ↓↓↓ textures ///
-
+int selectTexture(lua_State *L);
+int newTexture(lua_State *L);
+int destroyTexture(lua_State *L);
 // textures ↑↑↑ textures ///
 
 #endif

@@ -111,6 +111,8 @@ void renderHandle(struct hook *instance, lua_State *L) {
                     }
 
                     SDL_GL_MakeCurrent(NULL, NULL);
+
+                    return;
                 }
             }
         }
@@ -213,8 +215,6 @@ void newWindow(struct sdlWindow *window) {
     if (!window->window) {
         throw("Window", window->name, SDL_GetError());
 
-        SDL_Quit();
-        
         return;
     }
 
@@ -224,7 +224,6 @@ void newWindow(struct sdlWindow *window) {
         throw("Window", window->name, "Failed to create OpenGL context");
 
         SDL_DestroyWindow(window->window);
-        SDL_Quit();
         
         return;
     }
@@ -233,11 +232,15 @@ void newWindow(struct sdlWindow *window) {
 
     if (temp != NULL) {
         windowPool.windows = temp;
-        windowPool.windows[windowPool.count] = window; // Store the pointer directly
+        windowPool.windows[windowPool.count] = window;
         windowPool.count += 1;
     } else {
-        // Handle memory allocation error
-        fprintf(stderr, "Window Memory allocation error\n");
+        throw("Window", window->name, "Memory allocation error");
+
+        SDL_GL_DeleteContext(window->context);
+        SDL_DestroyWindow(window->window);
+
+        return;
     }
     
     SDL_GL_MakeCurrent(window->window, window->context);
@@ -252,8 +255,8 @@ void newWindow(struct sdlWindow *window) {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     // Enable anti-aliasing for polygons -> also causes weird lines for filled polygons - fix later
-    glEnable(GL_POLYGON_SMOOTH);
-    glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
+    //glEnable(GL_POLYGON_SMOOTH);
+    //glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
 
     // Enable anti-aliasing for textures
     glEnable(GL_TEXTURE_2D);
@@ -263,8 +266,6 @@ void newWindow(struct sdlWindow *window) {
     // Enable anti-aliasing for fragment shader derivatives
     glEnable(GL_FRAGMENT_SHADER_DERIVATIVE_HINT);
     glHint(GL_FRAGMENT_SHADER_DERIVATIVE_HINT, GL_NICEST);
-
-    glDisable(GL_BLEND);
 
     SDL_GL_MakeCurrent(NULL, NULL);
 }

@@ -100,7 +100,7 @@ int drawFilledCircle(lua_State *L) {
     int segments = luaL_optinteger(L, 4, 10);
 
     glBegin(GL_POLYGON);
-    glVertex2f(x, y);
+    glVertex2f(x, y); //bad color, fix later
     circle(x, y, radius, segments, L);
     glEnd();
 

@@ -170,8 +170,8 @@ void luaWrapper(lua_State *L, struct hook *instance, int index, struct callbacks
         return;
     }
 }
-
-struct hook* findHookByName(const struct hookPool* pool, const char* hookName) {
+struct hook* findHook(const struct hookPool* pool, const char* hookName)
+ {
     for (size_t i = 0; i < pool->count; ++i) {
         if (strcmp(pool->hooks[i].hookName, hookName) == 0) {
             return &pool->hooks[i];
@@ -185,7 +185,7 @@ int luaAdd(lua_State *L) {
     const char *hookName = luaL_checkstring(L, 1);
     const char *name = luaL_checkstring(L, 2);
 
-    struct hook *instance = findHookByName(&pool, hookName);
+    struct hook *instance = findHook(&pool, hookName);
     
     if (instance) {
         if (lua_isfunction(L, 3)) {
@@ -207,7 +207,7 @@ int luaRemove(lua_State *L) {
     const char *hookName = luaL_checkstring(L, 1);
     const char *name = luaL_checkstring(L, 2);
 
-    struct hook *instance = findHookByName(&pool, hookName);
+    struct hook *instance = findHook(&pool, hookName);
     
     if (instance) {
         removeHook(instance->address, name);
@@ -229,7 +229,7 @@ int luaRun(lua_State *L) {
 int luaFree(lua_State *L) {
     const char *hookName = luaL_checkstring(L, 1);
     
-    struct hook *instance = findHookByName(&pool, hookName);
+    struct hook *instance = findHook(&pool, hookName);
 
     if (instance) {
         freeHook(instance->address, L);

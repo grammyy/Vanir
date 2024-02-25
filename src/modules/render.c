@@ -10,7 +10,7 @@
 
 #define blendEnums 15
 #define capEnums 28
-#define targetEnums 4
+#define hintEnums 4
 #define qualityEnums 28
 #define groupEnums 10
 #define bufferEnums 3
@@ -64,7 +64,7 @@ const GLenum capLookup[capEnums] = {
     GL_BLEND,
 };
 
-const GLenum targetLookup[targetEnums] = {
+const GLenum hintLookup[hintEnums] = {
     GL_TEXTURE_COMPRESSION_HINT,
     GL_POLYGON_SMOOTH_HINT,
     GL_LINE_SMOOTH_HINT,
@@ -191,7 +191,7 @@ int setQuality(lua_State *L) {
     int target = luaL_checkinteger(L, 1);
     int quality = luaL_checkinteger(L, 2);
 
-    glHint(targetLookup[target], qualityLookup[quality]);
+    glHint(hintLookup[target], qualityLookup[quality]);
 
     return 0;
 }
@@ -289,6 +289,10 @@ const luaL_Reg luaRender[] = {
     {"drawFilledCircle", drawFilledCircle},
     {"drawPoly", drawPoly},
     {"drawVertex", drawVertex},
+
+    {"selectTexture", selectTexture},
+    {"newTexture", newTexture},
+    {"destroyTexture", destroyTexture},
 
     {"clear", clear},
     {"setQuality", setQuality},

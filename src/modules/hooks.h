@@ -44,14 +44,19 @@ struct stack {
     int ref;
 };
 
+// hooks ↓↓↓ hooks ///
 void registerHook(struct hookPool* pool, struct hook hookData);
 void addHook(struct hook *instance, const char *name, void (*func)(lua_State*, struct hook *instance, int, struct callbacks* callback), int ref);
 void runHook(struct hook *instance, lua_State *L);
 void freeHook(struct hook *instance, lua_State *L);
+struct hook* findHook(const struct hookPool* pool, const char* hookName);
+// hooks ↑↑↑ hooks ///
 
+// callbacks ↓↓↓ callbacks ///
 struct callbacks* createCallback(size_t dataSize, enum dataType dataType);
 void* getCallback(const struct callbacks* callback);
 void setCallback(struct callbacks* callback, const void* data);
+// callbacks ↑↑↑ callbacks ///
 
 extern struct hookPool pool;
 

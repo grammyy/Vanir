@@ -1,4 +1,6 @@
 high:
+    hooks
+        -> rename some stuff
     -> finish adding opengl functions to everything, like textured squares etc
     -> shaders.
     -> documentation site both js and static
