@@ -59,7 +59,7 @@ int drawLine(lua_State *L) {
     return 0;
 }
 
-int drawRect(lua_State *L) { //add callback for each vertex maybe?
+int drawRect(lua_State *L) {
     float x = lua_tonumber(L, 1);
     float y = lua_tonumber(L, 2);
     float width = lua_tonumber(L, 3);
@@ -147,6 +147,25 @@ int drawPoly(lua_State *L) {
     glEnd();
 
     return 0;
+}
+
+int draw3DLine(lua_State *L) {
+    //float vec1 = lua_tonumber(L, 1);
+    //float vec2 = lua_tonumber(L, 2);
+    //float width = luaL_optnumber(L, 5, 1.0f);
+//
+    //struct color color;
+    //getGlobalColor(L, &color);
+    //
+    //glColor4f(color.r, color.g, color.b, color.a);
+    //glLineWidth(width);
+//
+    //glBegin(GL_LINES);
+    //glVertex2f(x1, y1);
+    //glVertex2f(x2, y2);
+    //glEnd();
+//
+    //return 0;
 }
 
 int drawVertex(lua_State *L) {

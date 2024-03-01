@@ -293,6 +293,7 @@ const luaL_Reg luaRender[] = {
     {"selectTexture", selectTexture},
     {"newTexture", newTexture},
     {"destroyTexture", destroyTexture},
+    {"drawTexture", drawTexture},
 
     {"clear", clear},
     {"setQuality", setQuality},

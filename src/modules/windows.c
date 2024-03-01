@@ -267,6 +267,8 @@ void newWindow(struct sdlWindow *window) {
     glEnable(GL_FRAGMENT_SHADER_DERIVATIVE_HINT);
     glHint(GL_FRAGMENT_SHADER_DERIVATIVE_HINT, GL_NICEST);
 
+    //glEnable(GL_TEXTURE_2D);
+
     SDL_GL_MakeCurrent(NULL, NULL);
 }
 
@@ -332,7 +334,7 @@ int windowsInit(lua_State* L) {
 
         return 1;
     }
-    
+
     luaL_newlib(L, luaWindows);
 
     registerHook(&pool, render);

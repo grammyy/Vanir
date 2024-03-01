@@ -15,6 +15,30 @@
 #include "enums.h"
 #include "vanir.h"
 
+int Vector(lua_State* L) {
+    float x = luaL_optnumber(L, 1, 0.0f);
+    float y = luaL_optnumber(L, 2, 0.0f);
+    float z = luaL_optnumber(L, 3, 0.0f);
+
+    lua_newtable(L);
+
+    lua_pushstring(L, "x");
+    lua_pushnumber(L, x);
+    lua_settable(L, -3);
+
+    lua_pushstring(L, "y");
+    lua_pushnumber(L, y);
+    lua_settable(L, -3);
+
+    lua_pushstring(L, "z");
+    lua_pushnumber(L, z);
+    lua_settable(L, -3);
+
+    //addMethods(L, "vector", vectorMethods);
+
+    return 1;
+}
+
 int rgbToHSV(lua_State *L) { //test more later
     lua_getfield(L, 1, "r");
     lua_getfield(L, 1, "g");
@@ -144,30 +168,27 @@ static const luaL_Reg colorMethods[] = {
 };
 
 int Color(lua_State* L) {
-    //might need to automantically handle values to their gl counterpart for performance
-    int r = luaL_optnumber(L, 1, 255.0f);
-    int g = luaL_optnumber(L, 2, 255.0f);
-    int b = luaL_optnumber(L, 3, 255.0f);
-    int a = luaL_optnumber(L, 4, 255.0f);
-
-    struct color color = {r, g, b, a};
+    float r = luaL_optnumber(L, 1, 255.0f);
+    float g = luaL_optnumber(L, 2, 255.0f);
+    float b = luaL_optnumber(L, 3, 255.0f);
+    float a = luaL_optnumber(L, 4, 255.0f);
 
     lua_newtable(L);
 
     lua_pushstring(L, "r");
-    lua_pushnumber(L, color.r);
+    lua_pushnumber(L, r);
     lua_settable(L, -3);
 
     lua_pushstring(L, "g");
-    lua_pushnumber(L, color.g);
+    lua_pushnumber(L, g);
     lua_settable(L, -3);
 
     lua_pushstring(L, "b");
-    lua_pushnumber(L, color.b);
+    lua_pushnumber(L, b);
     lua_settable(L, -3);
 
     lua_pushstring(L, "a");
-    lua_pushnumber(L, color.a);
+    lua_pushnumber(L, a);
     lua_settable(L, -3);
 
     addMethods(L, "color", colorMethods);
