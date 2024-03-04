@@ -337,13 +337,13 @@ int windowsInit(lua_State* L) {
 
     luaL_newlib(L, luaWindows);
 
-    registerHook(&pool, render);
-    registerHook(&pool, onHoverChange);
-    registerHook(&pool, onFocusChange);
-    registerHook(&pool, onResize);
-    registerHook(&pool, onEvent);
-    registerHook(&pool, onClose);
-    registerHook(&pool, onOpen);
+    registerHook(render);
+    registerHook(onHoverChange);
+    registerHook(onFocusChange);
+    registerHook(onResize);
+    registerHook(onEvent);
+    registerHook(onClose);
+    registerHook(onOpen);
 
     return 1;
 }

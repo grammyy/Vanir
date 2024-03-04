@@ -5,6 +5,7 @@ high:
     -> shaders.
     -> documentation site both js and static
     -> update the README.md mf
+    -> colors calls are done too often in most draw functions, try cutting down on that
 mid:
     textures
         -> make function for defining custom handling for images

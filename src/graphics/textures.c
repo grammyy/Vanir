@@ -9,18 +9,6 @@
 
 #define targetEnums 11
 
-struct texturePool {
-    struct texture **textures;
-    int count;
-};
-
-struct texture {
-    const char* name;
-    unsigned char* data;
-    GLuint id;
-    int width, height, channels;
-};
-
 struct texturePool texturePool = {NULL, 0};
 
 const GLenum targetLookup[targetEnums] = {
@@ -99,9 +87,8 @@ int loadImage(lua_State *L) {
     
     glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
     
-    glBindTexture(GL_TEXTURE_2D, 0);
 
-    stbi_image_free(data);
+    //stbi_image_free(data);
 
     return 0;
 }
@@ -168,10 +155,10 @@ int drawTexture(lua_State *L) {
     float width = lua_tonumber(L, 3);
     float height = lua_tonumber(L, 4);
 
-    struct color color;
-    getGlobalColor(L, &color);
+    //struct color color;
+    //getGlobalColor(L, &color);
     
-    glColor4f(color.r, color.g, color.b, color.a);
+    //glColor4f(color.r, color.g, color.b, color.a);
     
     glEnable(GL_TEXTURE_2D);
 

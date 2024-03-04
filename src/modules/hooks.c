@@ -4,7 +4,7 @@
 #include "../vanir.h"
 #include "hooks.h"
 
-struct hookPool pool = {NULL, 0};
+struct hookPool hookPool = {NULL, 0};
 
 struct hook think = { "think", NULL, 0, &think, NULL, hook_update};
 
@@ -30,13 +30,13 @@ void* getCallback(const struct callbacks* callback) {
     return callback->data;
 }
 
-void registerHook(struct hookPool* pool, struct hook hookData) {
-    struct hook* temp = (struct hook*)realloc(pool->hooks, (pool->count + 1) * sizeof(struct hook));
+void registerHook(struct hook hookData) {
+    struct hook* temp = (struct hook*)realloc(hookPool.hooks, (hookPool.count + 1) * sizeof(struct hook));
 
     if (temp) {
-        pool->hooks = temp;
-        pool->hooks[pool->count] = hookData;
-        pool->count += 1;
+        hookPool.hooks = temp;
+        hookPool.hooks[hookPool.count] = hookData;
+        hookPool.count += 1;
     } else {
         throw("Hook", "pool", "Memory allocation error");
     }
@@ -170,11 +170,10 @@ void luaWrapper(lua_State *L, struct hook *instance, int index, struct callbacks
         return;
     }
 }
-struct hook* findHook(const struct hookPool* pool, const char* hookName)
- {
-    for (size_t i = 0; i < pool->count; ++i) {
-        if (strcmp(pool->hooks[i].hookName, hookName) == 0) {
-            return &pool->hooks[i];
+struct hook* findHook(const char* hookName) {
+    for (size_t i = 0; i < hookPool.count; ++i) {
+        if (strcmp(hookPool.hooks[i].hookName, hookName) == 0) {
+            return &hookPool.hooks[i];
         }
     }
     
@@ -185,7 +184,7 @@ int luaAdd(lua_State *L) {
     const char *hookName = luaL_checkstring(L, 1);
     const char *name = luaL_checkstring(L, 2);
 
-    struct hook *instance = findHook(&pool, hookName);
+    struct hook *instance = findHook(hookName);
     
     if (instance) {
         if (lua_isfunction(L, 3)) {
@@ -207,7 +206,7 @@ int luaRemove(lua_State *L) {
     const char *hookName = luaL_checkstring(L, 1);
     const char *name = luaL_checkstring(L, 2);
 
-    struct hook *instance = findHook(&pool, hookName);
+    struct hook *instance = findHook(hookName);
     
     if (instance) {
         removeHook(instance->address, name);
@@ -219,8 +218,8 @@ int luaRemove(lua_State *L) {
 }
 
 int luaRun(lua_State *L) {
-    for (size_t i = 0; i < pool.count; ++i) {
-        runHook(pool.hooks[i].address, L);
+    for (size_t i = 0; i < hookPool.count; ++i) {
+        runHook(hookPool.hooks[i].address, L);
     }
 
     return 0;
@@ -229,7 +228,7 @@ int luaRun(lua_State *L) {
 int luaFree(lua_State *L) {
     const char *hookName = luaL_checkstring(L, 1);
     
-    struct hook *instance = findHook(&pool, hookName);
+    struct hook *instance = findHook(hookName);
 
     if (instance) {
         freeHook(instance->address, L);
@@ -251,7 +250,7 @@ const luaL_Reg luaHooks[] = {
 int hooksInit(lua_State* L) {
     luaL_newlib(L, luaHooks);
 
-    registerHook(&pool, think);
+    registerHook(think);
 
     // Example usage for using in c
     //addHook(&think, "examplehook1", hookfunc1, 0);

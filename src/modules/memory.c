@@ -12,7 +12,7 @@ const luaL_Reg luaMemory[] = {
 int memoryInit(lua_State* L) {
     luaL_newlib(L, luaMemory);
 
-    //registerHook(&pool, inputPressed);
+    //registerHook(&hookPool, inputPressed);
     
     return 1;
 }

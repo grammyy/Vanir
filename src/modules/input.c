@@ -59,8 +59,8 @@ struct hook inputReleased = {"inputReleased", NULL, 0, &inputReleased, inputRele
 int inputInit(lua_State* L) {
     luaL_newlib(L, luaInput);
 
-    registerHook(&pool, inputPressed);
-    registerHook(&pool, inputReleased);
+    registerHook(inputPressed);
+    registerHook(inputReleased);
     
     return 1;
 }
