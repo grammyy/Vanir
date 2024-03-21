@@ -5,6 +5,7 @@
 #include <math.h>
 #include <dirent.h>
 #include <unistd.h>
+#include <SDL.h>
 #include <sys/stat.h>
 #include "modules/hooks.h"
 #include "modules/input.h"
@@ -15,26 +16,73 @@
 #include "enums.h"
 #include "vanir.h"
 
+void setFieldInt(lua_State *L, const char *key, float data) {
+    lua_pushstring(L, key);
+    lua_pushinteger(L, data);
+    lua_settable(L, -3);
+}
+
+void setFieldFloat(lua_State *L, const char *key, float data) {
+    lua_pushstring(L, key);
+    lua_pushnumber(L, data);
+    lua_settable(L, -3);
+}
+
+int tostring(lua_State *L) {
+    lua_getfield(L, 1, "x");
+    lua_getfield(L, 1, "y");
+    lua_getfield(L, 1, "z");
+
+    const char *x = lua_tostring(L, -3);
+    const char *y = lua_tostring(L, -2);
+    const char *z = lua_tostring(L, -1);
+
+    char temp[strlen(x) + strlen(y) + strlen(z) + 4];
+
+    strcpy(temp, x);
+    strcat(temp, ", ");
+    strcat(temp, y);
+    strcat(temp, ", ");
+    strcat(temp, z);
+
+    lua_pop(L, 3);
+
+    lua_pushstring(L, temp);
+
+    return 1;
+}
+
+static const luaL_Reg tableMethods[] = {
+    {"tostring", tostring},
+    {NULL, NULL}
+};
+
 int Vector(lua_State* L) {
     float x = luaL_optnumber(L, 1, 0.0f);
     float y = luaL_optnumber(L, 2, 0.0f);
     float z = luaL_optnumber(L, 3, 0.0f);
 
     lua_newtable(L);
+    setFieldFloat(L, "x", x);
+    setFieldFloat(L, "y", y);
+    setFieldFloat(L, "z", z);
 
-    lua_pushstring(L, "x");
-    lua_pushnumber(L, x);
-    lua_settable(L, -3);
+    addMethods(L, "table", tableMethods);
 
-    lua_pushstring(L, "y");
-    lua_pushnumber(L, y);
-    lua_settable(L, -3);
+    return 1;
+}
 
-    lua_pushstring(L, "z");
-    lua_pushnumber(L, z);
-    lua_settable(L, -3);
+int Angle(lua_State* L) {
+    float roll = luaL_optnumber(L, 1, 0.0f);
+    float pitch = luaL_optnumber(L, 2, 0.0f);
+    float yaw = luaL_optnumber(L, 3, 0.0f);
 
-    //addMethods(L, "vector", vectorMethods);
+    lua_newtable(L);
+    setFieldFloat(L, "roll", roll);
+    setFieldFloat(L, "pitch", pitch);
+    setFieldFloat(L, "yaw", yaw);
+    
+    addMethods(L, "table", tableMethods);
 
     return 1;
 }
@@ -80,22 +128,10 @@ int rgbToHSV(lua_State *L) { //test more later
         h += 360;
 
     lua_newtable(L);
-
-    lua_pushstring(L, "r");
-    lua_pushinteger(L, h);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "g");
-    lua_pushinteger(L, s);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "b");
-    lua_pushinteger(L, v);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "a");
-    lua_pushinteger(L, a);
-    lua_settable(L, -3);
+    setFieldInt(L, "r", h);
+    setFieldInt(L, "g", s);
+    setFieldInt(L, "b", v);
+    setFieldInt(L, "a", a);
 
     return 1;
 }
@@ -141,22 +177,10 @@ int hsvToRGB(lua_State *L) {
     }
     
     lua_newtable(L);
-
-    lua_pushstring(L, "r");
-    lua_pushinteger(L, r * 255);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "g");
-    lua_pushinteger(L, g * 255);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "b");
-    lua_pushinteger(L, b * 255);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "a");
-    lua_pushinteger(L, a);
-    lua_settable(L, -3);
+    setFieldInt(L, "r", r * 255);
+    setFieldInt(L, "g", g * 255);
+    setFieldInt(L, "b", b * 255);
+    setFieldInt(L, "a", a);
 
     return 1;
 }
@@ -174,22 +198,10 @@ int Color(lua_State* L) {
     float a = luaL_optnumber(L, 4, 255.0f);
 
     lua_newtable(L);
-
-    lua_pushstring(L, "r");
-    lua_pushnumber(L, r);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "g");
-    lua_pushnumber(L, g);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "b");
-    lua_pushnumber(L, b);
-    lua_settable(L, -3);
-
-    lua_pushstring(L, "a");
-    lua_pushnumber(L, a);
-    lua_settable(L, -3);
+    setFieldInt(L, "r", r);
+    setFieldInt(L, "g", g);
+    setFieldInt(L, "b", b);
+    setFieldInt(L, "a", a);
 
     addMethods(L, "color", colorMethods);
 
@@ -290,10 +302,12 @@ int requiredir(lua_State *L) {
 }
 
 int quit(lua_State *L) {
+    SDL_Quit();
     lua_close(L);
 }
 
 const luaL_Reg luaVanir[] = {
+    {"Vector", Vector},
     {"Color", Color},
     {"requiredir", requiredir},
     {"quit", quit},

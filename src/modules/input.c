@@ -27,7 +27,7 @@ void inputPressedHandle(struct hook *instance, lua_State *L){
 
             keyStates[key] = currentState;
 
-            instance->status=hook_awaiting;
+            instance->status = hook_awaiting;
         }
     }
 }
@@ -42,7 +42,7 @@ void inputReleasedHandle(struct hook *instance, lua_State *L){
 
             keyStates[key] = currentState;
 
-            instance->status=hook_awaiting;
+            instance->status = hook_awaiting;
         }
     }
 }

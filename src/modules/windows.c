@@ -230,7 +230,7 @@ void newWindow(struct sdlWindow *window) {
 
     struct sdlWindow **temp = (struct sdlWindow **)realloc(windowPool.windows, (windowPool.count + 1) * sizeof(struct sdlWindow *));
 
-    if (temp != NULL) {
+    if (temp) {
         windowPool.windows = temp;
         windowPool.windows[windowPool.count] = window;
         windowPool.count += 1;
@@ -266,8 +266,6 @@ void newWindow(struct sdlWindow *window) {
     // Enable anti-aliasing for fragment shader derivatives
     glEnable(GL_FRAGMENT_SHADER_DERIVATIVE_HINT);
     glHint(GL_FRAGMENT_SHADER_DERIVATIVE_HINT, GL_NICEST);
-
-    //glEnable(GL_TEXTURE_2D);
 
     SDL_GL_MakeCurrent(NULL, NULL);
 }
@@ -337,7 +335,7 @@ int windowsInit(lua_State* L) {
 
     luaL_newlib(L, luaWindows);
 
-    registerHook(render);
+    registerHook(render); //make this into a list later
     registerHook(onHoverChange);
     registerHook(onFocusChange);
     registerHook(onResize);

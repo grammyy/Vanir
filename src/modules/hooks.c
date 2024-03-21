@@ -138,7 +138,7 @@ void freeHook(struct hook *instance, lua_State *L) {
     free(instance->stack);
 }
 
-void luaWrapper(lua_State *L, struct hook *instance, int index, struct callbacks* callback) {
+void luaFunc(lua_State *L, struct hook *instance, int index, struct callbacks* callback) {
     lua_rawgeti(L, LUA_REGISTRYINDEX, instance->stack[index].ref);
 
     if (callback && callback->data) {
@@ -170,6 +170,7 @@ void luaWrapper(lua_State *L, struct hook *instance, int index, struct callbacks
         return;
     }
 }
+
 struct hook* findHook(const char* hookName) {
     for (size_t i = 0; i < hookPool.count; ++i) {
         if (strcmp(hookPool.hooks[i].hookName, hookName) == 0) {
@@ -189,9 +190,10 @@ int luaAdd(lua_State *L) {
     if (instance) {
         if (lua_isfunction(L, 3)) {
             lua_pushvalue(L, 3);
+            
             int ref = luaL_ref(L, LUA_REGISTRYINDEX);
 
-            addHook(instance->address, name, luaWrapper, ref);
+            addHook(instance->address, name, luaFunc, ref);
         } else {
             throw("Hook", instance->hookName, "Third argument must be a function");
         }
