@@ -1,5 +1,5 @@
-#ifndef INPUT
-#define INPUT
+#ifndef VANIR_INPUT_H
+#define VANIR_INPUT_H
 
 int inputInit(lua_State* L);
 

@@ -1,0 +1,123 @@
+cmake_minimum_required(VERSION 3.15)
+project(Vanir C)
+
+set(CMAKE_C_STANDARD 11)
+set(CMAKE_C_STANDARD_REQUIRED ON)
+
+# ── Lua backend ───────────────────────────────────────────────────────────
+option(USE_LUAJIT "Use LuaJIT instead of Lua 5.4" OFF)
+option(VANIR_VERBOSE "Enable verbose logging (vanir_log / vanir_log_info)" OFF)
+
+if(USE_LUAJIT)
+    message(STATUS "Lua backend: LuaJIT")
+
+    find_path(LUA_INCLUDE_DIR lua.h
+        HINTS "${LUA_INCLUDE_DIR}"
+        PATH_SUFFIXES luajit-2.1 luajit-2.0 luajit)
+
+    find_library(LUA_LIBRARIES
+        NAMES luajit-5.1 luajit51 luajit
+        HINTS "${LUA_LIBRARY}" "${LUA_LIBRARIES}")
+
+    if(NOT LUA_INCLUDE_DIR OR NOT LUA_LIBRARIES)
+        message(FATAL_ERROR
+            "LuaJIT not found. Install luajit-dev or pass "
+            "-DLUA_INCLUDE_DIR=<path> -DLUA_LIBRARIES=<path>")
+    endif()
+
+    # compat53 (required for LuaJIT 5.1 compat layer)
+    find_path(COMPAT53_INCLUDE_DIR compat-5.3.h
+        HINTS "${COMPAT53_INCLUDE_DIR}"
+        PATH_SUFFIXES compat53)
+
+    if(NOT COMPAT53_INCLUDE_DIR)
+        message(FATAL_ERROR
+            "compat53 not found. Pass -DCOMPAT53_INCLUDE_DIR=<path>")
+    endif()
+
+    message(STATUS "compat53: ${COMPAT53_INCLUDE_DIR}")
+else()
+    message(STATUS "Lua backend: Lua 5.4")
+
+    find_package(Lua 5.4 QUIET)
+    if(NOT LUA_FOUND)
+        message(FATAL_ERROR
+            "Lua 5.4 not found. Install liblua5.4-dev or pass "
+            "-DLUA_INCLUDE_DIR=<path> -DLUA_LIBRARIES=<path>")
+    endif()
+endif()
+
+message(STATUS "Lua include: ${LUA_INCLUDE_DIR}")
+message(STATUS "Lua library: ${LUA_LIBRARIES}")
+
+# ── GLFW ─────────────────────────────────────────────────────────────────
+find_path(GLFW_INCLUDE_DIR GLFW/glfw3.h
+    HINTS "${GLFW_INCLUDE_DIR}")
+
+find_library(GLFW_LIBRARIES
+    NAMES glfw3 glfw libglfw3 libglfw
+    HINTS "${GLFW_LIBRARY}" "${GLFW_LIBRARIES}")
+
+if(NOT GLFW_INCLUDE_DIR OR NOT GLFW_LIBRARIES)
+    message(FATAL_ERROR
+        "GLFW not found. Pass "
+        "-DGLFW_INCLUDE_DIR=<path> -DGLFW_LIBRARIES=<path>")
+endif()
+message(STATUS "GLFW include: ${GLFW_INCLUDE_DIR}")
+message(STATUS "GLFW library: ${GLFW_LIBRARIES}")
+
+# ── WebGPU ────────────────────────────────────────────────────────────────
+find_path(WEBGPU_INCLUDE_DIR webgpu/webgpu.h
+    HINTS "${WEBGPU_INCLUDE_DIR}")
+
+find_library(WEBGPU_LIBRARIES
+    NAMES wgpu wgpu_native webgpu
+    HINTS "${WEBGPU_LIBRARY}" "${WEBGPU_LIBRARIES}")
+
+if(NOT WEBGPU_INCLUDE_DIR OR NOT WEBGPU_LIBRARIES)
+    message(FATAL_ERROR
+        "WebGPU not found. Pass "
+        "-DWEBGPU_INCLUDE_DIR=<path> -DWEBGPU_LIBRARIES=<path>")
+endif()
+message(STATUS "WebGPU include: ${WEBGPU_INCLUDE_DIR}")
+message(STATUS "WebGPU library: ${WEBGPU_LIBRARIES}")
+
+# ── glfw3webgpu ───────────────────────────────────────────────────────────
+add_library(glfw STATIC IMPORTED)
+set_target_properties(glfw PROPERTIES
+    IMPORTED_LOCATION "${GLFW_LIBRARIES}"
+    INTERFACE_INCLUDE_DIRECTORIES "${GLFW_INCLUDE_DIR}")
+
+add_library(webgpu STATIC IMPORTED)
+set_target_properties(webgpu PROPERTIES
+    IMPORTED_LOCATION "${WEBGPU_LIBRARIES}"
+    INTERFACE_INCLUDE_DIRECTORIES "${WEBGPU_INCLUDE_DIR}")
+
+add_subdirectory(${GLFW3WEBGPU_DIR} glfw3webgpu)
+target_include_directories(glfw3webgpu PRIVATE "${WEBGPU_INCLUDE_DIR}" "${GLFW_INCLUDE_DIR}")
+
+# ── Sources ───────────────────────────────────────────────────────────────file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/src/*.c")
+file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/src/*.c")
+if(NOT SOURCES)
+    message(FATAL_ERROR "No .c files found under '${CMAKE_CURRENT_SOURCE_DIR}/src/'")
+endif()
+
+# ── Target ───────────────────────────────────────────────────────────────
+add_library(Vanir MODULE ${SOURCES})
+
+set_target_properties(Vanir PROPERTIES PREFIX "")
+
+target_include_directories(Vanir PRIVATE
+    "${LUA_INCLUDE_DIR}"
+    "${WEBGPU_INCLUDE_DIR}"
+    $<$<BOOL:${USE_LUAJIT}>:${COMPAT53_INCLUDE_DIR}>)
+
+target_link_libraries(Vanir PRIVATE
+    "${LUA_LIBRARIES}"
+    "${GLFW_LIBRARIES}"
+    "${WEBGPU_LIBRARIES}"
+    glfw3webgpu)
+
+target_compile_definitions(Vanir PRIVATE
+    $<$<BOOL:${USE_LUAJIT}>:USE_LUAJIT>
+    $<$<BOOL:${VANIR_VERBOSE}>:VANIR_VERBOSE>)

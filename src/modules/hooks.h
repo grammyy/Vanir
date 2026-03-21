@@ -45,11 +45,13 @@ struct stack {
 };
 
 // hooks ↓↓↓ hooks ///
+struct hook* findHook(const char* hookName);
+
 void registerHook(struct hook hookData);
 void addHook(struct hook *instance, const char *name, void (*func)(lua_State*, struct hook *instance, int, struct callbacks* callback), int ref);
 void runHook(struct hook *instance, lua_State *L);
 void freeHook(struct hook *instance, lua_State *L);
-struct hook* findHook(const char* hookName);
+int hooksRun(lua_State *L);
 // hooks ↑↑↑ hooks ///
 
 // callbacks ↓↓↓ callbacks ///

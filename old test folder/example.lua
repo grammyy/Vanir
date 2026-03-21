@@ -1,7 +1,7 @@
 require("vanir")
-requiredir("test")
+--requiredir("test")
 
---hooks.add("think", "test", function()
+--hook.add("think", "test", function()
 --    print("hii :3")
 --end)
 
@@ -10,7 +10,7 @@ keyHeld=false
 
 test[#test+1]=windows.createWindow(400,400,400,200,"nya")
 
-hooks.add("inputPressed","test",function(key)
+hook.add("inputPressed","test",function(key)
     if key==69 then
         print("pressed -> "..key)
 
@@ -27,11 +27,11 @@ hooks.add("inputPressed","test",function(key)
     end
 end)
 
-hooks.add("inputReleased","test",function(key)
+hook.add("inputReleased","test",function(key)
     print("released -> "..key)
 end)
 
-hooks.add("inputReleased","test2",function(key)
+hook.add("inputReleased","test2",function(key)
     print("released #2 -> "..key)
 end)
 
@@ -43,7 +43,7 @@ local triangle = {
     {400, 0, 0}  -- Vertex 3: (1.0, 0.0)
 }
 
-hooks.add("render","main",function()
+hook.add("render","main",function()
     for i, window in ipairs(test) do
         if window then
             window:selectRender()
@@ -55,13 +55,14 @@ hooks.add("render","main",function()
             width=width/2
 
             render.drawCircle(x,y,20,100)
-            --print(x,y)
+            print(x,y)
+            print(tostring(Color(255,0,0)))
 
             render.drawPoly(triangle,function(i)
                 render.setColor(Color((i*(360/3)+(timer.realtime()/10))%360,100,100):hsvToRGB())
             end)
 
-            if keyHeld then
+            if keyHeld and window:isFocused() then
                 render.drawFilledCircle(width, height/2, 100, 100, function(i)
                     render.setColor(Color((i*(360/100)+(timer.realtime()/10))%360,100,100):hsvToRGB())
                 end)

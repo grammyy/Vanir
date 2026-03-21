@@ -3,20 +3,26 @@ requiredir("test")
 
 window = windows.createWindow(400,400,400,200,"nya")
 toggle = false
-test=render.newTexture("lol"):loadImage("bleh.jpg")
 
-hooks.add("inputPressed", "", function(key)
+hook.add("inputPressed", "", function(key)
     if key==85 and window:isFocused() then
         toggle = not toggle
     end
+
+    if key==84 then
+        test=render.newTexture("lol"):loadImage("IMG_1265.png")
+    end
+
+    print(key)
 end)
 
-hooks.add("render","main",function()
+hook.add("render","main",function()
     width,height=window:getSize()
 
     window:selectRender()
     
-    render.clear(Color(0,0,0))
+    --render.clear(Color(0,0,0))
+    --render.clear(Color(0,0,0),1)
 
     if toggle then
         for i=1, 100 do
@@ -27,8 +33,12 @@ hooks.add("render","main",function()
             end
         end
     else
-        render.selectTexture(gl.texture2D, "lol")
-        render.drawTexture(10,10,300,300)
+        if test then
+            --print(test:getName())
+
+            render.selectTexture(gl.texture2D, "lol")
+            render.drawTexture(10,10,300,300)
+        end
     end
 
     window:update()
@@ -36,7 +46,7 @@ hooks.add("render","main",function()
     window:stopRender()
 end)
 
-hooks.add("onClose","",function()
+hook.add("onClose","",function()
     quit()
 end)
 

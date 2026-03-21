@@ -1,364 +1,207 @@
-#include <lua.h>
-#include <lauxlib.h>
-#include <lualib.h>
-#include <Windows.h>
-#include <math.h>
-#include <dirent.h>
-#include <unistd.h>
-#include <SDL.h>
-#include <sys/stat.h>
+#include "lua_config.h"
+
+#include "vanir.h"
+#include "enums.h"
+#include "types.h"
+
+#include "modules/testfunc.h"
+#include "modules/render.h"
+#include "modules/windows.h"
 #include "modules/hooks.h"
 #include "modules/input.h"
-#include "modules/windows.h"
-#include "modules/render.h"
-#include "modules/system.h"
 #include "modules/timer.h"
-#include "enums.h"
-#include "vanir.h"
 
-void setFieldInt(lua_State *L, const char *key, float data) {
-    lua_pushstring(L, key);
-    lua_pushinteger(L, data);
-    lua_settable(L, -3);
-}
+#include <string.h>
+#include <stdlib.h>
 
-void setFieldFloat(lua_State *L, const char *key, float data) {
-    lua_pushstring(L, key);
+extern struct windowPool windowPool;
+
+/* ↓ helper functions ↓ */
+void setFieldNumber(lua_State *L, const char *key, float data) {
     lua_pushnumber(L, data);
-    lua_settable(L, -3);
+    lua_setfield(L, -2, key);
 }
 
-int tostring(lua_State *L) {
-    lua_getfield(L, 1, "x");
-    lua_getfield(L, 1, "y");
-    lua_getfield(L, 1, "z");
-
-    const char *x = lua_tostring(L, -3);
-    const char *y = lua_tostring(L, -2);
-    const char *z = lua_tostring(L, -1);
-
-    char temp[strlen(x) + strlen(y) + strlen(z) + 4];
-
-    strcpy(temp, x);
-    strcat(temp, ", ");
-    strcat(temp, y);
-    strcat(temp, ", ");
-    strcat(temp, z);
-
-    lua_pop(L, 3);
-
-    lua_pushstring(L, temp);
-
-    return 1;
-}
-
-static const luaL_Reg tableMethods[] = {
-    {"tostring", tostring},
-    {NULL, NULL}
-};
-
-int Vector(lua_State* L) {
-    float x = luaL_optnumber(L, 1, 0.0f);
-    float y = luaL_optnumber(L, 2, 0.0f);
-    float z = luaL_optnumber(L, 3, 0.0f);
-
-    lua_newtable(L);
-    setFieldFloat(L, "x", x);
-    setFieldFloat(L, "y", y);
-    setFieldFloat(L, "z", z);
-
-    addMethods(L, "table", tableMethods);
-
-    return 1;
-}
-
-int Angle(lua_State* L) {
-    float roll = luaL_optnumber(L, 1, 0.0f);
-    float pitch = luaL_optnumber(L, 2, 0.0f);
-    float yaw = luaL_optnumber(L, 3, 0.0f);
-
-    lua_newtable(L);
-    setFieldFloat(L, "roll", roll);
-    setFieldFloat(L, "pitch", pitch);
-    setFieldFloat(L, "yaw", yaw);
-    
-    addMethods(L, "table", tableMethods);
-
-    return 1;
-}
-
-int rgbToHSV(lua_State *L) { //test more later
-    lua_getfield(L, 1, "r");
-    lua_getfield(L, 1, "g");
-    lua_getfield(L, 1, "b");
-    lua_getfield(L, 1, "a");
-
-    float r = lua_tonumber(L, -4);
-    float g = lua_tonumber(L, -3);
-    float b = lua_tonumber(L, -2);
-    float a = lua_tonumber(L, -1);
-
-    float min, max, delta;
-    float h, s, v;
-
-    min = fminf(r, fminf(g, b));
-    max = fmaxf(r, fmaxf(g, b));
-    v = max;
-
-    if (max != 0)
-        s = (max - min) / max;
-    else {
-        s = 0;
-        h = -1; // Undefined
-    }
-
-    delta = max - min;
-    if (delta == 0) {
-        h = 0;
-    } else if (r == max) {
-        h = (g - b) / delta;
-    } else if (g == max) {
-        h = 2 + (b - r) / delta;
-    } else {
-        h = 4 + (r - g) / delta;
-    }
-
-    h *= 60;
-    if (h < 0)
-        h += 360;
-
-    lua_newtable(L);
-    setFieldInt(L, "r", h);
-    setFieldInt(L, "g", s);
-    setFieldInt(L, "b", v);
-    setFieldInt(L, "a", a);
-
-    return 1;
-}
-
-int hsvToRGB(lua_State *L) {
-    lua_getfield(L, 1, "r");
-    lua_getfield(L, 1, "g");
-    lua_getfield(L, 1, "b");
-    lua_getfield(L, 1, "a");
-
-    double h = lua_tonumber(L, -4);
-    double s = lua_tonumber(L, -3) / 100.0f;
-    double v = lua_tonumber(L, -2) / 100.0f;
-    double a = lua_tonumber(L, -1);
-
-    double r, g, b;
-
-    if (s == 0) {
-        r = v;
-		g = v;
-		b = v;
-    } else {
-        if (h >= 360)
-            h = 0;
-        else
-            h = h / 60.0f;
-
-		int i = (int)trunc(h);
-        double f = h - i; // fractional part of h
-
-        double p = v * (1.0f - s);
-        double q = v * (1.0f - (s * f));
-        double t = v * (1.0f - (s * (1.0f - f)));
-
-        switch (i) {
-            case 0: r = v; g = t; b = p; break;
-            case 1: r = q; g = v; b = p; break;
-            case 2: r = p; g = v; b = t; break;
-            case 3: r = p; g = q; b = v; break;
-            case 4: r = t; g = p; b = v; break;
-            default: r = v; g = p; b = q; break;
-        }
-    }
-    
-    lua_newtable(L);
-    setFieldInt(L, "r", r * 255);
-    setFieldInt(L, "g", g * 255);
-    setFieldInt(L, "b", b * 255);
-    setFieldInt(L, "a", a);
-
-    return 1;
-}
-
-static const luaL_Reg colorMethods[] = {
-    {"rgbToHSV", rgbToHSV},
-    {"hsvToRGB", hsvToRGB},
-    {NULL, NULL}
-};
-
-int Color(lua_State* L) {
-    float r = luaL_optnumber(L, 1, 255.0f);
-    float g = luaL_optnumber(L, 2, 255.0f);
-    float b = luaL_optnumber(L, 3, 255.0f);
-    float a = luaL_optnumber(L, 4, 255.0f);
-
-    lua_newtable(L);
-    setFieldInt(L, "r", r);
-    setFieldInt(L, "g", g);
-    setFieldInt(L, "b", b);
-    setFieldInt(L, "a", a);
-
-    addMethods(L, "color", colorMethods);
-
-    return 1;
-}
-
-void addMethods(lua_State* L, const char* name, const luaL_Reg* methods) {
-    luaL_newmetatable(L, name);
-
-    lua_pushstring(L, "__index");
-    lua_newtable(L);
-
-    for (const luaL_Reg* method = methods; method->name != NULL; ++method) {
-        lua_pushcfunction(L, method->func);
-        lua_setfield(L, -2, method->name);
-    }
-
-    lua_settable(L, -3);
-
-    lua_setmetatable(L, -2);
-}
-
-void registerGlobals(lua_State* L, const luaL_reg* funcs) {
+void registerGlobals(lua_State* L, const luaL_Reg* funcs) {
     for (; funcs->name != NULL; ++funcs) {
-        lua_pushstring(L, funcs->name);
-
-        funcs->func(L);
-
+        lua_pushcfunction(L, funcs->func);
+        lua_call(L, 0, 1);
         lua_setglobal(L, funcs->name);
     }
 }
+/* ↑ helper functions ↑ */
 
-void throw(const char* type, const char* name, const char* error) {
-    printf("%s \"%s\" errored with: %s\n", type, name, error);
-}
-
-int requiredir(lua_State *L) {
-    const char *path = luaL_checkstring(L, 1);
-    char cwd[PATH_MAX];
-    struct dirent *ent;
-    DIR *dir;
-
-    if (getcwd(cwd, sizeof(cwd)) == NULL) {
-        throw("Startup", "requiredir", "Failed to get the current working directory");
+int quit(lua_State *L) {
+    /* ↓ close any in-flight frame on every window; ends pass encoder, releases view/texture ↓ */
+    for (int i = 0; i < windowPool.count; ++i) {
+        struct glfwWindow *w = windowPool.windows[i];
         
-        return 0;
+        releaseFrame(w);
     }
 
-    size_t path_length = strlen(path);
-    char *full_path = (char *)malloc(strlen(cwd) + path_length + 2);
-    
-    if (full_path == NULL) {
-        throw("Startup", "requiredir", "Memory allocation error.");
+    /* ↓ destroy per-window gpu resources; pipeline → surface unconfigure → surface release → glfw window ↓ */
+    for (int i = 0; i < windowPool.count; ++i) {
+        struct glfwWindow *w = windowPool.windows[i];
         
-        return 0;
-    }
-
-    snprintf(full_path, strlen(cwd) + path_length + 2, "%s/%s", cwd, path);
-
-    if ((dir = opendir(full_path)) != NULL) {
-        while ((ent = readdir(dir)) != NULL) {
-            char *file_name = ent->d_name;
-            char *file_path = (char *)malloc(strlen(full_path) + strlen(file_name) + 2);
+        destroyPipeline(w->pipeline);
+        
+        w->pipeline = NULL;
+        
+        if (w->surface) {
+            wgpuSurfaceUnconfigure(w->surface);  // required before release on wgpu-native
+            wgpuSurfaceRelease(w->surface);
             
-            if (file_path == NULL) {
-                throw("requiredir", file_name, "Memory allocation error.");
-                
-                break;
-            }
-            
-            snprintf(file_path, strlen(full_path) + strlen(file_name) + 2, "%s/%s", full_path, file_name);
-            
-            struct stat file_stat;
-
-            if (stat(file_path, &file_stat) == 0 && S_ISREG(file_stat.st_mode)) {
-                char *ext = strrchr(file_name, '.');
-                
-                if (ext != NULL && (strcmp(ext, ".lua") == 0 || strcmp(ext, ".dll") == 0)) {
-                    if (luaL_dofile(L, file_path) != LUA_OK) {
-                        throw("Startup", "requiredir", lua_tostring(L, -1));
-
-                        lua_pop(L, 1);
-                    }
-                }
-            }
-
-            free(file_path);
+            w->surface = NULL;
         }
 
-        closedir(dir);
-    } else {
-        throw("requiredir", full_path, "Failed to open directory.");
+        if (w->window) {
+            glfwDestroyWindow(w->window);
+            
+            w->window = NULL;
+        }
+        
+        free(w);
     }
 
-    free(full_path);
+    free(windowPool.windows);
+    
+    windowPool.windows = NULL;
+    windowPool.count   = 0;
+
+    /* ↓ release shared GPU context/glfw/and lua; device → adapter → instance ↓ */
+    vanirGPUDestroy();
+    glfwTerminate();
+    lua_close(L);
+    
+    exit(0);
+}
+
+/*
+int requiredir(lua_State *L) {
+    const char *rel = luaL_checkstring(L, 1);
+
+    // Build the absolute path.
+    char cwd[PATH_MAX];
+
+    if (!getcwd(cwd, sizeof(cwd))) {
+        return luaL_error(L, "requiredir: getcwd failed");
+    }
+
+    char full[PATH_MAX];
+
+    snprintf(full, sizeof(full), "%s/%s", cwd, rel);
+
+    DIR *dir = opendir(full);
+
+    if (!dir) {
+        return luaL_error(L, "requiredir: cannot open '%s'", full);
+    }
+
+    struct dirent *ent;
+
+    while ((ent = readdir(dir)) != NULL) {
+        const char *name = ent->d_name;
+
+        // Skip hidden files and . / ..
+        if (name[0] == '.') continue;
+
+        // Only load .lua files. Let Lua's require() handle native libs.
+        const char *ext = strrchr(name, '.');
+
+        if (!ext || strcmp(ext, ".lua") != 0) continue;
+
+        char path[PATH_MAX];
+
+        snprintf(path, sizeof(path), "%s/%s", full, name);
+
+        // Use luaL_loadfile + lua_pcall instead of luaL_dofile so we can
+        // catch errors without aborting the whole directory scan.
+        if (luaL_loadfile(L, path) != LUA_OK) {
+            // Leave the error on the stack as a warning, then pop and continue.
+            fprintf(stderr, "[Vanir] requiredir: load error in '%s': %s\n",
+                    name, lua_tostring(L, -1));
+            lua_pop(L, 1);
+            
+            continue;
+        }
+
+        // Call the chunk. Files that return a table get that table as the
+        // result — we discard it here (requiredir isn't require()), but the
+        // file ran and any side-effects (globals, hook registrations) stick.
+        if (lua_pcall(L, 0, 0, 0) != LUA_OK) {
+            fprintf(stderr, "[Vanir] requiredir: runtime error in '%s': %s\n",
+                    name, lua_tostring(L, -1));
+            
+            lua_pop(L, 1);
+        }
+    }
+
+    closedir(dir);
 
     return 0;
 }
-
-int quit(lua_State *L) {
-    SDL_Quit();
-    lua_close(L);
-}
+*/
 
 const luaL_Reg luaVanir[] = {
+    {"testt",  l_test},
+    /* ↑ random testing, ignore ↑ */
+
+    /* ↓ types ↓ */
     {"Vector", Vector},
-    {"Color", Color},
-    {"requiredir", requiredir},
+    {"Angle", Angle},
+    {"Color",  Color},
+    
+    /* ↓ vanir functions ↓ */
     {"quit", quit},
+    //{"requireDir", requireDir}, recoding later today
+
     {NULL, NULL}
 };
 
-const luaL_reg luaReg[] = {
-    // ↓ modules ↓ ///
-    {"hooks", hooksInit},
-    {"input", inputInit},
+const luaL_Reg luaReg[] = {
+    /* ↓ modules ↓ */
     {"windows", windowsInit},
     {"render", renderInit},
+    {"hook", hooksInit},
+    {"input", inputInit},
     {"timer", timerInit},
-    {"system", systemInit},
 
-    // ↓ enums ↓ ///
-    {"gl", glEnums},
-    {"sdl", sdlEnums},
+    /* ↓ enums ↓ */
+    {"test", testEnums},
+
     {NULL, NULL}
 };
 
-void vanirInit(lua_State *L) {
+/// ↓ require("vanir") lua entry ↓ ///
+LUALIB_API int luaopen_vanir(lua_State *L) {
+#ifdef USE_LUAJIT
+    luaL_dostring(L, "require('compat53')");
+#endif
+
     luaL_dofile(L, "preload.lua");
 
     lua_newtable(L);
-
-    lua_pushnumber(L, 255.0f);
-    lua_setfield(L, -2, "r");
-
-    lua_pushnumber(L, 255.0f);
-    lua_setfield(L, -2, "g");
-
-    lua_pushnumber(L, 255.0f);
-    lua_setfield(L, -2, "b");
-
-    lua_pushnumber(L, 255.0f);
-    lua_setfield(L, -2, "a");
-
+    setFieldNumber(L, "r", 255.0f);
+    setFieldNumber(L, "g", 255.0f);
+    setFieldNumber(L, "b", 255.0f);
+    setFieldNumber(L, "a", 255.0f);
     lua_setglobal(L, "_rendercolor");
 
-    registerGlobals(L, luaReg);
+    lua_newtable(L);
+    lua_pushstring(L, "1.0.0");
+    lua_setfield(L, -2, "version");
 
     for (const luaL_Reg *reg = luaVanir; reg->name != NULL && reg->func != NULL; ++reg) {
         lua_pushcfunction(L, reg->func);
         lua_setglobal(L, reg->name);
     }
-}
 
-__declspec(dllexport) int luaopen_vanir(lua_State * L) {
-    vanirInit(L);
-    systemInit(L);
+    registerGlobals(L, luaReg);
 
-    return 0;
+    lua_newtable(L);
+    lua_pushcfunction(L, hooksRun);
+    lua_setfield(L, -2, "run");
+    lua_setglobal(L, "hooks");
+
+    return 1;
 }

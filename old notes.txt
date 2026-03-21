@@ -51,3 +51,7 @@ low:
     -> vectors, localToWorld, and related
     -> websockets, joysticks, touch, and binary related stuff
     -> data encoding/decoding stuff, maybe add json
+
+need ability to have embedded web pages/css, or if possible - intergrate with existing library
+need ability to be able to called from c side in OTHER peoples engines, full support
+look into how image decoding should work, seperate library? included dll? etc
