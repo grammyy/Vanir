@@ -137,19 +137,21 @@ static void cbResize(GLFWwindow *win, int width, int height) {
     if (width == 0 || height == 0) {
         w->minimized = true;
 
-        vanir_log_info("cbResize: window \"%s\" minimized", w->name);
+        vanir_log_info("cbResize: window [%s] minimized", w->name);
 
         return;
     }
 
-    w->minimized = false;
+    w->lastWidth  = width;
+    w->lastHeight = height;
+    w->minimized  = false;
 
     releaseFrame(w);
 
     WGPUSurfaceConfiguration surf_cfg = {0};
     surf_cfg.device = gpu.device;
     surf_cfg.format = w->surfaceFormat;
-    surf_cfg.usage = WGPUTextureUsage_RenderAttachment;
+    surf_cfg.usage = WGPUTextureUsage_RenderAttachment | WGPUTextureUsage_CopyDst;
     surf_cfg.width = (uint32_t)w->fbWidth;
     surf_cfg.height = (uint32_t)w->fbHeight;
     surf_cfg.presentMode = w->presentMode;
@@ -190,7 +192,7 @@ static void cbClose(GLFWwindow *win) {
         windowPool.windows[i]->quit = true;
         onClose.status = hook_awaiting;
         
-        vanir_log_info("cbClose: window \"%s\" marked for deferred close", windowPool.windows[i]->name);
+        vanir_log_info("cbClose: window [%s] marked for deferred close", windowPool.windows[i]->name);
         
         return;
     }
@@ -231,9 +233,11 @@ void releaseFrame(struct glfwWindow *w) {
 /* ↓ pipeline lifecycle ↓ */
 void destroyPipeline(struct Pipeline *p) {
     if (!p) return;
+    if (p->pipelineTextured)       { wgpuRenderPipelineRelease(p->pipelineTextured);        p->pipelineTextured       = NULL; }
     if (p->pipelineLine)           { wgpuRenderPipelineRelease(p->pipelineLine);            p->pipelineLine           = NULL; }
     if (p->pipeline)               { wgpuRenderPipelineRelease(p->pipeline);                p->pipeline               = NULL; }
     if (p->uniformBindGroup)       { wgpuBindGroupRelease(p->uniformBindGroup);             p->uniformBindGroup       = NULL; }
+    if (p->textureBindGroupLayout) { wgpuBindGroupLayoutRelease(p->textureBindGroupLayout); p->textureBindGroupLayout = NULL; }
     if (p->uniformBindGroupLayout) { wgpuBindGroupLayoutRelease(p->uniformBindGroupLayout); p->uniformBindGroupLayout = NULL; }
     if (p->uniformBuffer)          { wgpuBufferRelease(p->uniformBuffer);                   p->uniformBuffer          = NULL; }
     if (p->vertexBuffer)           { wgpuBufferRelease(p->vertexBuffer);                    p->vertexBuffer           = NULL; }
@@ -257,7 +261,7 @@ static void destroyWindowResources(struct glfwWindow *w) {
     glfwDestroyWindow(w->window);
     w->window = NULL;
     
-    vanir_log_info("destroyWindowResources: \"%s\" released", w->name);
+    vanir_log_info("destroyWindowResources: [%s] released", w->name);
 
     // ↓ tear down the shared GPU context when the last window is gone ↓
     if (windowPool.count == 1)
@@ -348,11 +352,12 @@ int getMouse(lua_State *L) {
 }
 
 /* ↓ returns screen coords, not framebuffer pixels; uses fbWidth/fbHeight internally for gpu operations ↓ */
+/* ↓ when minimized, glfw reports 0x0 so we return the last known size instead ↓ */
 int getSize(lua_State *L) {
     struct glfwWindow **w = (struct glfwWindow **)luaL_checkudata(L, 1, "window");
-   
-    lua_pushinteger(L, (*w)->width);
-    lua_pushinteger(L, (*w)->height);
+  
+    lua_pushinteger(L, (*w)->lastWidth  > 0 ? (*w)->lastWidth  : (*w)->width);
+    lua_pushinteger(L, (*w)->lastHeight > 0 ? (*w)->lastHeight : (*w)->height);
     
     return 2;
 }
@@ -376,6 +381,149 @@ int getMonitorIndex(lua_State *L) {
     lua_pushinteger(L, index);
     
     return 1;
+}
+
+/* ↓ set window title at runtime ↓ */
+int setTitle(lua_State *L) {
+    struct glfwWindow **w = (struct glfwWindow **)luaL_checkudata(L, 1, "window");
+    const char *title = luaL_checkstring(L, 2);
+    
+    (*w)->name = title;
+    glfwSetWindowTitle((*w)->window, title);
+    
+    return 0;
+}
+
+/* ↓ move window to screen position ↓ */
+int setPos(lua_State *L) {
+    struct glfwWindow **w = (struct glfwWindow **)luaL_checkudata(L, 1, "window");
+    int x = luaL_checkinteger(L, 2);
+    int y = luaL_checkinteger(L, 3);
+    
+    (*w)->x = x;
+    (*w)->y = y;
+    glfwSetWindowPos((*w)->window, x, y);
+    
+    return 0;
+}
+
+/* ↓ get window screen position ↓ */
+int getPos(lua_State *L) {
+    struct glfwWindow **w = (struct glfwWindow **)luaL_checkudata(L, 1, "window");
+    int x, y;
+    
+    glfwGetWindowPos((*w)->window, &x, &y);
+    lua_pushinteger(L, x);
+    lua_pushinteger(L, y);
+    
+    return 2;
+}
+
+/* ↓ resize window ↓ */
+int setSize(lua_State *L) {
+    struct glfwWindow **w = (struct glfwWindow **)luaL_checkudata(L, 1, "window");
+    int width  = luaL_checkinteger(L, 2);
+    int height = luaL_checkinteger(L, 3);
+    
+    glfwSetWindowSize((*w)->window, width, height);
+    
+    return 0;
+}
+
+/* ↓ set window icon from raw RGBA pixels. pass nil to reset to default ↓ */
+int setIcon(lua_State *L) {
+    struct glfwWindow **w = (struct glfwWindow **)luaL_checkudata(L, 1, "window");
+    
+    if (lua_isnil(L, 2)) {
+        glfwSetWindowIcon((*w)->window, 0, NULL);
+        
+        return 0;
+    }
+    
+    int width  = luaL_checkinteger(L, 2);
+    int height = luaL_checkinteger(L, 3);
+    
+    size_t len;
+    const char *pixels = luaL_checklstring(L, 4, &len);
+    
+    /* ↓ expects raw RGBA bytes, width * height * 4 ↓ */
+    if (len < (size_t)(width * height * 4)) {
+        throw("setIcon", (*w)->name, "pixel data too short for given dimensions");
+        
+        return 0;
+    }
+    
+    GLFWimage img = { width, height, (unsigned char *)pixels };
+    glfwSetWindowIcon((*w)->window, 1, &img);
+    
+    return 0;
+}
+
+/* ↓ set window opacity (0.0 - 1.0) ↓ */
+int setOpacity(lua_State *L) {
+    struct glfwWindow **w = (struct glfwWindow **)luaL_checkudata(L, 1, "window");
+    float opacity = (float)luaL_checknumber(L, 2);
+    
+    glfwSetWindowOpacity((*w)->window, opacity);
+    
+    return 0;
+}
+
+/* ↓ toggle always-on-top / floating hint ↓ */
+int setAlwaysOnTop(lua_State *L) {
+    struct glfwWindow **w = (struct glfwWindow **)luaL_checkudata(L, 1, "window");
+    int ontop = lua_toboolean(L, 2);
+    
+    glfwSetWindowAttrib((*w)->window, GLFW_FLOATING, ontop ? GLFW_TRUE : GLFW_FALSE);
+    
+    return 0;
+}
+
+/* ↓ enter / leave fullscreen on monitor index (default 0). pass false to exit ↓ */
+int setFullscreen(lua_State *L) {
+    struct glfwWindow **w     = (struct glfwWindow **)luaL_checkudata(L, 1, "window");
+    int enabled = lua_toboolean(L, 2);
+    int monIdx  = (int)luaL_optinteger(L, 3, 0);
+    
+    if (enabled) {
+        int count;
+        GLFWmonitor **monitors = glfwGetMonitors(&count);
+        
+        if (monIdx < 0 || monIdx >= count) monIdx = 0;
+        
+        GLFWmonitor *mon = monitors[monIdx];
+        const GLFWvidmode *mode = glfwGetVideoMode(mon);
+        
+        /* ↓ save windowed state for restore later ↓ */
+        glfwGetWindowPos((*w)->window, &(*w)->x, &(*w)->y);
+        
+        glfwSetWindowMonitor((*w)->window, mon, 0, 0, mode->width, mode->height, mode->refreshRate);
+    } else {
+        /* ↓ restore to last saved windowed position and size ↓ */
+        glfwSetWindowMonitor((*w)->window, NULL, (*w)->x, (*w)->y, (*w)->width, (*w)->height, 0);
+    }
+    
+    return 0;
+}
+
+/* ↓ focus (raise) the window ↓ */
+int focus(lua_State *L) {
+    struct glfwWindow **w = (struct glfwWindow **)luaL_checkudata(L, 1, "window");
+    
+    glfwFocusWindow((*w)->window);
+    
+    return 0;
+}
+
+/* ↓ minimize/iconify or restore ↓ */
+int minimize(lua_State *L) {
+    struct glfwWindow **w = (struct glfwWindow **)luaL_checkudata(L, 1, "window");
+    int iconify = lua_toboolean(L, 2);
+    
+    if (iconify) glfwIconifyWindow((*w)->window);
+    else         glfwRestoreWindow((*w)->window);
+    
+    return 0;
 }
 /* window metafunctions ↑↑↑ window metafunctions */
 
@@ -480,6 +628,115 @@ static WGPURenderPipeline buildRenderPipeline(struct glfwWindow *w, WGPUPrimitiv
     return pipeline;
 }
 
+/* ↓ textured quad shader: pos(xy) + uv(uv), two bind groups ↓ */
+/* ↓ group0 = viewport uniform (pixel->NDC), group1 = texture + sampler ↓ */
+static const char *VANIR_TEXTURED_WGSL =
+    "struct Viewport { width: f32, height: f32 }\n"
+    "@group(0) @binding(0) var<uniform> viewport: Viewport;\n"
+    "@group(1) @binding(0) var t_color: texture_2d<f32>;\n"
+    "@group(1) @binding(1) var s_color: sampler;\n"
+    "\n"
+    "struct VertIn  { @location(0) pos: vec4f, @location(1) uv: vec2f }\n"
+    "struct VertOut { @builtin(position) pos: vec4f, @location(0) uv: vec2f }\n"
+    "@vertex\n"
+    "fn vs_main(v: VertIn) -> VertOut {\n"
+    "    var out: VertOut;\n"
+    "    let ndcX =  (v.pos.x / viewport.width)  * 2.0 - 1.0;\n"
+    "    let ndcY = -(v.pos.y / viewport.height) * 2.0 + 1.0;\n"
+    "    out.pos = vec4f(ndcX, ndcY, v.pos.z, 1.0);\n"
+    "    out.uv  = v.uv;\n"
+    "    return out;\n"
+    "}\n"
+    "@fragment\n"
+    "fn fs_main(in: VertOut) -> @location(0) vec4f {\n"
+    "    return textureSample(t_color, s_color, in.uv);\n"
+    "}\n";
+
+/* ↓ pos(xyzw) + uv(uv) = 6 floats per vertex — matches TEXTURED_VERTEX_STRIDE in windows.h ↓ */
+
+/* ↓ build the textured pipeline with two bind group layouts ↓ */
+static WGPURenderPipeline buildTexturedPipeline(struct glfwWindow *w,
+                                                 WGPUBindGroupLayout viewportBGL,
+                                                 WGPUBindGroupLayout textureBGL,
+                                                 WGPUBlendFactor blendSrc,
+                                                 WGPUBlendFactor blendDst) {
+    WGPUShaderSourceWGSL wgsl_src = {0};
+    wgsl_src.chain.sType  = WGPUSType_ShaderSourceWGSL;
+    wgsl_src.code.data    = VANIR_TEXTURED_WGSL;
+    wgsl_src.code.length  = strlen(VANIR_TEXTURED_WGSL);
+
+    WGPUShaderModuleDescriptor shader_desc = {0};
+    shader_desc.nextInChain = &wgsl_src.chain;
+    WGPUShaderModule shader = wgpuDeviceCreateShaderModule(gpu.device, &shader_desc);
+
+    if (!shader) {
+        throw("buildTexturedPipeline", w->name, "wgpuDeviceCreateShaderModule failed");
+
+        return NULL;
+    }
+
+    /* ↓ vertex layout: location0 = pos (xyzw), location1 = uv (xy) ↓ */
+    WGPUVertexAttribute attrs[2] = {0};
+    attrs[0].format         = WGPUVertexFormat_Float32x4;
+    attrs[0].offset         = 0;
+    attrs[0].shaderLocation = 0;
+    attrs[1].format         = WGPUVertexFormat_Float32x2;
+    attrs[1].offset         = 4 * sizeof(float);
+    attrs[1].shaderLocation = 1;
+
+    WGPUVertexBufferLayout vbl = {0};
+    vbl.arrayStride    = TEXTURED_VERTEX_STRIDE * sizeof(float);
+    vbl.stepMode       = WGPUVertexStepMode_Vertex;
+    vbl.attributeCount = 2;
+    vbl.attributes     = attrs;
+
+    WGPUBlendState blend = {0};
+    blend.color.srcFactor = blendSrc;
+    blend.color.dstFactor = blendDst;
+    blend.color.operation = WGPUBlendOperation_Add;
+    blend.alpha.srcFactor = WGPUBlendFactor_One;
+    blend.alpha.dstFactor = WGPUBlendFactor_OneMinusSrcAlpha;
+    blend.alpha.operation = WGPUBlendOperation_Add;
+
+    WGPUColorTargetState color_target = {0};
+    color_target.format    = w->surfaceFormat;
+    color_target.writeMask = WGPUColorWriteMask_All;
+    color_target.blend     = &blend;
+
+    WGPUFragmentState frag = {0};
+    frag.module      = shader;
+    frag.entryPoint  = (WGPUStringView){ .data = "fs_main", .length = 7 };
+    frag.targetCount = 1;
+    frag.targets     = &color_target;
+
+    WGPUBindGroupLayout bgls[2] = { viewportBGL, textureBGL };
+    WGPUPipelineLayoutDescriptor pl_desc = {0};
+    pl_desc.bindGroupLayoutCount = 2;
+    pl_desc.bindGroupLayouts     = bgls;
+    WGPUPipelineLayout pl = wgpuDeviceCreatePipelineLayout(gpu.device, &pl_desc);
+
+    WGPURenderPipelineDescriptor pipe_desc = {0};
+    pipe_desc.layout              = pl;
+    pipe_desc.vertex.module       = shader;
+    pipe_desc.vertex.entryPoint   = (WGPUStringView){ .data = "vs_main", .length = 7 };
+    pipe_desc.vertex.bufferCount  = 1;
+    pipe_desc.vertex.buffers      = &vbl;
+    pipe_desc.fragment            = &frag;
+    pipe_desc.primitive.topology  = WGPUPrimitiveTopology_TriangleList;
+    pipe_desc.multisample.count   = 1;
+    pipe_desc.multisample.mask    = 0xFFFFFFFF;
+
+    WGPURenderPipeline pipeline = wgpuDeviceCreateRenderPipeline(gpu.device, &pipe_desc);
+
+    wgpuPipelineLayoutRelease(pl);
+    wgpuShaderModuleRelease(shader);
+
+    if (!pipeline)
+        throw("buildTexturedPipeline", w->name, "wgpuDeviceCreateRenderPipeline failed");
+
+    return pipeline;
+}
+
 /* ↓ build pipeline bundle; cpu side vertex/command batch buffers grow on demand ↓ */
 /* ↓ TODO: note later about bundle ↓*/
 struct Pipeline *buildPipelines(struct glfwWindow *w, WGPUBlendFactor blendSrc, WGPUBlendFactor blendDst) {
@@ -559,7 +816,31 @@ struct Pipeline *buildPipelines(struct glfwWindow *w, WGPUBlendFactor blendSrc, 
         return NULL;
     }
 
-    vanir_log_info("buildPipelines: ready for \"%s\"", w->name);
+    /* ↓ textured quad pipeline; group0 = viewport uniform, group1 = texture + sampler ↓ */
+    {
+        /* ↓ build group1 layout: binding0 = texture, binding1 = sampler ↓ */
+        WGPUBindGroupLayoutEntry tex_entries[2] = {0};
+        tex_entries[0].binding    = 0;
+        tex_entries[0].visibility = WGPUShaderStage_Fragment;
+        tex_entries[0].texture.sampleType    = WGPUTextureSampleType_Float;
+        tex_entries[0].texture.viewDimension = WGPUTextureViewDimension_2D;
+
+        tex_entries[1].binding    = 1;
+        tex_entries[1].visibility = WGPUShaderStage_Fragment;
+        tex_entries[1].sampler.type = WGPUSamplerBindingType_Filtering;
+
+        WGPUBindGroupLayoutDescriptor tex_bgl_desc = {0};
+        tex_bgl_desc.entryCount = 2;
+        tex_bgl_desc.entries    = tex_entries;
+        p->textureBindGroupLayout = wgpuDeviceCreateBindGroupLayout(gpu.device, &tex_bgl_desc);
+
+        if (p->textureBindGroupLayout) {
+            p->pipelineTextured = buildTexturedPipeline(w, p->uniformBindGroupLayout, p->textureBindGroupLayout, blendSrc, blendDst);
+            /* ↓ textured pipeline failure is non-fatal; textured draws will log an error ↓ */
+        }
+    }
+
+    vanir_log_info("buildPipelines: ready for [%s]", w->name);
     
     return p;
 }
@@ -689,7 +970,7 @@ static void newWindow(struct glfwWindow *window) {
     WGPUSurfaceConfiguration surf_cfg = {0};
     surf_cfg.device = gpu.device;
     surf_cfg.format = window->surfaceFormat;
-    surf_cfg.usage = WGPUTextureUsage_RenderAttachment;
+    surf_cfg.usage = WGPUTextureUsage_RenderAttachment | WGPUTextureUsage_CopyDst;
     surf_cfg.width = (uint32_t)window->fbWidth;
     surf_cfg.height = (uint32_t)window->fbHeight;
     surf_cfg.presentMode = presentMode;
@@ -727,6 +1008,16 @@ static const luaL_Reg windowMethods[] = {
     {"getID", getID},
     {"getMouse", getMouse},
     {"getSize", getSize},
+    {"setSize", setSize},
+    {"getPos", getPos},
+    {"setPos", setPos},
+    {"setTitle", setTitle},
+    {"setIcon", setIcon},
+    {"setOpacity", setOpacity},
+    {"setAlwaysOnTop", setAlwaysOnTop},
+    {"setFullscreen", setFullscreen},
+    {"focus", focus},
+    {"minimize", minimize},
     {"getMonitorIndex", getMonitorIndex},
     /* ↑ window metafunctions ↑ */
 

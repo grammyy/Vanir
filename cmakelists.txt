@@ -108,6 +108,7 @@ add_library(Vanir MODULE ${SOURCES})
 set_target_properties(Vanir PROPERTIES PREFIX "")
 
 target_include_directories(Vanir PRIVATE
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/graphics"
     "${LUA_INCLUDE_DIR}"
     "${WEBGPU_INCLUDE_DIR}"
     $<$<BOOL:${USE_LUAJIT}>:${COMPAT53_INCLUDE_DIR}>)
@@ -116,7 +117,8 @@ target_link_libraries(Vanir PRIVATE
     "${LUA_LIBRARIES}"
     "${GLFW_LIBRARIES}"
     "${WEBGPU_LIBRARIES}"
-    glfw3webgpu)
+    glfw3webgpu
+    m)
 
 target_compile_definitions(Vanir PRIVATE
     $<$<BOOL:${USE_LUAJIT}>:USE_LUAJIT>

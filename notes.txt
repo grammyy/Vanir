@@ -1,0 +1,29 @@
+do:
+    fix up the weird color stuff in render.c
+    start version defining
+
+    fonts, currently does nothing cuz it was annoying with libs
+    the entirity of timer.c
+    more shit for shaders.c, input.c, system.c, and many many more
+    write texture functions
+    specific module verbose flags
+    custom loading for textures via lua
+    more hooks, support for ffi custom hooks if not supported already
+    memory access and manu
+    more window customization like borders n stuff
+    http.c/websocket.c, very important that i do this somewhat soon
+    make sure works with other stuff like joystick libraries
+    enums are empty rn
+    more drawing functions
+
+    documentation generation via map or whatever
+
+    the rest of this file lol
+
+maybe...
+    threading; especially for window events and rendering
+    roblox's new physics system built in
+    built in window docking support with glfw windows and etc
+    meshes, joints, and all that junk
+    class system perhaps
+    runtime config before hooks.run perhaps, for use with the preload.lua

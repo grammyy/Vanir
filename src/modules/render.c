@@ -1,13 +1,21 @@
+/* render.c */
 #include <GLFW/glfw3.h>
 #include <webgpu/webgpu.h>
 #include <stdlib.h>
 
 #include "../vanir.h"
+#include "../types.h"
 #include "windows.h"
 #include "render.h"
+#include "../graphics/rendertarget.h"
+#include "../graphics/textures.h"
+#include "../graphics/shader.h"
 #include "../graphics/render.h"
 
 extern struct VanirGPU gpu;
+
+/* ↓ activeShader is owned by graphics/shader.c; NULL means use the built-in pipeline ↓ */
+extern struct Shader *activeShader;
 
 /* ↓ window currently targeted by draw calls. Set by selectRender, cleared by stopRender ↓ */
 struct glfwWindow *currentRenderWindow = NULL;
@@ -36,12 +44,24 @@ static void beginPass(struct glfwWindow *w, WGPULoadOp loadOp) {
     w->frame.passEncoder = wgpuCommandEncoderBeginRenderPass(w->frame.encoder, &pass_desc);
 
     struct Pipeline *p = w->pipeline;
-    
-    if (w->frame.passEncoder && p && p->pipeline) {
-        wgpuRenderPassEncoderSetPipeline(w->frame.passEncoder, p->pipeline);
-        
-        if (p->uniformBindGroup)
-            wgpuRenderPassEncoderSetBindGroup(w->frame.passEncoder, 0, p->uniformBindGroup, 0, NULL);
+
+    if (w->frame.passEncoder && p) {
+        /* ↓ if a custom shader is active, use it; otherwise use the built-in pipeline ↓ */
+        WGPURenderPipeline activePipeline = p->pipeline;
+
+        if (activeShader) {
+            activePipeline = activeShader->pipeline;
+            vanir_log_info("beginPass: [%s] using custom shader \"%s\"", w->name, activeShader->name);
+        } else {
+            vanir_log_info("beginPass: [%s] using built-in pipeline", w->name);
+        }
+
+        if (activePipeline) {
+            wgpuRenderPassEncoderSetPipeline(w->frame.passEncoder, activePipeline);
+
+            if (p->uniformBindGroup)
+                wgpuRenderPassEncoderSetBindGroup(w->frame.passEncoder, 0, p->uniformBindGroup, 0, NULL);
+        }
     }
 }
 
@@ -280,46 +300,64 @@ int update(lua_State *L) {
 int destroy(lua_State *L) {
     struct glfwWindow **window = (struct glfwWindow **)luaL_checkudata(L, 1, "window");
     struct glfwWindow *w = *window;
-    
+
+    vanir_log_info("destroy: releasing pipeline for \"%s\"", w->name);
+
     releaseFrame(w);
     destroyPipeline(w->pipeline);
-    
+
     w->pipeline = NULL;
-    
+
     return 0;
 }
 // window methods ↑↑↑ window methods ///
 
-/* ↓ these helpers get/set color 0-255 and converts them to 0.0-1.0 for gpu usage ↓ */
-void getGlobalColor(lua_State *L, struct color *color) {
-    lua_getglobal(L, "_rendercolor");
-    lua_getfield(L, -1, "r"); color->r = (float)lua_tonumber(L, -1) / 255.0f; lua_pop(L, 1);
-    lua_getfield(L, -1, "g"); color->g = (float)lua_tonumber(L, -1) / 255.0f; lua_pop(L, 1);
-    lua_getfield(L, -1, "b"); color->b = (float)lua_tonumber(L, -1) / 255.0f; lua_pop(L, 1);
-    lua_getfield(L, -1, "a"); color->a = (float)lua_tonumber(L, -1) / 255.0f; lua_pop(L, 2);
+/* ↓ active draw color; set by render.setColor, read directly by all draw calls ↓ */
+/* ↓ avoids 16 lua api round-trips per draw call that the old _rendercolor global table caused ↓ */
+struct color activeColor = {1.0f, 1.0f, 1.0f, 1.0f};
+
+/* ↓ active texture; set by render.setTexture, read by textured draw calls ↓ */
+struct Texture *activeTexture = NULL;
+
+/* ↓ read color from a lua table at stack index idx (r,g,b,a fields, 0-255) ↓ */
+static void colorFromTable(lua_State *L, int idx, struct color *out) {
+    lua_getfield(L, idx, "r"); out->r = (float)lua_tonumber(L, -1) / 255.0f; lua_pop(L, 1);
+    lua_getfield(L, idx, "g"); out->g = (float)lua_tonumber(L, -1) / 255.0f; lua_pop(L, 1);
+    lua_getfield(L, idx, "b"); out->b = (float)lua_tonumber(L, -1) / 255.0f; lua_pop(L, 1);
+    lua_getfield(L, idx, "a"); out->a = (float)lua_tonumber(L, -1) / 255.0f; lua_pop(L, 1);
 }
 
+/* ↓ kept for any callers that still pass a color table at stack index 1 ↓ */
 void getColor(lua_State *L, struct color *color) {
-    lua_getfield(L, 1, "r"); color->r = (float)lua_tonumber(L, -1) / 255.0f; lua_pop(L, 1);
-    lua_getfield(L, 1, "g"); color->g = (float)lua_tonumber(L, -1) / 255.0f; lua_pop(L, 1);
-    lua_getfield(L, 1, "b"); color->b = (float)lua_tonumber(L, -1) / 255.0f; lua_pop(L, 1);
-    lua_getfield(L, 1, "a"); color->a = (float)lua_tonumber(L, -1) / 255.0f; lua_pop(L, 1);
+    colorFromTable(L, 1, color);
+}
+
+/* ↓ draw calls call this; now just a direct struct copy, zero lua overhead ↓ */
+void getGlobalColor(lua_State *L, struct color *color) {
+    (void)L;
+    *color = activeColor;
 }
 
 int setColor(lua_State *L) {
-    struct color color;
-    
-    getColor(L, &color);
-    
-    lua_getglobal(L, "_rendercolor");
-    setFieldNumber(L, "r", color.r * 255.0f);
-    setFieldNumber(L, "g", color.g * 255.0f);
-    setFieldNumber(L, "b", color.b * 255.0f);
-    setFieldNumber(L, "a", color.a * 255.0f);
+    colorFromTable(L, 1, &activeColor);
     
     return 0;
 }
-/* ↑ these helpers get/set color 0-255 and converts them to 0.0-1.0 for gpu usage ↑ */
+
+int setTexture(lua_State *L) {
+    if (lua_isnil(L, 1)) {
+        vanir_log_info("setTexture: cleared");
+        activeTexture = NULL;
+
+        return 0;
+    }
+
+    activeTexture = getTexture(L, 1);
+    vanir_log_info("setTexture: \"%s\"", activeTexture->name);
+
+    return 0;
+}
+/* ↑ active color cached in C; render.setColor writes here, draw calls read directly ↑ */
 
 int setBlend(lua_State *L) {
     int source = luaL_checkinteger(L, 1);
@@ -347,19 +385,21 @@ int disable(lua_State *L) {
 /* ↓ closes current pass and opens new one; clear color is applied as pass load action ↓ */
 int clear(lua_State *L) {
     struct color color;
-    
+
     getColor(L, &color);
-    
+
     struct glfwWindow *w = currentRenderWindow;
-    
-    if (!w || !w->frame.encoder) 
+
+    if (!w || !w->frame.encoder)
         return 0;
-    
+
+    vanir_log_info("clear: [%s] rgba=(%.2f,%.2f,%.2f,%.2f)", w->name, color.r, color.g, color.b, color.a);
+
     w->clearColor = color;
-    
+
     endPass(w);
     beginPass(w, WGPULoadOp_Clear);
-    
+
     return 0;
 }
 
@@ -371,10 +411,68 @@ int resetMatrix(lua_State *L) { return 0; }
 int pushMatrix(lua_State *L)  { return 0; }
 int popMatrix(lua_State *L)   { return 0; }
 int scissor(lua_State *L) {
-    // TODO(webgpu): wgpuRenderPassEncoderSetScissorRect
-    (void)lua_tonumber(L, 1); (void)lua_tonumber(L, 2);
-    (void)lua_tonumber(L, 3); (void)lua_tonumber(L, 4);
-    
+    struct glfwWindow *w = currentRenderWindow;
+
+    if (!w || !w->frame.passEncoder) return 0;
+
+    uint32_t x  = (uint32_t)lua_tonumber(L, 1);
+    uint32_t y  = (uint32_t)lua_tonumber(L, 2);
+    uint32_t sw = (uint32_t)lua_tonumber(L, 3);
+    uint32_t sh = (uint32_t)lua_tonumber(L, 4);
+
+    vanir_log_info("scissor: [%s] x=%u y=%u w=%u h=%u", w->name, x, y, sw, sh);
+
+    wgpuRenderPassEncoderSetScissorRect(w->frame.passEncoder, x, y, sw, sh);
+
+    return 0;
+}
+
+/* ↓ set gpu viewport rect in pixel coords; resets scissor to full viewport ↓ */
+int setViewport(lua_State *L) {
+    struct glfwWindow *w = currentRenderWindow;
+
+    if (!w || !w->frame.passEncoder) return 0;
+
+    float x  = (float)lua_tonumber(L, 1);
+    float y  = (float)lua_tonumber(L, 2);
+    float vw = (float)lua_tonumber(L, 3);
+    float vh = (float)lua_tonumber(L, 4);
+
+    vanir_log_info("setViewport: [%s] x=%.0f y=%.0f w=%.0f h=%.0f", w->name, x, y, vw, vh);
+
+    /* ↓ minDepth / maxDepth standard NDC range ↓ */
+    wgpuRenderPassEncoderSetViewport(w->frame.passEncoder, x, y, vw, vh, 0.0f, 1.0f);
+
+    /* ↓ also update the viewport uniform so pixel->NDC conversion stays correct ↓ */
+    struct Pipeline *p = w->pipeline;
+
+    if (p && p->uniformBuffer) {
+        float vp[2] = { vw, vh };
+
+        wgpuQueueWriteBuffer(gpu.queue, p->uniformBuffer, 0, vp, sizeof(vp));
+    }
+
+    return 0;
+}
+
+/* ↓ reset viewport to the full framebuffer ↓ */
+int resetViewport(lua_State *L) {
+    struct glfwWindow *w = currentRenderWindow;
+
+    if (!w || !w->frame.passEncoder) return 0;
+
+    vanir_log_info("resetViewport: [%s] %dx%d", w->name, w->fbWidth, w->fbHeight);
+
+    wgpuRenderPassEncoderSetViewport(w->frame.passEncoder, 0, 0, (float)w->fbWidth, (float)w->fbHeight, 0.0f, 1.0f);
+
+    struct Pipeline *p = w->pipeline;
+
+    if (p && p->uniformBuffer) {
+        float vp[2] = { (float)w->fbWidth, (float)w->fbHeight };
+
+        wgpuQueueWriteBuffer(gpu.queue, p->uniformBuffer, 0, vp, sizeof(vp));
+    }
+
     return 0;
 }
 int setQuality(lua_State *L) { return 0; }
@@ -388,21 +486,37 @@ const luaL_Reg luaRender[] = {
     {"drawFilledCircle", drawFilledCircle},
     {"drawPoly",         drawPoly},
     {"drawVertex",       drawVertex},
+    {"drawTexturedRect", drawTexturedRect},
     
     /* ↓ something something, ill name this later ↓ */
-    {"clear",       clear},
-    {"setBlend",    setBlend},
-    {"enable",      enable},
-    {"disable",     disable},
-    {"setColor",    setColor},
-    {"setQuality",  setQuality},
-    {"force",       force},
-    {"begin",       begin},
-    {"exit",        end},
-    {"scissor",     scissor},
-    {"resetMatrix", resetMatrix},
-    {"pushMatrix",  pushMatrix},
-    {"popMatrix",   popMatrix},
+    {"clear",        clear},
+    {"setBlend",     setBlend},
+    {"enable",       enable},
+    {"disable",      disable},
+    {"setColor",     setColor},
+    {"setTexture",   setTexture},
+    {"setQuality",   setQuality},
+    {"force",        force},
+    {"begin",        begin},
+    {"exit",         end},
+    {"scissor",      scissor},
+    {"setViewport",  setViewport},
+    {"resetViewport",resetViewport},
+    {"resetMatrix",  resetMatrix},
+    {"pushMatrix",   pushMatrix},
+    {"popMatrix",    popMatrix},
+
+    /* ↓ render targets ↓ */
+    {"createRenderTarget",    renderTargetCreate},
+    {"selectRenderTarget",    renderTargetSelect},
+    {"stopRenderTarget",      renderTargetStop},
+    {"clearRenderTarget",     renderTargetClear},
+    {"setRenderTargetTexture",renderTargetSetTexture},
+
+    /* ↓ setMaterial and setRenderTarget are aliases for setTexture ↓ */
+    /* ↓ render targets return a Texture, so they work interchangeably ↓ */
+    {"setMaterial",           setTexture},
+    {"setRenderTarget",       setTexture},
 
     {NULL, NULL}
 };

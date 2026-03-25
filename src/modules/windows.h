@@ -5,6 +5,9 @@
 #include <webgpu/webgpu.h>
 #include <stdbool.h>
 
+/* ↓ forward declaration; full definition is in graphics/textures.h ↓ */
+struct Texture;
+
 int windowsInit(lua_State* L);
 
 // ↓ initialised lazily on first createWindow; torn down when the last window closes ↓
@@ -39,9 +42,11 @@ struct DrawCmd {
 struct Pipeline {
     WGPURenderPipeline  pipeline;        // triangle list
     WGPURenderPipeline  pipelineLine;    // line list
+    WGPURenderPipeline  pipelineTextured; // ↓ textured quad pipeline (UV coords, group1 = tex+sampler) ↓
     WGPUBuffer          uniformBuffer;   // { width_f, height_f }
     WGPUBindGroup       uniformBindGroup;
     WGPUBindGroupLayout uniformBindGroupLayout;
+    WGPUBindGroupLayout textureBindGroupLayout; // ↓ group1 layout for textured pipeline ↓
 
     // ↓ flat CPU vertex buffer ↓
     float    *verts;
@@ -72,6 +77,9 @@ struct glfwWindow {
 
     bool quit, hovering, focused, minimized;
 
+    // ↓ last non-minimized screen size; returned by getSize() when minimized ↓
+    int lastWidth, lastHeight;
+
     GLFWwindow       *window;
     WGPUSurface       surface;
     WGPUTextureFormat surfaceFormat;
@@ -98,6 +106,13 @@ void destroyPipeline(struct Pipeline *p);
 void releaseFrame(struct glfwWindow *w);
 
 struct Pipeline *buildPipelines(struct glfwWindow *w, WGPUBlendFactor blendSrc, WGPUBlendFactor blendDst);
+
+/* ↓ textured draw helpers; implemented in graphics/shader.c ↓ */
+#define TEXTURED_VERTEX_STRIDE 6   // ↓ xyzw + uv ↓
+void drawTexturedQuadImmediate(struct glfwWindow *w, struct Texture *tex,
+                                float dx, float dy, float dw, float dh,
+                                float u0, float v0, float u1, float v1);
+void flushBatchesTextured(struct glfwWindow *w);
 
 extern struct glfwWindow *currentRenderWindow;
 

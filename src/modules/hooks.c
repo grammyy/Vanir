@@ -102,6 +102,7 @@ void removeHook(struct hook *instance, const char *name, lua_State *L) {
     char temp[strlen(name) + 12];
 
     snprintf(temp, sizeof(temp), "'%s' not found", name);
+
     throw("Hook", instance->hookName, temp);
 }
 

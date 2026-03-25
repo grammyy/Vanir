@@ -13,10 +13,15 @@ int setQuality(lua_State *L);
 int setBlend(lua_State *L);
 int enable(lua_State *L);
 int disable(lua_State *L);
+int setViewport(lua_State *L);
+int resetViewport(lua_State *L);
 /* window methods ↑↑↑ window methods */
 
 void getGlobalColor(lua_State *L, struct color *color);
 void getColor(lua_State *L, struct color *color);
+
+/* ↓ active color; written by render.setColor, read directly by draw calls ↓ */
+extern struct color activeColor;
 
 extern struct glfwWindow *currentRenderWindow;
 

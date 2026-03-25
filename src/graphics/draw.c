@@ -8,6 +8,9 @@
 extern struct VanirGPU gpu;
 
 #include "../modules/render.h"
+#include "shader.h"
+
+extern struct Shader *activeShader;
 
 #define VERTEX_STRIDE 7              // x y z  r g b a
 #define VERTEX_BYTES  (VERTEX_STRIDE * sizeof(float))
@@ -69,7 +72,7 @@ static bool cmdReserve(struct Pipeline *p, uint32_t extra) {
     return true;
 }
 
-// Push one vertex into the flat buffer.
+/* ↓ push one vertex into the flat buffer ↓ */
 static void pushVert(struct Pipeline *p, float x, float y, float z, float r, float g, float b, float a) {
     float *dst = p->verts + p->vertCount * VERTEX_STRIDE;
     
@@ -135,14 +138,24 @@ void flushBatches(struct glfwWindow *w) {
         struct DrawCmd *cmd = &p->cmds[i];
 
         if (cmd->type != currentType) {
-            WGPURenderPipeline pipe = (cmd->type == DRAW_TRIS) ? p->pipeline : p->pipelineLine;
-            
+            WGPURenderPipeline pipe = NULL;
+
+            if (activeShader) {
+                pipe = (cmd->type == DRAW_TRIS)
+                    ? activeShader->pipeline
+                    : activeShader->pipelineLine;
+            } else {
+                pipe = (cmd->type == DRAW_TRIS)
+                    ? p->pipeline
+                    : p->pipelineLine;
+            }
+
             wgpuRenderPassEncoderSetPipeline(w->frame.passEncoder, pipe);
             
             if (p->uniformBindGroup)
                 wgpuRenderPassEncoderSetBindGroup(w->frame.passEncoder, 0, p->uniformBindGroup, 0, NULL);
             
-                currentType = cmd->type;
+            currentType = cmd->type;
         }
 
         wgpuRenderPassEncoderDraw(w->frame.passEncoder, cmd->vertCount, 1, cmd->firstVertex, 0);

@@ -10,6 +10,11 @@
 #include "modules/hooks.h"
 #include "modules/input.h"
 #include "modules/timer.h"
+#include "modules/system.h"
+#include "modules/font.h"
+#include "graphics/rendertarget.h"
+#include "graphics/textures.h"
+#include "graphics/shader.h"
 
 #include <string.h>
 #include <stdlib.h>
@@ -67,6 +72,12 @@ int quit(lua_State *L) {
     
     windowPool.windows = NULL;
     windowPool.count   = 0;
+
+    /* ↓ release font and render target resources before gpu context goes away ↓ */
+    //destroyAllFonts();
+    destroyAllRenderTargets();
+    destroyAllTextures();
+    destroyAllShaders();
 
     /* ↓ release shared GPU context/glfw/and lua; device → adapter → instance ↓ */
     vanirGPUDestroy();
@@ -160,11 +171,15 @@ const luaL_Reg luaVanir[] = {
 
 const luaL_Reg luaReg[] = {
     /* ↓ modules ↓ */
-    {"windows", windowsInit},
-    {"render", renderInit},
-    {"hook", hooksInit},
-    {"input", inputInit},
-    {"timer", timerInit},
+    {"windows",  windowsInit},
+    {"render",   renderInit},
+    {"hook",     hooksInit},
+    {"input",    inputInit},
+    {"timer",    timerInit},
+    {"system",   systemInit},
+    {"font",     fontInit},
+    {"textures", texturesInit},
+    {"shader",   shaderInit},
 
     /* ↓ enums ↓ */
     {"test", testEnums},
@@ -177,15 +192,15 @@ LUALIB_API int luaopen_vanir(lua_State *L) {
 #ifdef USE_LUAJIT
     luaL_dostring(L, "require('compat53')");
 #endif
+    if (luaL_loadfile(L, "preload.lua") == LUA_OK) {
+        if (lua_pcall(L, 0, 0, 0) != LUA_OK) {
+            fprintf(stderr, "[Vanir] preload.lua error: %s\n", lua_tostring(L, -1));
 
-    luaL_dofile(L, "preload.lua");
-
-    lua_newtable(L);
-    setFieldNumber(L, "r", 255.0f);
-    setFieldNumber(L, "g", 255.0f);
-    setFieldNumber(L, "b", 255.0f);
-    setFieldNumber(L, "a", 255.0f);
-    lua_setglobal(L, "_rendercolor");
+            lua_pop(L, 1);
+        }
+    } else {
+        lua_pop(L, 1);
+    }
 
     lua_newtable(L);
     lua_pushstring(L, "1.0.0");
