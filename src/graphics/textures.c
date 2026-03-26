@@ -5,12 +5,12 @@
 #include <stdint.h>
 #include <stdio.h>
 
-/* ↓ stb_image: single-header image loading library ↓ */
-/* ↓ drop stb_image.h into src/graphics/ to enable textures.load(path) ↓ */
+/* stb_image ↓↓↓ stb_image */
 #define STBI_NO_THREAD_LOCALS
-#define STBI_NO_SIMD            // <--- Add this!
+#define STBI_NO_SIMD
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
+/* stb_image ↑↑↑ stb_image */
 
 #include "../vanir.h"
 #include "../types.h"

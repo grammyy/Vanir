@@ -12,6 +12,8 @@
 #include "modules/timer.h"
 #include "modules/system.h"
 #include "modules/font.h"
+#include "modules/memory.h"
+#include "modules/files.h"
 #include "graphics/rendertarget.h"
 #include "graphics/textures.h"
 #include "graphics/shader.h"
@@ -48,23 +50,28 @@ int quit(lua_State *L) {
     for (int i = 0; i < windowPool.count; ++i) {
         struct glfwWindow *w = windowPool.windows[i];
         
-        destroyPipeline(w->pipeline);
+        /* ↓ destroy pipeline first (uses GPU device) ↓ */
+        if (w->pipeline) {
+            destroyPipeline(w->pipeline);
+
+            w->pipeline = NULL;
+        }
         
-        w->pipeline = NULL;
-        
+        /* ↓ unconfigure & release surface ↓ */
         if (w->surface) {
             wgpuSurfaceUnconfigure(w->surface);  // required before release on wgpu-native
             wgpuSurfaceRelease(w->surface);
-            
+
             w->surface = NULL;
         }
 
+        /* ↓ destroy GLFW window ↓ */
         if (w->window) {
             glfwDestroyWindow(w->window);
-            
+
             w->window = NULL;
         }
-        
+
         free(w);
     }
 
@@ -80,10 +87,10 @@ int quit(lua_State *L) {
     destroyAllShaders();
 
     /* ↓ release shared GPU context/glfw/and lua; device → adapter → instance ↓ */
-    vanirGPUDestroy();
-    glfwTerminate();
-    lua_close(L);
-    
+    vanirGPUDestroy();  /* device destroyed last */
+    glfwTerminate();    /* terminate GLFW after all windows gone */
+    lua_close(L);       /* close Lua state last */
+
     exit(0);
 }
 
@@ -158,9 +165,10 @@ const luaL_Reg luaVanir[] = {
     /* ↑ random testing, ignore ↑ */
 
     /* ↓ types ↓ */
-    {"Vector", Vector},
-    {"Angle", Angle},
-    {"Color",  Color},
+    {"Vector",     Vector},
+    {"Angle",      Angle},
+    {"Color",      Color},
+    {"Quaternion", Quaternion},
     
     /* ↓ vanir functions ↓ */
     {"quit", quit},
@@ -180,9 +188,19 @@ const luaL_Reg luaReg[] = {
     {"font",     fontInit},
     {"textures", texturesInit},
     {"shader",   shaderInit},
+    {"memory",   memoryInit},
+    {"files",    filesInit},
 
     /* ↓ enums ↓ */
-    {"test", testEnums},
+    {"test",         testEnums},
+    {"KEY",          keyEnums},
+    {"MOUSE",        mouseButtonEnums},
+    {"KEY_ACTION",   keyActionEnums},
+    {"KEY_MOD",      keyModEnums},
+    {"CURSOR_MODE",  cursorModeEnums},
+    {"CURSOR_SHAPE", cursorShapeEnums},
+    {"GAMEPAD",      gamepadButtonEnums},
+    {"GAMEPAD_AXIS", gamepadAxisEnums},
 
     {NULL, NULL}
 };
@@ -203,7 +221,7 @@ LUALIB_API int luaopen_vanir(lua_State *L) {
     }
 
     lua_newtable(L);
-    lua_pushstring(L, "1.0.0");
+    lua_pushstring(L, VANIR_VERSION);
     lua_setfield(L, -2, "version");
 
     for (const luaL_Reg *reg = luaVanir; reg->name != NULL && reg->func != NULL; ++reg) {

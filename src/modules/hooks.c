@@ -4,10 +4,12 @@
 
 #include "../vanir.h"
 #include "hooks.h"
+#include "timer.h"
 
 struct hookPool hookPool = {NULL, 0};
 
-struct hook think = { "think", NULL, 0, &think, NULL, hook_update};
+struct hook think   = { "think",   NULL, 0, &think,   NULL, hook_update};
+struct hook onError = { "onError", NULL, 0, &onError, NULL, hook_idle};
 
 /* ↓ allocate a new callback with given data size and type; carries typed value from C -> lua when fired ↓ */
 struct callbacks* createCallback(size_t dataSize, enum dataType dataType) {
@@ -33,6 +35,14 @@ void* getCallback(const struct callbacks* callback) {
     return callback->data;
 }
 /* ↑ helper functions ↑ */
+
+/* ↓ fire the onError hook with a formatted message string; called by throwError below ↓ */
+void fireError(const char *message) {
+    onError.callback = createCallback(strlen(message) + 1, string);
+    setCallback(onError.callback, message);
+
+    onError.status = hook_awaiting;
+}
 
 /* ↓ append hook to global pool; called once per hook during module init ↓ */
 void registerHook(struct hook hookData) {
@@ -235,7 +245,9 @@ int luaAdd(lua_State *L) {
     if (instance) {
         if (lua_isfunction(L, 3)) {
             lua_pushvalue(L, 3);
+
             int ref = luaL_ref(L, LUA_REGISTRYINDEX);
+
             addHook(instance->address, name, luaFunc, ref);
         } else {
             throw("Hook", instance->hookName, "Third argument must be a function");
@@ -277,6 +289,9 @@ int luaFree(lua_State *L) {
 }
 
 int hooksRun(lua_State *L) {
+    tickTimers(L);
+    /* ↑ advance all named timers each frame ↑ */
+
     for (size_t i = 0; i < hookPool.count; ++i) {
         runHook(hookPool.hooks[i].address, L);
     }
@@ -297,6 +312,7 @@ int hooksInit(lua_State* L) {
     luaL_newlib(L, luaHooks);
 
     registerHook(think);
+    registerHook(onError);
 
     return 1;
 }

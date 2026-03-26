@@ -116,4 +116,9 @@ void flushBatchesTextured(struct glfwWindow *w);
 
 extern struct glfwWindow *currentRenderWindow;
 
+extern struct hook preDrawOpaque;
+extern struct hook postDrawOpaque;
+extern struct hook preDrawTranslucent;
+extern struct hook postDrawTranslucent;
+
 #endif

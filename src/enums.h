@@ -1,34 +1,38 @@
+#pragma once
+
 #ifndef VANIR_ENUMS_H
 #define VANIR_ENUMS_H
 
 #include "lua_config.h"
+#include <GLFW/glfw3.h>
 
 typedef struct {
     const char* name;
     int value;
 } Enums;
 
-static Enums test[] = {
-    {"test", 10},
-    
-    {NULL, 0}
-};
-
 /* ↓ general push command for each enum list ↓ */
-void pushEnums(lua_State *L, const Enums *enums) {
-    lua_newtable(L);
-    
-    for (int i = 0; enums[i].name != NULL; ++i) {
-        lua_pushstring(L, enums[i].name);
-        lua_pushinteger(L, enums[i].value);
-        lua_rawset(L, -3);
-    }
-}
+void pushEnums(lua_State *L, const Enums *enums);
 
-int testEnums(lua_State *L) {
-    pushEnums(L, test);
+int testEnums(lua_State *L);
+int keyEnums(lua_State *L);
+int mouseButtonEnums(lua_State *L);
+int keyActionEnums(lua_State *L);
+int keyModEnums(lua_State *L);
+int cursorModeEnums(lua_State *L);
+int cursorShapeEnums(lua_State *L);
+int gamepadButtonEnums(lua_State *L);
+int gamepadAxisEnums(lua_State *L);
 
-    return 1;
-}
+/* ↓ enum declarations ↓ */
+extern Enums test[];
+extern Enums keys[];
+extern Enums mouseButtons[];
+extern Enums keyActions[];
+extern Enums keyMods[];
+extern Enums cursorModes[];
+extern Enums cursorShapes[];
+extern Enums gamepadButtons[];
+extern Enums gamepadAxes[];
 
 #endif

@@ -9,16 +9,27 @@
 #include "windows.h"
 #include "hooks.h"
 #include "render.h"
+#include "input.h"
 
 struct windowPool windowPool = {NULL, 0};
 struct VanirGPU   gpu        = {0};
 
-struct hook onHoverChange = { "onHoverChange", NULL, 0, &onHoverChange, NULL, hook_idle};
-struct hook onFocusChange = { "onFocusChange", NULL, 0, &onFocusChange, NULL, hook_idle};
-struct hook onResize      = { "onResize",      NULL, 0, &onResize,      NULL, hook_idle};
-struct hook onEvent       = { "onEvent",       NULL, 0, &onEvent,       NULL, hook_idle};
-struct hook onClose       = { "onClose",       NULL, 0, &onClose,       NULL, hook_idle};
-struct hook onOpen        = { "onOpen",        NULL, 0, &onOpen,        NULL, hook_idle};
+struct hook onHoverChange  = { "onHoverChange",  NULL, 0, &onHoverChange,  NULL, hook_idle};
+struct hook onFocusChange  = { "onFocusChange",  NULL, 0, &onFocusChange,  NULL, hook_idle};
+struct hook onResize       = { "onResize",       NULL, 0, &onResize,       NULL, hook_idle};
+struct hook onEvent        = { "onEvent",        NULL, 0, &onEvent,        NULL, hook_idle};
+struct hook onClose        = { "onClose",        NULL, 0, &onClose,        NULL, hook_idle};
+struct hook onOpen         = { "onOpen",         NULL, 0, &onOpen,         NULL, hook_idle};
+
+/* ↓ render layer hooks — fire in order each frame inside selectRender/stopRender ↓ */
+/* ↓ preDrawOpaque  → draw solid geometry here (no blending issues) ↓ */
+/* ↓ postDrawOpaque → solid pass done; transparent geometry starts after ↓ */
+/* ↓ preDrawTranslucent  → sorted-back-to-front translucent draws go here ↓ */
+/* ↓ postDrawTranslucent → all drawing finished for this frame ↓ */
+struct hook preDrawOpaque       = { "preDrawOpaque",       NULL, 0, &preDrawOpaque,       NULL, hook_update};
+struct hook postDrawOpaque      = { "postDrawOpaque",      NULL, 0, &postDrawOpaque,      NULL, hook_update};
+struct hook preDrawTranslucent  = { "preDrawTranslucent",  NULL, 0, &preDrawTranslucent,  NULL, hook_update};
+struct hook postDrawTranslucent = { "postDrawTranslucent", NULL, 0, &postDrawTranslucent, NULL, hook_update};
 
 /* ↓ webgpu async callbacks ↓ */
 static void on_adapter(WGPURequestAdapterStatus status, WGPUAdapter a, WGPUStringView msg, void *ud1, void *ud2) {
@@ -525,6 +536,148 @@ int minimize(lua_State *L) {
     
     return 0;
 }
+/* ↓ show / hide window decorations (title bar, border) ↓ */
+int setDecorated(lua_State *L) {
+    struct glfwWindow **w = (struct glfwWindow **)luaL_checkudata(L, 1, "window");
+    int decorated = lua_toboolean(L, 2);
+
+    glfwSetWindowAttrib((*w)->window, GLFW_DECORATED, decorated ? GLFW_TRUE : GLFW_FALSE);
+
+    return 0;
+}
+
+/* ↓ enable / disable user resize ↓ */
+int setResizable(lua_State *L) {
+    struct glfwWindow **w = (struct glfwWindow **)luaL_checkudata(L, 1, "window");
+    int resizable = lua_toboolean(L, 2);
+
+    glfwSetWindowAttrib((*w)->window, GLFW_RESIZABLE, resizable ? GLFW_TRUE : GLFW_FALSE);
+
+    return 0;
+}
+
+/* ↓ lock aspect ratio; pass nil, nil to disable ↓ */
+int setAspectRatio(lua_State *L) {
+    struct glfwWindow **w = (struct glfwWindow **)luaL_checkudata(L, 1, "window");
+
+    if (lua_isnil(L, 2) || lua_isnil(L, 3)) {
+        glfwSetWindowAspectRatio((*w)->window, GLFW_DONT_CARE, GLFW_DONT_CARE);
+
+        return 0;
+    }
+
+    int numer = luaL_checkinteger(L, 2);
+    int denom = luaL_checkinteger(L, 3);
+
+    glfwSetWindowAspectRatio((*w)->window, numer, denom);
+
+    return 0;
+}
+
+/* ↓ clamp window size between min and max; pass nil for unconstrained ↓ */
+int setSizeLimits(lua_State *L) {
+    struct glfwWindow **w = (struct glfwWindow **)luaL_checkudata(L, 1, "window");
+    int minW = lua_isnil(L, 2) ? GLFW_DONT_CARE : luaL_checkinteger(L, 2);
+    int minH = lua_isnil(L, 3) ? GLFW_DONT_CARE : luaL_checkinteger(L, 3);
+    int maxW = lua_isnil(L, 4) ? GLFW_DONT_CARE : luaL_checkinteger(L, 4);
+    int maxH = lua_isnil(L, 5) ? GLFW_DONT_CARE : luaL_checkinteger(L, 5);
+
+    glfwSetWindowSizeLimits((*w)->window, minW, minH, maxW, maxH);
+
+    return 0;
+}
+
+/* ↓ set cursor mode: CURSOR_NORMAL / CURSOR_HIDDEN / CURSOR_DISABLED ↓ */
+int setCursorMode(lua_State *L) {
+    struct glfwWindow **w = (struct glfwWindow **)luaL_checkudata(L, 1, "window");
+    int mode = luaL_checkinteger(L, 2);
+
+    glfwSetInputMode((*w)->window, GLFW_CURSOR, mode);
+
+    return 0;
+}
+
+/* ↓ set cursor to a standard shape (CURSOR_SHAPE enum) ↓ */
+int setCursorShape(lua_State *L) {
+    struct glfwWindow **w = (struct glfwWindow **)luaL_checkudata(L, 1, "window");
+    int shape = luaL_checkinteger(L, 2);
+
+    GLFWcursor *cursor = glfwCreateStandardCursor(shape);
+
+    if (!cursor) {
+        throw("setCursorShape", (*w)->name, "failed to create standard cursor");
+
+        return 0;
+    }
+
+    glfwSetCursor((*w)->window, cursor);
+
+    return 0;
+}
+
+/* ↓ reset to default arrow cursor ↓ */
+int resetCursor(lua_State *L) {
+    struct glfwWindow **w = (struct glfwWindow **)luaL_checkudata(L, 1, "window");
+
+    glfwSetCursor((*w)->window, NULL);
+
+    return 0;
+}
+
+/* ↓ flash the window taskbar entry to grab attention ↓ */
+int requestAttention(lua_State *L) {
+    struct glfwWindow **w = (struct glfwWindow **)luaL_checkudata(L, 1, "window");
+
+    glfwRequestWindowAttention((*w)->window);
+
+    return 0;
+}
+
+/* ↓ restore an iconified or maximized window back to normal ↓ */
+int restore(lua_State *L) {
+    struct glfwWindow **w = (struct glfwWindow **)luaL_checkudata(L, 1, "window");
+
+    glfwRestoreWindow((*w)->window);
+
+    return 0;
+}
+
+/* ↓ maximize window to fill monitor work area ↓ */
+int maximize(lua_State *L) {
+    struct glfwWindow **w = (struct glfwWindow **)luaL_checkudata(L, 1, "window");
+
+    glfwMaximizeWindow((*w)->window);
+
+    return 0;
+}
+
+/* ↓ show / hide a window without destroying it ↓ */
+int setVisible(lua_State *L) {
+    struct glfwWindow **w = (struct glfwWindow **)luaL_checkudata(L, 1, "window");
+    int visible = lua_toboolean(L, 2);
+
+    if (visible) glfwShowWindow((*w)->window);
+    else         glfwHideWindow((*w)->window);
+
+    return 0;
+}
+
+/* ↓ check if raw mouse motion is supported and toggle it ↓ */
+int setRawMouse(lua_State *L) {
+    struct glfwWindow **w = (struct glfwWindow **)luaL_checkudata(L, 1, "window");
+    int enabled = lua_toboolean(L, 2);
+
+    if (!glfwRawMouseMotionSupported()) {
+        lua_pushboolean(L, 0);
+
+        return 1;
+    }
+
+    glfwSetInputMode((*w)->window, GLFW_RAW_MOUSE_MOTION, enabled ? GLFW_TRUE : GLFW_FALSE);
+    lua_pushboolean(L, 1);
+
+    return 1;
+}
 /* window metafunctions ↑↑↑ window metafunctions */
 
 /* pipeline / shader ↓↓↓ pipeline / shader */
@@ -865,6 +1018,8 @@ static void newWindow(struct glfwWindow *window) {
     glfwSetCursorEnterCallback(window->window, cbCursorEnter);
     glfwSetWindowFocusCallback(window->window, cbFocus);
     glfwSetWindowCloseCallback(window->window, cbClose);
+    glfwSetKeyCallback(window->window, cbKey);
+    glfwSetMouseButtonCallback(window->window, cbMouseButton);
     glfwGetWindowSize(window->window, &window->width, &window->height);
     glfwGetFramebufferSize(window->window, &window->fbWidth, &window->fbHeight);
     /* ↑ glfw event callback reg ↑ */
@@ -999,25 +1154,37 @@ static void newWindow(struct glfwWindow *window) {
 }
 
 static const luaL_Reg windowMethods[] = {
-    {"selectRender", selectRender},
-    {"stopRender", stopRender},
-    {"update", update},
-    {"isHovering", isHovering},
-    {"isFocused", isFocused},
-    {"getTitle", getTitle},
-    {"getID", getID},
-    {"getMouse", getMouse},
-    {"getSize", getSize},
-    {"setSize", setSize},
-    {"getPos", getPos},
-    {"setPos", setPos},
-    {"setTitle", setTitle},
-    {"setIcon", setIcon},
-    {"setOpacity", setOpacity},
-    {"setAlwaysOnTop", setAlwaysOnTop},
-    {"setFullscreen", setFullscreen},
-    {"focus", focus},
-    {"minimize", minimize},
+    {"selectRender",    selectRender},
+    {"stopRender",      stopRender},
+    {"update",          update},
+    {"isHovering",      isHovering},
+    {"isFocused",       isFocused},
+    {"getTitle",        getTitle},
+    {"getID",           getID},
+    {"getMouse",        getMouse},
+    {"getSize",         getSize},
+    {"setSize",         setSize},
+    {"getPos",          getPos},
+    {"setPos",          setPos},
+    {"setTitle",        setTitle},
+    {"setIcon",         setIcon},
+    {"setOpacity",      setOpacity},
+    {"setAlwaysOnTop",  setAlwaysOnTop},
+    {"setFullscreen",   setFullscreen},
+    {"setDecorated",    setDecorated},
+    {"setResizable",    setResizable},
+    {"setAspectRatio",  setAspectRatio},
+    {"setSizeLimits",   setSizeLimits},
+    {"setCursorMode",   setCursorMode},
+    {"setCursorShape",  setCursorShape},
+    {"resetCursor",     resetCursor},
+    {"requestAttention",requestAttention},
+    {"restore",         restore},
+    {"maximize",        maximize},
+    {"setVisible",      setVisible},
+    {"setRawMouse",     setRawMouse},
+    {"focus",           focus},
+    {"minimize",        minimize},
     {"getMonitorIndex", getMonitorIndex},
     /* ↑ window metafunctions ↑ */
 
@@ -1096,6 +1263,10 @@ int windowsInit(lua_State *L) {
     registerHook(onEvent);
     registerHook(onClose);
     registerHook(onOpen);
+    registerHook(preDrawOpaque);
+    registerHook(postDrawOpaque);
+    registerHook(preDrawTranslucent);
+    registerHook(postDrawTranslucent);
 
     return 1;
 }
