@@ -1106,7 +1106,7 @@ static void newWindow(struct glfwWindow *window) {
     wgpuSurfaceGetCapabilities(window->surface, gpu.adapter, &caps);
     window->surfaceFormat = caps.formats[0];
     
-    /* prefer mailbox (low-latency) > immediate (no vsync) > fifo (vsync) ↓ */
+    /* ↓ prefer mailbox (low-latency) > immediate (no vsync) > fifo (vsync) ↓ */
     WGPUPresentMode presentMode = WGPUPresentMode_Fifo;
     for (size_t i = 0; i < caps.presentModeCount; ++i) {
         if (caps.presentModes[i] == WGPUPresentMode_Mailbox) {

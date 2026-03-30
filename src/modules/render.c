@@ -2,9 +2,10 @@
 #include <GLFW/glfw3.h>
 #include <webgpu/webgpu.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "../vanir.h"
-#include "../types.h"
+#include "../types/common.h"
 #include "windows.h"
 #include "render.h"
 #include "../graphics/rendertarget.h"
@@ -383,15 +384,18 @@ int disable(lua_State *L) {
 }
 
 /* ↓ closes current pass and opens new one; clear color is applied as pass load action ↓ */
+/* render.clear([Color or nil clr, boolean or nil clearDepth, boolean or nil clearStencil]) */
+/* clearDepth / clearStencil are accepted for API compatibility but are no-ops in this 2D WebGPU pipeline */
 int clear(lua_State *L) {
-    struct color color;
-
-    getColor(L, &color);
-
     struct glfwWindow *w = currentRenderWindow;
 
     if (!w || !w->frame.encoder)
         return 0;
+
+    struct color color = w->clearColor; /* default: reuse last clear color */
+
+    if (!lua_isnoneornil(L, 1))
+        colorFromTable(L, 1, &color);
 
     vanir_log_info("clear: [%s] rgba=(%.2f,%.2f,%.2f,%.2f)", w->name, color.r, color.g, color.b, color.a);
 
@@ -403,17 +407,243 @@ int clear(lua_State *L) {
     return 0;
 }
 
+/* render.clearDepth([boolean or nil clearStencil]) */
+/* No depth attachment in this 2D WebGPU pipeline — no-op stub */
+int clearDepth(lua_State *L) { (void)L; return 0; }
+
+/* render.clearRGBA(number r, number g, number b, number a [, boolean clearDepth, boolean clearStencil]) */
+/* Like render.clear() but takes raw 0-255 component values instead of a Color table */
+int clearRGBA(lua_State *L) {
+    struct glfwWindow *w = currentRenderWindow;
+
+    if (!w || !w->frame.encoder)
+        return 0;
+
+    struct color color;
+    color.r = (float)luaL_checknumber(L, 1) / 255.0f;
+    color.g = (float)luaL_checknumber(L, 2) / 255.0f;
+    color.b = (float)luaL_checknumber(L, 3) / 255.0f;
+    color.a = (float)luaL_checknumber(L, 4) / 255.0f;
+    /* args 5/6: clearDepth, clearStencil — no-op */
+
+    vanir_log_info("clearRGBA: [%s] rgba=(%.2f,%.2f,%.2f,%.2f)", w->name, color.r, color.g, color.b, color.a);
+
+    w->clearColor = color;
+
+    endPass(w);
+    beginPass(w, WGPULoadOp_Clear);
+
+    return 0;
+}
+
+/* render.depthRange(number min, number max) */
+/* WebGPU depth is fixed-range NDC 0..1; not user-configurable in this pipeline — no-op */
+int depthRange(lua_State *L) { (void)L; return 0; }
+
+/* render.enableDepth(boolean enable) */
+/* No depth buffer in this 2D pipeline — no-op stub */
+int enableDepth(lua_State *L) { (void)L; return 0; }
+
+/* render.pushCustomClipPlane(Vector normal, number distance) */
+/* WebGPU has no clip plane API — no-op stub */
+int pushCustomClipPlane(lua_State *L) { (void)L; return 0; }
+
+/* render.popCustomClipPlane() */
+int popCustomClipPlane(lua_State *L) { (void)L; return 0; }
+
+/* render.renderViewsLeft() → number */
+/* This engine renders one view per frame; returns 1 for compatibility */
+int renderViewsLeft(lua_State *L) {
+    lua_pushinteger(L, 1);
+    return 1;
+}
+
+/* render.readPixel(number x, number y) → r, g, b, a */
+/* WebGPU GPU readback requires async buffer mapping — returns 0,0,0,0 as stub */
+int readPixel(lua_State *L) {
+    (void)L;
+    lua_pushnumber(L, 0);
+    lua_pushnumber(L, 0);
+    lua_pushnumber(L, 0);
+    lua_pushnumber(L, 0);
+    return 4;
+}
+
+/* render.renderTargetExists(string name) → boolean */
+int renderTargetExists(lua_State *L) {
+    const char *name = luaL_checkstring(L, 1);
+
+    for (int i = 0; i < rtPool.count; ++i) {
+        if (rtPool.targets[i] && strcmp(rtPool.targets[i]->tex.name, name) == 0) {
+            lua_pushboolean(L, 1);
+            return 1;
+        }
+    }
+
+    lua_pushboolean(L, 0);
+    return 1;
+}
+
+/* render.destroyRenderTarget(string name) */
+/* Looks up the render target by name, releases all GPU resources, and removes it from the pool */
+int destroyRenderTarget(lua_State *L) {
+    const char *name = luaL_checkstring(L, 1);
+
+    for (int i = 0; i < rtPool.count; ++i) {
+        struct RenderTarget *rt = rtPool.targets[i];
+
+        if (!rt) continue;
+        if (strcmp(rt->tex.name, name) != 0) continue;
+
+        struct Texture *tex = &rt->tex;
+
+        vanir_log_info("destroyRenderTarget: releasing \"%s\"", name);
+
+        if (tex->bindGroup)       { wgpuBindGroupRelease(tex->bindGroup);             tex->bindGroup       = NULL; }
+        if (tex->bindGroupLayout) { wgpuBindGroupLayoutRelease(tex->bindGroupLayout); tex->bindGroupLayout = NULL; }
+        if (tex->sampler)         { wgpuSamplerRelease(tex->sampler);                 tex->sampler         = NULL; }
+        if (tex->view)            { wgpuTextureViewRelease(tex->view);                tex->view            = NULL; }
+        if (tex->texture)         { wgpuTextureRelease(tex->texture);                 tex->texture         = NULL; }
+
+        free(rt);
+
+        /* ↓ compact the pool: swap with last entry ↓ */
+        rtPool.targets[i] = rtPool.targets[--rtPool.count];
+        rtPool.targets[rtPool.count] = NULL;
+
+        return 0;
+    }
+
+    vanir_log_info("destroyRenderTarget: \"%s\" not found", name);
+    return 0;
+}
+
 /* stubs ↓↓↓ stubs */
 int force(lua_State *L)       { return 0; }
 int begin(lua_State *L)       { luaL_checkinteger(L, 1); return 0; }
 int end(lua_State *L)         { return 0; }
-int resetMatrix(lua_State *L) { return 0; }
-int pushMatrix(lua_State *L)  { return 0; }
-int popMatrix(lua_State *L)   { return 0; }
+
+//TODO: fix this mess later, its horrible
+/* ↓ the active matrix is applied to every vertex pushed by draw calls       ↓ */
+/* ↓ a stack lets you save/restore it across scopes with push/pop            ↓ */
+
+#define MATRIX_STACK_MAX 64
+
+static float matrixStack[MATRIX_STACK_MAX][9];
+static int   matrixStackTop = 0;           /* ↓ number of saved matrices ↓ */
+static float activeMatrix[9];              /* ↓ current transform applied to all verts ↓ */
+static bool  matrixIsIdentity = true;      /* ↓ fast path: skip transform when identity ↓ */
+
+static void matrixCheckIdentity(void) {
+    matrixIsIdentity =
+        activeMatrix[0] == 1.0f && activeMatrix[1] == 0.0f && activeMatrix[2] == 0.0f &&
+        activeMatrix[3] == 0.0f && activeMatrix[4] == 1.0f && activeMatrix[5] == 0.0f &&
+        activeMatrix[6] == 0.0f && activeMatrix[7] == 0.0f && activeMatrix[8] == 1.0f;
+}
+
+/* ↓ called once on module load ↓ */
+static void matrixStackInit(void) {
+    matrixIdentity(activeMatrix);
+    matrixIsIdentity = true;
+    matrixStackTop   = 0;
+}
+
+/* render.pushMatrix([mat]) ↓ */
+/* ↓ saves the current matrix, optionally sets a new one                     ↓ */
+/* ↓ if mat is given:  push current → set current = mat                      ↓ */
+/* ↓ if no arg:        just push current (save slot for a later popMatrix)   ↓ */
+int pushMatrix(lua_State *L) {
+    if (matrixStackTop >= MATRIX_STACK_MAX) {
+        luaL_error(L, "render.pushMatrix: matrix stack overflow (max %d)", MATRIX_STACK_MAX);
+        return 0;
+    }
+
+    /* ↓ save current onto stack ↓ */
+    memcpy(matrixStack[matrixStackTop], activeMatrix, sizeof(activeMatrix));
+    matrixStackTop++;
+
+    /* ↓ if a Matrix table was passed, load it as the new active matrix ↓ */
+    if (!lua_isnoneornil(L, 1)) {
+        matrixGet(L, 1, activeMatrix);
+        matrixCheckIdentity();
+
+        vanir_log_info("pushMatrix(mat): depth=%d  active=[%.3f %.3f %.3f | %.3f %.3f %.3f]  identity=%d",
+            matrixStackTop, activeMatrix[0], activeMatrix[1], activeMatrix[2],
+            activeMatrix[3], activeMatrix[4], activeMatrix[5], matrixIsIdentity);
+    } else {
+        vanir_log_info("pushMatrix(): depth=%d  saved current (no new matrix set)", matrixStackTop);
+    }
+
+    return 0;
+}
+
+/* render.popMatrix() ↓ */
+int popMatrix(lua_State *L) {
+    if (matrixStackTop <= 0) {
+        luaL_error(L, "render.popMatrix: matrix stack underflow");
+        return 0;
+    }
+
+    matrixStackTop--;
+    memcpy(activeMatrix, matrixStack[matrixStackTop], sizeof(activeMatrix));
+    matrixCheckIdentity();
+
+    vanir_log_info("popMatrix(): depth=%d  restored=[%.3f %.3f %.3f | %.3f %.3f %.3f]  identity=%d",
+        matrixStackTop, activeMatrix[0], activeMatrix[1], activeMatrix[2],
+        activeMatrix[3], activeMatrix[4], activeMatrix[5], matrixIsIdentity);
+
+    return 0;
+}
+
+/* render.resetMatrix() ↓ */
+int resetMatrix(lua_State *L) {
+    (void)L;
+    matrixIdentity(activeMatrix);
+    matrixIsIdentity = true;
+    matrixStackTop   = 0;
+
+    vanir_log_info("resetMatrix(): stack cleared, active = identity");
+
+    return 0;
+}
+
+/* render.setMatrix(mat) ↓ */
+static int setMatrix(lua_State *L) {
+    luaL_checktype(L, 1, LUA_TTABLE);
+    matrixGet(L, 1, activeMatrix);
+    matrixCheckIdentity();
+
+    vanir_log_info("setMatrix(): active=[%.3f %.3f %.3f | %.3f %.3f %.3f]  identity=%d",
+        activeMatrix[0], activeMatrix[1], activeMatrix[2],
+        activeMatrix[3], activeMatrix[4], activeMatrix[5], matrixIsIdentity);
+
+    return 0;
+}
+
+/* render.getMatrix() → Matrix ↓ */
+static int getMatrix(lua_State *L) {
+    matrixPush(L, activeMatrix);
+    return 1;
+}
+
+/* ↓ apply the active matrix to a point in-place; called by pushVert in draw.c ↓ */
+void applyActiveMatrix(float *x, float *y) {
+    if (matrixIsIdentity) 
+        return;
+
+    float ox, oy;
+
+    matrixTransformPoint(activeMatrix, *x, *y, &ox, &oy);
+
+    *x = ox;
+    *y = oy;
+}
+
 int scissor(lua_State *L) {
     struct glfwWindow *w = currentRenderWindow;
 
-    if (!w || !w->frame.passEncoder) return 0;
+    if (!w || !w->frame.passEncoder) 
+        return 0;
 
     uint32_t x  = (uint32_t)lua_tonumber(L, 1);
     uint32_t y  = (uint32_t)lua_tonumber(L, 2);
@@ -480,31 +710,48 @@ int setQuality(lua_State *L) { return 0; }
 
 const luaL_Reg luaRender[] = {
     /* ↓ draw calls ↓ */
-    {"drawLine",         drawLine},
-    {"drawRect",         drawRect},
-    {"drawCircle",       drawCircle},
-    {"drawFilledCircle", drawFilledCircle},
-    {"drawPoly",         drawPoly},
-    {"drawVertex",       drawVertex},
-    {"drawTexturedRect", drawTexturedRect},
-    
-    /* ↓ something something, ill name this later ↓ */
-    {"clear",        clear},
-    {"setBlend",     setBlend},
-    {"enable",       enable},
-    {"disable",      disable},
-    {"setColor",     setColor},
-    {"setTexture",   setTexture},
-    {"setQuality",   setQuality},
-    {"force",        force},
-    {"begin",        begin},
-    {"exit",         end},
-    {"scissor",      scissor},
-    {"setViewport",  setViewport},
-    {"resetViewport",resetViewport},
-    {"resetMatrix",  resetMatrix},
-    {"pushMatrix",   pushMatrix},
-    {"popMatrix",    popMatrix},
+    {"drawLine",              drawLine},
+    {"drawRect",              drawRect},
+    {"drawCircle",            drawCircle},
+    {"drawFilledCircle",      drawFilledCircle},
+    {"drawPoly",              drawPoly},
+    {"drawVertex",            drawVertex},
+    {"drawTexturedRect",      drawTexturedRect},
+    {"drawRectOutline",       drawRectOutline},
+    {"drawTriangle",          drawTriangle},
+    {"drawRoundedBox",        drawRoundedBox},
+    {"drawRoundedBoxEx",      drawRoundedBoxEx},
+    {"drawTexturedRectUV",    drawTexturedRectUV},
+    {"drawTexturedTriangleUV",drawTexturedTriangleUV},
+    {"drawPixelsRGB",         drawPixelsRGB},
+    {"drawPixelsSubrectRGB",  drawPixelsSubrectRGB},
+
+    /* ↓ clear / state ↓ */
+    {"clear",             clear},
+    {"clearDepth",        clearDepth},
+    {"clearRGBA",         clearRGBA},
+    {"depthRange",        depthRange},
+    {"enableDepth",       enableDepth},
+    {"setBlend",          setBlend},
+    {"enable",            enable},
+    {"disable",           disable},
+    {"setColor",          setColor},
+    {"setTexture",        setTexture},
+    {"setQuality",        setQuality},
+    {"force",             force},
+    {"begin",             begin},
+    {"exit",              end},
+    {"scissor",           scissor},
+    {"setViewport",       setViewport},
+    {"resetViewport",     resetViewport},
+
+    /* ↓ clip planes (WebGPU has none; stubs for compatibility) ↓ */
+    {"pushCustomClipPlane", pushCustomClipPlane},
+    {"popCustomClipPlane",  popCustomClipPlane},
+
+    /* ↓ query ↓ */
+    {"readPixel",          readPixel},
+    {"renderViewsLeft",    renderViewsLeft},
 
     /* ↓ render targets ↓ */
     {"createRenderTarget",    renderTargetCreate},
@@ -512,16 +759,26 @@ const luaL_Reg luaRender[] = {
     {"stopRenderTarget",      renderTargetStop},
     {"clearRenderTarget",     renderTargetClear},
     {"setRenderTargetTexture",renderTargetSetTexture},
+    {"renderTargetExists",    renderTargetExists},
+    {"destroyRenderTarget",   destroyRenderTarget},
 
     /* ↓ setMaterial and setRenderTarget are aliases for setTexture ↓ */
     /* ↓ render targets return a Texture, so they work interchangeably ↓ */
     {"setMaterial",           setTexture},
     {"setRenderTarget",       setTexture},
 
+    /* ↓ matrix stack ↓ */
+    {"pushMatrix",   pushMatrix},
+    {"popMatrix",    popMatrix},
+    {"resetMatrix",  resetMatrix},
+    {"setMatrix",    setMatrix},
+    {"getMatrix",    getMatrix},
+
     {NULL, NULL}
 };
 
 int renderInit(lua_State* L) {
+    matrixStackInit();
     luaL_newlib(L, luaRender);
 
     return 1;

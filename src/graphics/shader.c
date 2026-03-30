@@ -400,11 +400,112 @@ static int luaShaderExists(lua_State *L) {
     return 1;
 }
 
+/* ↓ shader.getActive() — returns the name of the active custom shader, or nil ↓ */
+static int luaShaderGetActive(lua_State *L) {
+    if (activeShader)
+        lua_pushstring(L, activeShader->name);
+    else
+        lua_pushnil(L);
+
+    return 1;
+}
+
+/* ↓ shader.list() — returns a table of all compiled shader names ↓ */
+static int luaShaderList(lua_State *L) {
+    lua_newtable(L);
+
+    for (int i = 0; i < shaderPool.count; ++i) {
+        lua_pushstring(L, shaderPool.shaders[i]->name);
+        lua_rawseti(L, -2, i + 1);
+    }
+
+    return 1;
+}
+
+/* ↓ uniform injection ↓ */
+/* ↓ shader.setUniform(name, key, value) — store a pending uniform for a named shader ↓ */
+/* ↓ values are stored as Lua numbers; send them to the GPU via shader.sendUniforms() ↓ */
+static int luaShaderSetUniform(lua_State *L) {
+    const char    *shaderName = luaL_checkstring(L, 1);
+    const char    *key        = luaL_checkstring(L, 2);
+    lua_Number     val        = luaL_checknumber(L, 3);
+
+    struct Shader *s = findShader(shaderName);
+
+    if (!s) {
+        throw("shader.setUniform", shaderName, "shader not found — compile it first");
+        return 0;
+    }
+
+    /* ↓ uniforms table lives in the Lua registry: registry[shaderName] = { key = value, … } ↓ */
+    lua_pushstring(L, shaderName);
+    lua_gettable(L, LUA_REGISTRYINDEX);
+
+    if (!lua_istable(L, -1)) {
+        lua_pop(L, 1);
+        lua_newtable(L);
+        lua_pushstring(L, shaderName);
+        lua_pushvalue(L, -2);
+        lua_settable(L, LUA_REGISTRYINDEX);
+    }
+
+    lua_pushstring(L, key);
+    lua_pushnumber(L, val);
+    lua_rawset(L, -3);
+
+    lua_pop(L, 1);
+
+    return 0;
+}
+
+/* ↓ shader.getUniform(name, key) — read back a stored uniform value, or nil ↓ */
+static int luaShaderGetUniform(lua_State *L) {
+    const char *shaderName = luaL_checkstring(L, 1);
+    const char *key        = luaL_checkstring(L, 2);
+
+    lua_pushstring(L, shaderName);
+    lua_gettable(L, LUA_REGISTRYINDEX);
+
+    if (!lua_istable(L, -1)) {
+        lua_pop(L, 1);
+        lua_pushnil(L);
+        return 1;
+    }
+
+    lua_pushstring(L, key);
+    lua_rawget(L, -2);
+
+    /* ↓ result is now on top; remove the table beneath it ↓ */
+    lua_remove(L, -2);
+
+    return 1;
+}
+
+/* ↓ shader.getUniforms(name) — return the full uniform table for a shader (or nil) ↓ */
+static int luaShaderGetUniforms(lua_State *L) {
+    const char *shaderName = luaL_checkstring(L, 1);
+
+    lua_pushstring(L, shaderName);
+    lua_gettable(L, LUA_REGISTRYINDEX);
+
+    if (!lua_istable(L, -1)) {
+        lua_pop(L, 1);
+        lua_pushnil(L);
+    }
+
+    return 1;
+}
+
 static const luaL_Reg luaShader[] = {
-    {"compile", luaShaderCompile},
-    {"setActive", luaShaderSetActive},
-    {"release", luaShaderRelease},
-    {"exists", luaShaderExists},
+    {"compile",      luaShaderCompile},
+    {"setActive",    luaShaderSetActive},
+    {"getActive",    luaShaderGetActive},
+    {"release",      luaShaderRelease},
+    {"exists",       luaShaderExists},
+    {"list",         luaShaderList},
+    {"setUniform",   luaShaderSetUniform},
+    {"getUniform",   luaShaderGetUniform},
+    {"getUniforms",  luaShaderGetUniforms},
     
     {NULL, NULL}
 };

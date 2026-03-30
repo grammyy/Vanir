@@ -4,7 +4,7 @@
 #include <string.h>
 
 #include "../vanir.h"
-#include "../types.h"
+#include "../types/common.h"
 #include "../modules/windows.h"
 #include "../modules/render.h"
 #include "rendertarget.h"
@@ -475,5 +475,5 @@ void destroyAllRenderTargets(void) {
     free(rtPool.targets);
 
     rtPool.targets = NULL;
-    rtPool.count   = 0;
+    rtPool.count = 0;
 }

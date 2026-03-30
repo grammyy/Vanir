@@ -58,11 +58,11 @@ end)
 -- the test from aborting — fireError() already staged the onError fire
 local errorTriggered = false
 hook.add("think", "test_trigger_error", function()
+    print("meow")
     if step >= 2 and not errorTriggered then
         errorTriggered = true
-        pcall(function()
-            files.open(nil)   -- nil path -> throw() inside filesOpen
-        end)
+        
+        files.open(nil)   -- nil path -> throw() inside filesOpen
     end
 end)
 

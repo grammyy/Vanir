@@ -41,20 +41,20 @@ static double frameDelta    = 0.0; /* ms */
 static double startTime = 0.0;
 
 static int64_t rawMilliseconds(void) {
-#ifdef _WIN32
-    LARGE_INTEGER freq, counter;
+    #ifdef _WIN32
+        LARGE_INTEGER freq, counter;
 
-    QueryPerformanceFrequency(&freq);
-    QueryPerformanceCounter(&counter);
+        QueryPerformanceFrequency(&freq);
+        QueryPerformanceCounter(&counter);
 
-    return (counter.QuadPart * 1000LL) / freq.QuadPart;
-#else
-    struct timespec time;
+        return (counter.QuadPart * 1000LL) / freq.QuadPart;
+    #else
+        struct timespec time;
 
-    clock_gettime(CLOCK_MONOTONIC, &time);
+        clock_gettime(CLOCK_MONOTONIC, &time);
 
-    return ((int64_t)time.tv_sec * 1000) + (time.tv_nsec / 1000000);
-#endif
+        return ((int64_t)time.tv_sec * 1000) + (time.tv_nsec / 1000000);
+    #endif
 }
 
 static double nowMs(void) {
@@ -63,23 +63,24 @@ static double nowMs(void) {
 
 /* ↓ systime — unix epoch in seconds, float ↓ */
 static double nowSec(void) {
-#ifdef _WIN32
-    FILETIME ft;
-    ULARGE_INTEGER uli;
+    #ifdef _WIN32
+        FILETIME ft;
+        ULARGE_INTEGER uli;
 
-    GetSystemTimeAsFileTime(&ft);
-    uli.LowPart  = ft.dwLowDateTime;
-    uli.HighPart = ft.dwHighDateTime;
+        GetSystemTimeAsFileTime(&ft);
 
-    /* ↓ windows epoch is 1601-01-01; unix is 1970-01-01; delta = 116444736000000000 100ns ticks ↓ */
-    return (double)(uli.QuadPart - 116444736000000000ULL) / 10000000.0;
-#else
-    struct timespec ts;
+        uli.LowPart = ft.dwLowDateTime;
+        uli.HighPart = ft.dwHighDateTime;
 
-    clock_gettime(CLOCK_REALTIME, &ts);
+        /* ↓ windows epoch is 1601-01-01; unix is 1970-01-01; delta = 116444736000000000 100ns ticks ↓ */
+        return (double)(uli.QuadPart - 116444736000000000ULL) / 10000000.0;
+    #else
+        struct timespec ts;
 
-    return (double)ts.tv_sec + (double)ts.tv_nsec / 1e9;
-#endif
+        clock_gettime(CLOCK_REALTIME, &ts);
+
+        return (double)ts.tv_sec + (double)ts.tv_nsec / 1e9;
+    #endif
 }
 
 /* ↓ find a timer by name; returns NULL if not found ↓ */
@@ -112,7 +113,7 @@ static struct Timer *allocTimer(void) {
         }
 
         timerPool = temp;
-        timerCap  = newCap;
+        timerCap = newCap;
     }
 
     return &timerPool[timerCount++];
@@ -201,8 +202,8 @@ int frametime(lua_State *L) {
 /* ↓ timer.create(name, delay, reps, func) → None ↓ */
 int timerCreate(lua_State *L) {
     const char *name  = luaL_checkstring(L, 1);
-    double      delay = luaL_checknumber(L, 2);
-    int         reps  = (int)luaL_checkinteger(L, 3); /* -1 for infinite */
+    double delay = luaL_checknumber(L, 2);
+    int reps  = (int)luaL_checkinteger(L, 3); // -1 for inf
 
     luaL_checktype(L, 4, LUA_TFUNCTION);
 
@@ -215,20 +216,21 @@ int timerCreate(lua_State *L) {
     } else {
         t = allocTimer();
 
-        if (!t) return 0;
+        if (!t) 
+            return 0;
     }
 
     lua_pushvalue(L, 4);
 
-    t->name      = strdup(name);
-    t->delay     = delay;
-    t->reps      = reps;
-    t->repsLeft  = reps;
-    t->funcRef   = luaL_ref(L, LUA_REGISTRYINDEX);
-    t->nextFire  = nowMs() + delay;
-    t->paused    = false;
-    t->pausedAt  = 0.0;
-    t->active    = true;
+    t->name = strdup(name);
+    t->delay = delay;
+    t->reps = reps;
+    t->repsLeft = reps;
+    t->funcRef = luaL_ref(L, LUA_REGISTRYINDEX);
+    t->nextFire = nowMs() + delay;
+    t->paused = false;
+    t->pausedAt = 0.0;
+    t->active = true;
 
     return 0;
 }
@@ -240,12 +242,13 @@ int timerSimple(lua_State *L) {
     luaL_checktype(L, 2, LUA_TFUNCTION);
 
     char name[64];
+
     snprintf(name, sizeof(name), "%s%d", SIMPLE_PREFIX, simpleCounter++);
 
     lua_pushstring(L, name);
-    lua_insert(L, 1);               /* name, delay, func */
-    lua_pushinteger(L, 1);          /* name, delay, func, 1 */
-    lua_insert(L, 3);               /* name, delay, 1, func */
+    lua_insert(L, 1);      // name, delay, func
+    lua_pushinteger(L, 1); // name, delay, func, 1
+    lua_insert(L, 3);      // name, delay, 1, func
 
     return timerCreate(L);
 }
@@ -276,12 +279,16 @@ int timerExists(lua_State *L) {
 /* ↓ timer.start(name) → boolean — restart a stopped/finished timer from now ↓ */
 int timerStart(lua_State *L) {
     const char *name = luaL_checkstring(L, 1);
-    struct Timer *t  = findTimer(name);
+    struct Timer *t = findTimer(name);
 
-    if (!t) { lua_pushboolean(L, 0); return 1; }
+    if (!t) { 
+        lua_pushboolean(L, 0); 
+        
+        return 1; 
+    }
 
     t->nextFire = nowMs() + t->delay;
-    t->paused   = false;
+    t->paused = false;
     t->repsLeft = t->reps;
 
     lua_pushboolean(L, 1);
@@ -292,9 +299,13 @@ int timerStart(lua_State *L) {
 /* ↓ timer.stop(name) → boolean — stops (deactivates) a timer without removing it ↓ */
 int timerStop(lua_State *L) {
     const char *name = luaL_checkstring(L, 1);
-    struct Timer *t  = findTimer(name);
+    struct Timer *t = findTimer(name);
 
-    if (!t) { lua_pushboolean(L, 0); return 1; }
+    if (!t) { 
+        lua_pushboolean(L, 0); 
+        
+        return 1; 
+    }
 
     t->active = false;
 
@@ -306,11 +317,15 @@ int timerStop(lua_State *L) {
 /* ↓ timer.pause(name) → boolean ↓ */
 int timerPause(lua_State *L) {
     const char *name = luaL_checkstring(L, 1);
-    struct Timer *t  = findTimer(name);
+    struct Timer *t = findTimer(name);
 
-    if (!t || t->paused) { lua_pushboolean(L, 0); return 1; }
+    if (!t || t->paused) { 
+        lua_pushboolean(L, 0); 
+        
+        return 1; 
+    }
 
-    t->paused   = true;
+    t->paused = true;
     t->pausedAt = nowMs();
 
     lua_pushboolean(L, 1);
@@ -321,15 +336,20 @@ int timerPause(lua_State *L) {
 /* ↓ timer.unpause(name) → boolean ↓ */
 int timerUnpause(lua_State *L) {
     const char *name = luaL_checkstring(L, 1);
-    struct Timer *t  = findTimer(name);
+    struct Timer *t = findTimer(name);
 
-    if (!t || !t->paused) { lua_pushboolean(L, 0); return 1; }
+    if (!t || !t->paused) { 
+        lua_pushboolean(L, 0); 
+        
+        return 1; 
+    }
 
     /* ↓ push nextFire forward by the time spent paused ↓ */
     double pausedFor = nowMs() - t->pausedAt;
+
     t->nextFire += pausedFor;
-    t->paused    = false;
-    t->pausedAt  = 0.0;
+    t->paused = false;
+    t->pausedAt = 0.0;
 
     lua_pushboolean(L, 1);
 
@@ -339,18 +359,22 @@ int timerUnpause(lua_State *L) {
 /* ↓ timer.toggle(name) → boolean — current paused state after toggle ↓ */
 int timerToggle(lua_State *L) {
     const char *name = luaL_checkstring(L, 1);
-    struct Timer *t  = findTimer(name);
+    struct Timer *t = findTimer(name);
 
-    if (!t) { lua_pushboolean(L, 0); return 1; }
+    if (!t) { 
+        lua_pushboolean(L, 0); 
+        
+        return 1; 
+    }
 
     if (t->paused) {
         lua_settop(L, 1);
         timerUnpause(L);
-        lua_pushboolean(L, 0); /* now unpaused */
+        lua_pushboolean(L, 0); // now unpaused
     } else {
         lua_settop(L, 1);
         timerPause(L);
-        lua_pushboolean(L, 1); /* now paused */
+        lua_pushboolean(L, 1); // now paused
     }
 
     return 1;
@@ -359,10 +383,13 @@ int timerToggle(lua_State *L) {
 /* ↓ timer.adjust(name, delay, reps|nil, func|nil) → boolean ↓ */
 int timerAdjust(lua_State *L) {
     const char *name = luaL_checkstring(L, 1);
-    double      delay = luaL_checknumber(L, 2);
-    struct Timer *t   = findTimer(name);
+    double delay = luaL_checknumber(L, 2);
+    struct Timer *t = findTimer(name);
 
-    if (!t) { lua_pushboolean(L, 0); return 1; }
+    if (!t) { 
+        lua_pushboolean(L, 0); 
+        return 1; 
+    }
 
     t->delay = delay;
 
@@ -372,6 +399,7 @@ int timerAdjust(lua_State *L) {
     if (!lua_isnil(L, 4) && lua_isfunction(L, 4)) {
         luaL_unref(L, LUA_REGISTRYINDEX, t->funcRef);
         lua_pushvalue(L, 4);
+
         t->funcRef = luaL_ref(L, LUA_REGISTRYINDEX);
     }
 
@@ -385,7 +413,11 @@ int timerTimeleft(lua_State *L) {
     const char *name = luaL_checkstring(L, 1);
     struct Timer *t  = findTimer(name);
 
-    if (!t) { lua_pushnil(L); return 1; }
+    if (!t) { 
+        lua_pushnil(L); 
+        
+        return 1; 
+    }
 
     double left;
 
@@ -428,22 +460,22 @@ int timerGetTimersLeft(lua_State *L) {
 }
 
 const luaL_Reg luaTimer[] = {
-    {"realtime",      realtime},
-    {"systime",       systime},
-    {"curtime",       curtime},
-    {"frametime",     frametime},
-    {"create",        timerCreate},
-    {"simple",        timerSimple},
-    {"remove",        timerRemove},
-    {"exists",        timerExists},
-    {"start",         timerStart},
-    {"stop",          timerStop},
-    {"pause",         timerPause},
-    {"unpause",       timerUnpause},
-    {"toggle",        timerToggle},
-    {"adjust",        timerAdjust},
-    {"timeleft",      timerTimeleft},
-    {"repsleft",      timerRepsleft},
+    {"realtime", realtime},
+    {"systime", systime},
+    {"curtime", curtime},
+    {"frametime", frametime},
+    {"create", timerCreate},
+    {"simple", timerSimple},
+    {"remove", timerRemove},
+    {"exists", timerExists},
+    {"start", timerStart},
+    {"stop", timerStop},
+    {"pause", timerPause},
+    {"unpause", timerUnpause},
+    {"toggle", timerToggle},
+    {"adjust", timerAdjust},
+    {"timeleft", timerTimeleft},
+    {"repsleft", timerRepsleft},
     {"getTimersLeft", timerGetTimersLeft},
 
     {NULL, NULL}

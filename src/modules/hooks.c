@@ -26,7 +26,7 @@ struct callbacks* createCallback(size_t dataSize, enum dataType dataType) {
     return callback;
 }
 
-/* ↓ helper functions ↓ */
+/* helper functions ↓↓↓ helper functions */
 void setCallback(struct callbacks* callback, const void* data) {
     memcpy(callback->data, data, callback->dataSize); //copies data into existing callback
 }
@@ -34,13 +34,16 @@ void setCallback(struct callbacks* callback, const void* data) {
 void* getCallback(const struct callbacks* callback) {
     return callback->data;
 }
-/* ↑ helper functions ↑ */
+/* helper functions ↑↑↑ helper functions */
 
 /* ↓ fire the onError hook with a formatted message string; called by throwError below ↓ */
 void fireError(const char *message) {
-    onError.callback = createCallback(strlen(message) + 1, string);
-    setCallback(onError.callback, message);
+    if (!onError.callback) {
+        onError.callback = createCallback(strlen(message) + 1, string);
+    }
 
+    setCallback(onError.callback, message);
+    
     onError.status = hook_awaiting;
 }
 
@@ -212,6 +215,7 @@ void luaFunc(lua_State *L, struct hook *instance, int index, struct callbacks* c
             default:
                 lua_pushnil(L); break;
         }
+
         nargs = 1;
     }
 

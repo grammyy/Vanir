@@ -4,7 +4,7 @@
 #include <stdlib.h>
 
 #include "../vanir.h"
-#include "../types.h"
+#include "../types/common.h"
 #include "files.h"
 
 /* ↓ file:close() ↓ */

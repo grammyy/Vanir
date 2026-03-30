@@ -59,6 +59,61 @@ if not ok1 or not ok2 then
     quit()
 end
 
+-- shader.list()
+local list = shader.list()
+print("[shader] compiled shaders: "..#list)
+for i, name in ipairs(list) do
+    print("[shader]   ["..i.."] "..name)
+end
+if #list == 2 then
+    print("[shader] list: PASS")
+else
+    print("[shader] list: FAIL (expected 2, got "..#list..")")
+end
+
+-- shader.getActive() before setting any
+local activeNil = shader.getActive()
+if activeNil == nil then
+    print("[shader] getActive (none): PASS")
+else
+    print("[shader] getActive (none): FAIL (got "..tostring(activeNil)..")")
+end
+
+-- shader.setActive then getActive
+shader.setActive("wave")
+local activeName = shader.getActive()
+if activeName == "wave" then
+    print("[shader] getActive (wave): PASS")
+else
+    print("[shader] getActive (wave): FAIL (got "..tostring(activeName)..")")
+end
+shader.setActive(nil)
+
+-- shader.setUniform / getUniform / getUniforms
+shader.setUniform("red_tint", "intensity", 0.75)
+shader.setUniform("red_tint", "time", 1.23)
+
+local iv = shader.getUniform("red_tint", "intensity")
+if iv and math.abs(iv - 0.75) < 0.001 then
+    print("[shader] getUniform intensity: PASS")
+else
+    print("[shader] getUniform intensity: FAIL (got "..tostring(iv)..")")
+end
+
+local uniforms = shader.getUniforms("red_tint")
+if uniforms and uniforms.intensity and uniforms.time then
+    print("[shader] getUniforms: PASS")
+else
+    print("[shader] getUniforms: FAIL")
+end
+
+local missingU = shader.getUniforms("wave")
+if missingU == nil then
+    print("[shader] getUniforms (empty): PASS")
+else
+    print("[shader] getUniforms (empty): FAIL (expected nil)")
+end
+
 local startTime   = timer.realtime()
 local switchCount = 0
 local resizeDone  = false

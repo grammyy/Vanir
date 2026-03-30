@@ -13,7 +13,7 @@
 /* stb_image ↑↑↑ stb_image */
 
 #include "../vanir.h"
-#include "../types.h"
+#include "../types/common.h"
 #include "../modules/windows.h"
 #include "../modules/render.h"
 #include "textures.h"

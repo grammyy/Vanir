@@ -1,6 +1,8 @@
 #include <stdint.h>
 #include <string.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <errno.h>
 
 #include "../vanir.h"
 #include "memory.h"
@@ -12,6 +14,71 @@
 /* ↓ cast a lua integer to a pointer ↓ */
 static void *toPtr(lua_State *L, int idx) {
     return (void *)(uintptr_t)luaL_checkinteger(L, idx);
+}
+
+/* ↓ helpers — safe numeric parsing ↓ */
+
+/* ↓ parse unsigned 64-bit from lua (number or string) ↓ */
+static int parse_u64(lua_State *L, int idx, uint64_t *out) {
+    /* ↓ fast path: number ↓ */
+    if (lua_isnumber(L, idx)) {
+        *out = (uint64_t)lua_tointeger(L, idx);
+        return 1;
+    }
+
+    /* ↓ string path ↓ */
+    const char *s = luaL_checkstring(L, idx);
+    char *end;
+    errno = 0;
+
+    unsigned long long tmp = strtoull(s, &end, 0);
+
+    /* ↓ no digits ↓ */
+    if (s == end)
+        return luaL_error(L, "invalid uint64 string (no digits)");
+
+    /* ↓ trailing garbage ↓ */
+    if (*end != '\0')
+        return luaL_error(L, "invalid uint64 string (trailing characters)");
+
+    /* ↓ overflow ↓ */
+    if (errno == ERANGE)
+        return luaL_error(L, "uint64 overflow");
+
+    *out = (uint64_t)tmp;
+    return 1;
+}
+
+/* ↓ parse signed 64-bit from lua (number or string) ↓ */
+static int parse_i64(lua_State *L, int idx, int64_t *out) {
+    /* ↓ fast path: number ↓ */
+    if (lua_isnumber(L, idx)) {
+        *out = (int64_t)lua_tointeger(L, idx);
+        return 1;
+    }
+
+    /* ↓ string path ↓ */
+    const char *s = luaL_checkstring(L, idx);
+    char *end;
+    errno = 0;
+
+    long long tmp = strtoll(s, &end, 0);
+
+    /* ↓ no digits ↓ */
+    if (s == end)
+        return luaL_error(L, "invalid int64 string (no digits)");
+
+    /* ↓ trailing garbage ↓ */
+    if (*end != '\0')
+        return luaL_error(L, "invalid int64 string (trailing characters)");
+
+    /* ↓ overflow ↓ */
+    if (errno == ERANGE)
+        return luaL_error(L, "int64 overflow");
+
+    *out = (int64_t)tmp;
+
+    return 1;
 }
 
 /* ↓ read helpers — each returns 1 value or errors ↓ */
@@ -203,19 +270,22 @@ static int memWriteDouble(lua_State *L) {
     return 0;
 }
 
-/* ↓ memory.writeInt64(addr, value) — takes integer ↓ */
+/* ↓ memory.writeInt64(addr, value|string) ↓ */
 static int memWriteInt64(lua_State *L) {
-    int64_t v = (int64_t)luaL_checkinteger(L, 2);
+    int64_t v;
+
+    parse_i64(L, 2, &v);
 
     memcpy(toPtr(L, 1), &v, sizeof(v));
 
     return 0;
 }
 
-/* ↓ memory.writeUInt64(addr, str) — takes decimal string to avoid sign loss ↓ */
+/* ↓ memory.writeUInt64(addr, value|string) ↓ */
 static int memWriteUInt64(lua_State *L) {
-    const char *s = luaL_checkstring(L, 2);
-    uint64_t    v = (uint64_t)strtoull(s, NULL, 10);
+    uint64_t v;
+
+    parse_u64(L, 2, &v);
 
     memcpy(toPtr(L, 1), &v, sizeof(v));
 

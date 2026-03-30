@@ -1,14 +1,17 @@
+#include "../vanir.h"
+#include "../modules/windows.h"
+
 #include <webgpu/webgpu.h>
 #include <stdlib.h>
 #include <math.h>
-
-#include "../vanir.h"
-#include "../modules/windows.h"
+#include <stdbool.h>
 
 extern struct VanirGPU gpu;
 
 #include "../modules/render.h"
+#include "render.h"
 #include "shader.h"
+#include "textures.h"
 
 extern struct Shader *activeShader;
 
@@ -72,11 +75,18 @@ static bool cmdReserve(struct Pipeline *p, uint32_t extra) {
     return true;
 }
 
-/* ↓ push one vertex into the flat buffer ↓ */
+/* ↓ push one vertex into the flat buffer; applies the active matrix transform ↓ */
 static void pushVert(struct Pipeline *p, float x, float y, float z, float r, float g, float b, float a) {
+    applyActiveMatrix(&x, &y);
+
     float *dst = p->verts + p->vertCount * VERTEX_STRIDE;
-    
-    dst[0]=x; dst[1]=y; dst[2]=z; dst[3]=r; dst[4]=g; dst[5]=b; dst[6]=a;
+    dst[0]=x; 
+    dst[1]=y; 
+    dst[2]=z; 
+    dst[3]=r; 
+    dst[4]=g; 
+    dst[5]=b; 
+    dst[6]=a;
     
     p->vertCount++;
 }
@@ -118,8 +128,8 @@ void flushBatches(struct glfwWindow *w) {
             wgpuBufferRelease(p->vertexBuffer);
 
         WGPUBufferDescriptor desc = {
-            .usage            = WGPUBufferUsage_Vertex | WGPUBufferUsage_CopyDst,
-            .size             = needed,
+            .usage = WGPUBufferUsage_Vertex | WGPUBufferUsage_CopyDst,
+            .size = needed,
             .mappedAtCreation = false
         };
 
@@ -450,6 +460,412 @@ int drawVertex(lua_State *L) {
     pushVert(p, x, y, z, c.r, c.g, c.b, c.a);
     pushCmd(p, DRAW_TRIS, 1);
     
+    return 0;
+}
+/* render.drawRectOutline(x, y, w, h [, thickness]) */
+/* thickness <= 1: four line pairs. thickness > 1: four filled rects. */
+int drawRectOutline(lua_State *L) {
+    struct glfwWindow *w = currentRenderWindow;
+
+    if (!w || !w->frame.encoder || !w->frame.passEncoder) 
+        return 0;
+
+    struct Pipeline *p = w->pipeline;
+
+    if (!p) 
+        return 0;
+
+    float x = (float)lua_tonumber(L, 1), y = (float)lua_tonumber(L, 2);
+    float bw = (float)lua_tonumber(L, 3), bh = (float)lua_tonumber(L, 4);
+    float t = lua_isnoneornil(L, 5) ? 1.0f : (float)lua_tonumber(L, 5);
+
+    struct color c;
+    getGlobalColor(L, &c);
+
+    if (t <= 1.0f) {
+        if (!vertReserve(p, 8)) 
+            return 0;
+
+        pushVert(p, x,      y,      0, c.r,c.g,c.b,c.a);
+        pushVert(p, x+bw,   y,      0, c.r,c.g,c.b,c.a);
+        pushVert(p, x+bw,   y,      0, c.r,c.g,c.b,c.a);
+        pushVert(p, x+bw,   y+bh,   0, c.r,c.g,c.b,c.a);
+        pushVert(p, x+bw,   y+bh,   0, c.r,c.g,c.b,c.a);
+        pushVert(p, x,      y+bh,   0, c.r,c.g,c.b,c.a);
+        pushVert(p, x,      y+bh,   0, c.r,c.g,c.b,c.a);
+        pushVert(p, x,      y,      0, c.r,c.g,c.b,c.a);
+        pushCmd(p, DRAW_LINES, 8);
+    } else {
+        /* thick outline: four filled border rects */
+        if (!vertReserve(p, 24)) 
+            return 0;
+
+        /* top */
+        pushVert(p, x,      y,      0, c.r,c.g,c.b,c.a); pushVert(p, x+bw,   y,      0, c.r,c.g,c.b,c.a); pushVert(p, x+bw,   y+t,    0, c.r,c.g,c.b,c.a);
+        pushVert(p, x,      y,      0, c.r,c.g,c.b,c.a); pushVert(p, x+bw,   y+t,    0, c.r,c.g,c.b,c.a); pushVert(p, x,      y+t,    0, c.r,c.g,c.b,c.a);
+        
+        /* bottom */
+        pushVert(p, x,      y+bh-t, 0, c.r,c.g,c.b,c.a); pushVert(p, x+bw,   y+bh-t, 0, c.r,c.g,c.b,c.a); pushVert(p, x+bw,   y+bh,   0, c.r,c.g,c.b,c.a);
+        pushVert(p, x,      y+bh-t, 0, c.r,c.g,c.b,c.a); pushVert(p, x+bw,   y+bh,   0, c.r,c.g,c.b,c.a); pushVert(p, x,      y+bh,   0, c.r,c.g,c.b,c.a);
+        
+        /* left */
+        pushVert(p, x,      y+t,    0, c.r,c.g,c.b,c.a); pushVert(p, x+t,    y+t,    0, c.r,c.g,c.b,c.a); pushVert(p, x+t,    y+bh-t, 0, c.r,c.g,c.b,c.a);
+        pushVert(p, x,      y+t,    0, c.r,c.g,c.b,c.a); pushVert(p, x+t,    y+bh-t, 0, c.r,c.g,c.b,c.a); pushVert(p, x,      y+bh-t, 0, c.r,c.g,c.b,c.a);
+        
+        /* right */
+        pushVert(p, x+bw-t, y+t,    0, c.r,c.g,c.b,c.a); pushVert(p, x+bw,   y+t,    0, c.r,c.g,c.b,c.a); pushVert(p, x+bw,   y+bh-t, 0, c.r,c.g,c.b,c.a);
+        pushVert(p, x+bw-t, y+t,    0, c.r,c.g,c.b,c.a); pushVert(p, x+bw,   y+bh-t, 0, c.r,c.g,c.b,c.a); pushVert(p, x+bw-t, y+bh-t, 0, c.r,c.g,c.b,c.a);
+        pushCmd(p, DRAW_TRIS, 24);
+    }
+
+    return 0;
+}
+
+/* render.drawTriangle(x1, y1, x2, y2, x3, y3) */
+int drawTriangle(lua_State *L) {
+    struct glfwWindow *w = currentRenderWindow;
+
+    if (!w || !w->frame.encoder || !w->frame.passEncoder) 
+        return 0;
+
+    struct Pipeline *p = w->pipeline;
+
+    if (!p) 
+        return 0;
+
+    float x1 = (float)lua_tonumber(L, 1), y1 = (float)lua_tonumber(L, 2);
+    float x2 = (float)lua_tonumber(L, 3), y2 = (float)lua_tonumber(L, 4);
+    float x3 = (float)lua_tonumber(L, 5), y3 = (float)lua_tonumber(L, 6);
+
+    if (!vertReserve(p, 3)) 
+        return 0;
+
+    struct color c;
+    getGlobalColor(L, &c);
+
+    pushVert(p, x1, y1, 0, c.r,c.g,c.b,c.a);
+    pushVert(p, x2, y2, 0, c.r,c.g,c.b,c.a);
+    pushVert(p, x3, y3, 0, c.r,c.g,c.b,c.a);
+    pushCmd(p, DRAW_TRIS, 3);
+
+    return 0;
+}
+
+/* ↓ push a filled arc as a triangle fan from (cx,cy); used by rounded box corners ↓ */
+static void pushArc(struct Pipeline *p, float cx, float cy, float r, float aStart, float aEnd, int segs, float cr, float cg, float cb, float ca) {
+    float step = (aEnd - aStart) / (float)segs;
+
+    for (int i = 0; i < segs; ++i) {
+        float a0 = aStart + step * (float)i;
+        float a1 = a0 + step;
+
+        pushVert(p, cx, cy, 0, cr,cg,cb,ca);
+        pushVert(p, cx + cosf(a0) * r, cy + sinf(a0) * r, 0, cr,cg,cb,ca);
+        pushVert(p, cx + cosf(a1) * r, cy + sinf(a1) * r, 0, cr,cg,cb,ca);
+    }
+}
+
+/* ↓ internal: draw a rounded rect, per-corner rounding flags ↓ */
+static int drawRoundedBoxInternal(lua_State *L, float r, float x, float y, float bw, float bh, bool tl, bool tr, bool bl, bool br) {
+    struct glfwWindow *w = currentRenderWindow;
+
+    if (!w || !w->frame.encoder || !w->frame.passEncoder) 
+        return 0;
+
+    struct Pipeline *p = w->pipeline;
+
+    if (!p) 
+        return 0;
+
+    struct color c;
+    getGlobalColor(L, &c);
+
+    float cr = c.r, cg = c.g, cb = c.b, ca = c.a;
+
+    /* ↓ clamp radius so it never exceeds half the shorter side ↓ */
+    float maxR = (bw < bh ? bw : bh) * 0.5f;
+    
+    if (r > maxR) 
+        r = maxR;
+    
+    if (r < 0.0f) 
+        r = 0.0f;
+
+    int segs = (int)(r * 0.5f);
+    
+    if (segs < 4) 
+        segs = 4;
+
+    /* ↓ 3 body rects (center + left strip + right strip) = 18 verts ↓ */
+    if (!vertReserve(p, 18)) return 0;
+
+    /* center rect */
+    pushVert(p, x+r,    y,      0, cr,cg,cb,ca); pushVert(p, x+bw-r, y,      0, cr,cg,cb,ca); pushVert(p, x+bw-r, y+bh,   0, cr,cg,cb,ca);
+    pushVert(p, x+r,    y,      0, cr,cg,cb,ca); pushVert(p, x+bw-r, y+bh,   0, cr,cg,cb,ca); pushVert(p, x+r,    y+bh,   0, cr,cg,cb,ca);
+    
+    /* left strip */
+    pushVert(p, x,      y+r,    0, cr,cg,cb,ca); pushVert(p, x+r,    y+r,    0, cr,cg,cb,ca); pushVert(p, x+r,    y+bh-r, 0, cr,cg,cb,ca);
+    pushVert(p, x,      y+r,    0, cr,cg,cb,ca); pushVert(p, x+r,    y+bh-r, 0, cr,cg,cb,ca); pushVert(p, x,      y+bh-r, 0, cr,cg,cb,ca);
+    
+    /* right strip */
+    pushVert(p, x+bw-r, y+r,    0, cr,cg,cb,ca); pushVert(p, x+bw,   y+r,    0, cr,cg,cb,ca); pushVert(p, x+bw,   y+bh-r, 0, cr,cg,cb,ca);
+    pushVert(p, x+bw-r, y+r,    0, cr,cg,cb,ca); pushVert(p, x+bw,   y+bh-r, 0, cr,cg,cb,ca); pushVert(p, x+bw-r, y+bh-r, 0, cr,cg,cb,ca);
+    pushCmd(p, DRAW_TRIS, 18);
+
+    /* ↓ four corners: rounded arc or square fill depending on flag ↓ */
+    int arcVerts = segs * 3;
+    int cornerVerts = tl ? arcVerts : 6;
+    
+    if (!vertReserve(p, (uint32_t)cornerVerts)) 
+        return 0;
+    
+    if (tl) {
+        pushArc(p, x+r,    y+r,    r, (float)M_PI,       (float)M_PI*1.5f, segs, cr,cg,cb,ca);
+    } else {
+        pushVert(p,x,   y,      0,cr,cg,cb,ca); pushVert(p,x+r, y,      0,cr,cg,cb,ca); pushVert(p,x+r, y+r, 0,cr,cg,cb,ca);
+        pushVert(p,x,   y,      0,cr,cg,cb,ca); pushVert(p,x+r, y+r,    0,cr,cg,cb,ca); pushVert(p,x,   y+r, 0,cr,cg,cb,ca);
+    }
+
+    pushCmd(p, DRAW_TRIS, (uint32_t)cornerVerts);
+
+    cornerVerts = tr ? arcVerts : 6;
+
+    if (!vertReserve(p, (uint32_t)cornerVerts)) 
+        return 0;
+
+    if (tr) {
+        pushArc(p, x+bw-r, y+r,    r, (float)M_PI*1.5f,  (float)M_PI*2.0f, segs, cr,cg,cb,ca);
+    } else {
+        pushVert(p,x+bw-r, y,      0,cr,cg,cb,ca); pushVert(p,x+bw,   y,      0,cr,cg,cb,ca); pushVert(p,x+bw,   y+r, 0,cr,cg,cb,ca);
+        pushVert(p,x+bw-r, y,      0,cr,cg,cb,ca); pushVert(p,x+bw,   y+r,    0,cr,cg,cb,ca); pushVert(p,x+bw-r, y+r, 0,cr,cg,cb,ca);
+    }
+
+    pushCmd(p, DRAW_TRIS, (uint32_t)cornerVerts);
+
+    cornerVerts = br ? arcVerts : 6;
+
+    if (!vertReserve(p, (uint32_t)cornerVerts)) 
+        return 0;
+
+    if (br) {
+        pushArc(p, x+bw-r, y+bh-r, r, 0.0f,             (float)M_PI*0.5f, segs, cr,cg,cb,ca);
+    } else {
+        pushVert(p,x+bw-r, y+bh-r, 0,cr,cg,cb,ca); pushVert(p,x+bw,   y+bh-r, 0,cr,cg,cb,ca); pushVert(p,x+bw,   y+bh, 0,cr,cg,cb,ca);
+        pushVert(p,x+bw-r, y+bh-r, 0,cr,cg,cb,ca); pushVert(p,x+bw,   y+bh,   0,cr,cg,cb,ca); pushVert(p,x+bw-r, y+bh, 0,cr,cg,cb,ca);
+    }
+
+    pushCmd(p, DRAW_TRIS, (uint32_t)cornerVerts);
+
+    cornerVerts = bl ? arcVerts : 6;
+
+    if (!vertReserve(p, (uint32_t)cornerVerts)) 
+        return 0;
+
+    if (bl) {
+        pushArc(p, x+r,    y+bh-r, r, (float)M_PI*0.5f,  (float)M_PI,      segs, cr,cg,cb,ca);
+    } else {
+        pushVert(p,x,   y+bh-r, 0,cr,cg,cb,ca); pushVert(p,x+r, y+bh-r, 0,cr,cg,cb,ca); pushVert(p,x+r, y+bh, 0,cr,cg,cb,ca);
+        pushVert(p,x,   y+bh-r, 0,cr,cg,cb,ca); pushVert(p,x+r, y+bh,   0,cr,cg,cb,ca); pushVert(p,x,   y+bh, 0,cr,cg,cb,ca);
+    }
+
+    pushCmd(p, DRAW_TRIS, (uint32_t)cornerVerts);
+
+    return 0;
+}
+
+/* render.drawRoundedBox(r, x, y, w, h) */
+int drawRoundedBox(lua_State *L) {
+    float r  = (float)lua_tonumber(L, 1);
+    float x  = (float)lua_tonumber(L, 2);
+    float y  = (float)lua_tonumber(L, 3);
+    float bw = (float)lua_tonumber(L, 4);
+    float bh = (float)lua_tonumber(L, 5);
+
+    return drawRoundedBoxInternal(L, r, x, y, bw, bh, true, true, true, true);
+}
+
+/* render.drawRoundedBoxEx(r, x, y, w, h [, tl, tr, bl, br]) */
+/* Per-corner rounding: pass false to get a square corner instead */
+int drawRoundedBoxEx(lua_State *L) {
+    float r  = (float)lua_tonumber(L, 1);
+    float x  = (float)lua_tonumber(L, 2);
+    float y  = (float)lua_tonumber(L, 3);
+    float bw = (float)lua_tonumber(L, 4);
+    float bh = (float)lua_tonumber(L, 5);
+
+    bool tl = lua_isnoneornil(L, 6) ? true : (bool)lua_toboolean(L, 6);
+    bool tr = lua_isnoneornil(L, 7) ? true : (bool)lua_toboolean(L, 7);
+    bool bl = lua_isnoneornil(L, 8) ? true : (bool)lua_toboolean(L, 8);
+    bool br = lua_isnoneornil(L, 9) ? true : (bool)lua_toboolean(L, 9);
+
+    return drawRoundedBoxInternal(L, r, x, y, bw, bh, tl, tr, bl, br);
+}
+
+/* render.drawTexturedRectUV(x, y, w, h, startU, startV, endU, endV) */
+/* Draws the active texture stretched to the given rect with explicit UV coords */
+int drawTexturedRectUV(lua_State *L) {
+    struct glfwWindow *w = currentRenderWindow;
+
+    if (!w || !w->frame.encoder || !w->frame.passEncoder) return 0;
+
+    extern struct Texture *activeTexture;
+
+    if (!activeTexture) return 0;
+
+    float x  = (float)lua_tonumber(L, 1), y  = (float)lua_tonumber(L, 2);
+    float bw = (float)lua_tonumber(L, 3), bh = (float)lua_tonumber(L, 4);
+    float u0 = (float)lua_tonumber(L, 5), v0 = (float)lua_tonumber(L, 6);
+    float u1 = (float)lua_tonumber(L, 7), v1 = (float)lua_tonumber(L, 8);
+
+    drawTexturedQuadImmediate(w, activeTexture, x, y, bw, bh, u0, v0, u1, v1);
+
+    return 0;
+}
+
+/* render.drawTexturedTriangleUV(vert1, vert2, vert3) */
+/* Each vert is a table {x, y [, u, v]}. UV is accepted but currently ignored — */
+/* the vertex format (x y z r g b a) has no UV channel; draws a flat-colored tri. */
+int drawTexturedTriangleUV(lua_State *L) {
+    struct glfwWindow *w = currentRenderWindow;
+
+    if (!w || !w->frame.encoder || !w->frame.passEncoder) 
+        return 0;
+
+    struct Pipeline *p = w->pipeline;
+
+    if (!p) 
+        return 0;
+
+    float vx[3], vy[3];
+
+    for (int i = 0; i < 3; ++i) {
+        luaL_checktype(L, i + 1, LUA_TTABLE);
+        lua_rawgeti(L, i + 1, 1); vx[i] = (float)lua_tonumber(L, -1); lua_pop(L, 1);
+        lua_rawgeti(L, i + 1, 2); vy[i] = (float)lua_tonumber(L, -1); lua_pop(L, 1);
+    }
+
+    if (!vertReserve(p, 3)) 
+        return 0;
+
+    struct color c;
+    getGlobalColor(L, &c);
+
+    pushVert(p, vx[0], vy[0], 0, c.r,c.g,c.b,c.a);
+    pushVert(p, vx[1], vy[1], 0, c.r,c.g,c.b,c.a);
+    pushVert(p, vx[2], vy[2], 0, c.r,c.g,c.b,c.a);
+    pushCmd(p, DRAW_TRIS, 3);
+
+    return 0;
+}
+
+/* render.drawPixelsRGB(w, h, dataR, dataG, dataB) */
+/* Each data table is a flat 1-indexed array of integers 0-255, length w*h. */
+/* Uploads as a scratch texture and draws it at (0, 0) at native size. */
+int drawPixelsRGB(lua_State *L) {
+    struct glfwWindow *win = currentRenderWindow;
+
+    if (!win || !win->frame.encoder || !win->frame.passEncoder) 
+        return 0;
+
+    int pw = (int)luaL_checkinteger(L, 1);
+    int ph = (int)luaL_checkinteger(L, 2);
+
+    if (pw <= 0 || ph <= 0) 
+        return 0;
+
+    luaL_checktype(L, 3, LUA_TTABLE);
+    luaL_checktype(L, 4, LUA_TTABLE);
+    luaL_checktype(L, 5, LUA_TTABLE);
+
+    int n = pw * ph;
+    uint8_t *pixels = (uint8_t *)malloc((size_t)(4 * n));
+
+    if (!pixels) 
+        return 0;
+
+    for (int i = 0; i < n; ++i) {
+        lua_rawgeti(L, 3, i + 1); uint8_t r = (uint8_t)lua_tointeger(L, -1); lua_pop(L, 1);
+        lua_rawgeti(L, 4, i + 1); uint8_t g = (uint8_t)lua_tointeger(L, -1); lua_pop(L, 1);
+        lua_rawgeti(L, 5, i + 1); uint8_t b = (uint8_t)lua_tointeger(L, -1); lua_pop(L, 1);
+
+        pixels[i * 4 + 0] = r;
+        pixels[i * 4 + 1] = g;
+        pixels[i * 4 + 2] = b;
+        pixels[i * 4 + 3] = 255;
+    }
+
+    /* ↓ upload and draw as a scratch texture ↓ */
+    struct Texture *tex = textureUpload("__drawPixelsRGB_scratch__", pixels, (uint32_t)pw, (uint32_t)ph);
+    
+    free(pixels);
+
+    if (!tex) 
+        return 0;
+
+    drawTexturedQuadImmediate(win, tex, 0, 0, (float)pw, (float)ph, 0.0f, 0.0f, 1.0f, 1.0f);
+    textureRelease(tex);
+
+    return 0;
+}
+
+/* render.drawPixelsSubrectRGB(dstX, dstY, srcX, srcY, srcW, srcH, subrectW, subrectH, dataR, dataG, dataB) */
+/* Draws a subrect of a pixel buffer at (dstX, dstY). */
+int drawPixelsSubrectRGB(lua_State *L) {
+    struct glfwWindow *win = currentRenderWindow;
+
+    if (!win || !win->frame.encoder || !win->frame.passEncoder) 
+        return 0;
+
+    float dstX = (float)luaL_checknumber(L, 1);
+    float dstY = (float)luaL_checknumber(L, 2);
+    float srcX = (float)luaL_checknumber(L, 3);
+    float srcY = (float)luaL_checknumber(L, 4);
+
+    /* srcW / srcH unused here — subrectW/H define the full buffer size */
+    int srW = (int)luaL_checkinteger(L, 7);
+    int srH = (int)luaL_checkinteger(L, 8);
+
+    if (srW <= 0 || srH <= 0) return 0;
+
+    luaL_checktype(L, 9,  LUA_TTABLE);
+    luaL_checktype(L, 10, LUA_TTABLE);
+    luaL_checktype(L, 11, LUA_TTABLE);
+
+    int n = srW * srH;
+    uint8_t *pixels = (uint8_t *)malloc((size_t)(4 * n));
+
+    if (!pixels) 
+        return 0;
+
+    for (int i = 0; i < n; ++i) {
+        lua_rawgeti(L, 9,  i + 1); uint8_t r = (uint8_t)lua_tointeger(L, -1); lua_pop(L, 1);
+        lua_rawgeti(L, 10, i + 1); uint8_t g = (uint8_t)lua_tointeger(L, -1); lua_pop(L, 1);
+        lua_rawgeti(L, 11, i + 1); uint8_t b = (uint8_t)lua_tointeger(L, -1); lua_pop(L, 1);
+
+        pixels[i * 4 + 0] = r;
+        pixels[i * 4 + 1] = g;
+        pixels[i * 4 + 2] = b;
+        pixels[i * 4 + 3] = 255;
+    }
+
+    /* ↓ compute UV subrect within the uploaded texture ↓ */
+    float srcWf   = (float)luaL_checknumber(L, 5);
+    float srcHf   = (float)luaL_checknumber(L, 6);
+    float u0 = srcX / srcWf;
+    float v0 = srcY / srcHf;
+    float u1 = (srcX + (float)srW) / srcWf;
+    float v1 = (srcY + (float)srH) / srcHf;
+
+    struct Texture *tex = textureUpload("__drawPixelsSubrectRGB_scratch__", pixels, (uint32_t)srW, (uint32_t)srH);
+    
+    free(pixels);
+
+    if (!tex) 
+        return 0;
+
+    drawTexturedQuadImmediate(win, tex, dstX, dstY, (float)srW, (float)srH, u0, v0, u1, v1);
+    textureRelease(tex);
+
     return 0;
 }
 /* lua draw functions ↑↑↑ lua draw functions  */

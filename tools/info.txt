@@ -1,0 +1,158 @@
+# info.txt — Vanir documentation annotations
+# attach extra descriptions to functions, structs, and enums that don't
+# have enough context in the source comments alone.
+#
+# format:
+#   [SymbolName]
+#   description = plain text description
+#   arg:argName = description of this parameter
+#   arg:return  = description of the return value
+#   note        = any warning or caveat to highlight
+#   file        = exclude only
+
+[exclude]
+file = graphics/stb_image.h
+
+[selectRender]
+description = Targets this window for subsequent draw calls. Must be called before any render.* functions in a frame. Internally opens a WebGPU render pass with LoadOp_Load so previous contents are preserved.
+arg:L = Lua state. Expects a window object (userdata) at stack index 1.
+arg:return = Nothing pushed to the Lua stack; errors via luaL_error on bad input.
+
+[stopRender]
+description = Closes the current render pass and finalises the frame for the targeted window. Pairs with selectRender. Flushes any pending CPU-side vertex batches before closing.
+arg:L = Lua state. No arguments expected.
+
+[update]
+description = Presents the completed frame to the screen (calls wgpuSurfacePresent), then polls GLFW events and fires pending hooks. The main loop calls this once per iteration.
+arg:L = Lua state.
+
+[clear]
+description = Clears the current render target to the window's stored clear colour. Closes the active pass and reopens it with LoadOp_Clear, so everything drawn after this call is on a blank background.
+arg:L = Lua state. Optionally accepts a Color value at index 1 to temporarily override the clear colour.
+
+[setColor]
+description = Sets the active draw colour used by all subsequent shape-drawing calls until changed again. Colour values are floats in the range 0–255 as in the rest of Vanir's colour API.
+arg:L = Lua state. Expects a Color table at stack index 1.
+
+[luaAdd]
+description = Lua-callable hook.add — registers a callback under a named hook. If a callback with the same name already exists on that hook it is replaced in-place.
+arg:L = Lua state. Expects: hookName (string), callbackName (string), func (function).
+arg:return = Nothing.
+
+[luaRemove]
+description = Lua-callable hook.remove — unlinks a named callback from a hook. Safe to call even if the name was never added.
+arg:L = Lua state. Expects: hookName (string), callbackName (string).
+
+[hooksRun]
+description = Runs all hooks currently in hook_awaiting or hook_update state. Called once per frame from update(). Fires callbacks in registration order.
+arg:L = Lua state.
+note = Do not call this manually from Lua; the engine calls it automatically inside update().
+
+[createCallback]
+description = Allocates a new callbacks struct with the given data buffer size and type tag. Used internally to pass typed C data into Lua hook callbacks.
+arg:dataSize = Size in bytes of the payload. Use sizeof() on the relevant type.
+arg:dataType = One of the dataType enum values (number, string, integer, lua_bool, function).
+arg:return = Heap-allocated pointer; the hook system owns this and frees it when the hook is freed.
+
+[vanirGPUDestroy]
+description = Releases the shared WebGPU device, adapter, and instance in that order. Must be called after all windows and pipelines have been destroyed; calling it earlier causes use-after-free crashes in the WebGPU backend.
+note = This is called automatically by quit(). Do not call it directly.
+
+[quit]
+description = Performs a full clean shutdown: releases all in-flight frames, destroys every pipeline and GLFW window, tears down the GPU context, and closes the Lua state before calling exit(0).
+arg:L = Lua state.
+note = This function never returns. It calls exit(0) at the end.
+
+[setFieldNumber]
+description = Convenience wrapper that pushes a float onto the Lua stack and sets it as a named field on the table at the top of the stack.
+arg:L = Lua state.
+arg:key = Field name to set.
+arg:data = Float value to store.
+
+[registerGlobals]
+description = Iterates a luaL_Reg array, calls each function (which must push one value), and stores the result as a global in the Lua state. Used during luaopen_vanir to initialise module tables.
+arg:L = Lua state.
+arg:funcs = NULL-terminated luaL_Reg array. Each entry's func must push exactly one value.
+
+[VanirGPU]
+description = Holds the four shared WebGPU objects that every window borrows: instance, adapter, device, and queue. Initialised lazily on the first createWindow call and torn down by vanirGPUDestroy.
+
+[glfwWindow]
+description = Per-window state bundle. Owns the GLFW window handle, the WebGPU surface, the rendering pipeline, per-frame transient resources, and the current clear colour.
+
+[Pipeline]
+description = GPU rendering state for one window. Contains the three render pipelines (solid triangles, lines, textured quads), the uniform buffer, bind group layouts, and the flat CPU-side vertex + draw-command buffers that are uploaded each frame.
+
+[Frame]
+description = Transient per-frame GPU resources created in selectRender and consumed in stopRender/update. Not valid outside an active render pair.
+
+[hook]
+description = A named event slot. Holds a linked list of Lua callbacks (the stack), a status flag, and an optional typed payload for passing C data to Lua when the hook fires.
+
+[hookPool]
+description = Global array of all registered hooks. Iterated by hooksRun each frame.
+
+[callbacks]
+description = Carries a typed value from C code into a Lua hook callback. dataType determines how the void* data is interpreted when the callback fires.
+
+[dataType]
+description = Tag enum for the callbacks struct. Controls how the payload is marshalled into a Lua value when a hook fires.
+
+[status]
+description = Lifecycle flag for a hook. hook_idle means no pending fire; hook_awaiting means fire once next frame; hook_update means fire every frame.
+
+[color]
+description = Plain C mirror of Vanir's Lua Color type. r, g, b, a are normalised floats (0.0–1.0 inside the engine, though the Lua API accepts 0–255 and divides automatically in some paths).
+
+[File]
+description = Internal handle wrapping a C FILE* and the original path string. Stored as lightuserdata inside the Lua table returned to scripts.
+
+[getCPUCount]
+description = Returns the number of logical processors (hardware threads) available to the process. Uses GetSystemInfo on Windows and sysconf(_SC_NPROCESSORS_ONLN) on Linux/macOS.
+arg:return = integer — logical CPU count, always at least 1.
+
+[getTotalRAM]
+description = Returns the total physical RAM installed in the system, in bytes, as a Lua number. Uses GlobalMemoryStatusEx on Windows and sysconf(_SC_PHYS_PAGES × _SC_PAGE_SIZE) on Linux/macOS.
+arg:return = number (bytes), or nil if the platform call fails.
+
+[getExecutablePath]
+description = Returns the absolute path to the currently running executable. Uses GetModuleFileNameA on Windows and readlink("/proc/self/exe") on Linux.
+arg:return = string path, or nil on failure.
+
+[systemSleep]
+description = Suspends the calling thread for the given number of milliseconds. Uses Sleep() on Windows and nanosleep() on POSIX. Blocks the entire thread — do not call inside a render hook unless you want to cap your frame rate.
+arg:ms = integer — milliseconds to sleep (clamped to 0 if negative).
+
+[systemExit]
+description = Terminates the process immediately with the given exit code. Skips Vanir's normal shutdown sequence; prefer quit() for a clean shutdown.
+arg:code = integer exit code (optional, defaults to 0).
+note = This function never returns.
+
+[getLocale]
+description = Returns the IETF locale tag for the current user, e.g. "en-US" or "fr-FR". Uses GetUserDefaultLocaleName on Windows and setlocale/LANG on POSIX.
+arg:return = string locale tag.
+
+[luaShaderGetActive]
+description = Returns the name of the currently active custom shader, or nil if the built-in pipeline is in use.
+arg:return = string shader name, or nil.
+
+[luaShaderList]
+description = Returns an array table of the names of all currently compiled shaders in the shader pool.
+arg:return = table — sequential array of name strings, may be empty.
+
+[luaShaderSetUniform]
+description = Stores a named uniform value for a shader. Values are kept in the Lua registry and can be read back with shader.getUniform or iterated with shader.getUniforms. Wire them into your GPU uniform buffer update path to send them to WGSL.
+arg:name = string — name of the target compiled shader.
+arg:key = string — uniform variable name as used in WGSL.
+arg:value = number — the value to store.
+
+[luaShaderGetUniform]
+description = Reads back a stored uniform value for a shader. Returns nil if the shader has no stored uniforms or the key was never set.
+arg:name = string — shader name.
+arg:key = string — uniform key.
+arg:return = number, or nil.
+
+[luaShaderGetUniforms]
+description = Returns the entire uniform table for a named shader as a plain Lua table (key → number), or nil if none have been set.
+arg:name = string — shader name.
+arg:return = table of {key = value} pairs, or nil.

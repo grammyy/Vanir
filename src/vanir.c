@@ -2,7 +2,7 @@
 
 #include "vanir.h"
 #include "enums.h"
-#include "types.h"
+#include "types/common.h"
 
 #include "modules/testfunc.h"
 #include "modules/render.h"
@@ -165,10 +165,11 @@ const luaL_Reg luaVanir[] = {
     /* ↑ random testing, ignore ↑ */
 
     /* ↓ types ↓ */
-    {"Vector",     Vector},
-    {"Angle",      Angle},
-    {"Color",      Color},
+    {"Vector", Vector},
+    {"Angle", Angle},
+    {"Color", Color},
     {"Quaternion", Quaternion},
+    {"Matrix", Matrix},
     
     /* ↓ vanir functions ↓ */
     {"quit", quit},
@@ -207,9 +208,6 @@ const luaL_Reg luaReg[] = {
 
 /// ↓ require("vanir") lua entry ↓ ///
 LUALIB_API int luaopen_vanir(lua_State *L) {
-#ifdef USE_LUAJIT
-    luaL_dostring(L, "require('compat53')");
-#endif
     if (luaL_loadfile(L, "preload.lua") == LUA_OK) {
         if (lua_pcall(L, 0, 0, 0) != LUA_OK) {
             fprintf(stderr, "[Vanir] preload.lua error: %s\n", lua_tostring(L, -1));

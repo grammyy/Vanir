@@ -37,7 +37,6 @@ hook.add("render","test_render",function()
 
         render.setColor(Color(80,80,255,200))
         render.drawRect(350,80,150,200)
-
     elseif phase==1 then
         -- drawLine
         local t=elapsed/1000
@@ -94,7 +93,7 @@ hook.add("render","test_render",function()
         render.setColor(col)
         render.drawFilledCircle(15,50+i*80,10,16)
     end
-
+render.drawRoundedBox(20, 50, 50, 50, 50)
     win:stopRender()
     win:update()
 

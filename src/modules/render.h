@@ -17,6 +17,20 @@ int setViewport(lua_State *L);
 int resetViewport(lua_State *L);
 /* window methods ↑↑↑ window methods */
 
+/* ↓ clear variants ↓ */
+int clearDepth(lua_State *L);
+int clearRGBA(lua_State *L);
+
+/* ↓ state/util ↓ */
+int depthRange(lua_State *L);
+int enableDepth(lua_State *L);
+int pushCustomClipPlane(lua_State *L);
+int popCustomClipPlane(lua_State *L);
+int renderViewsLeft(lua_State *L);
+int readPixel(lua_State *L);
+int renderTargetExists(lua_State *L);
+int destroyRenderTarget(lua_State *L);
+
 void getGlobalColor(lua_State *L, struct color *color);
 void getColor(lua_State *L, struct color *color);
 
@@ -24,5 +38,8 @@ void getColor(lua_State *L, struct color *color);
 extern struct color activeColor;
 
 extern struct glfwWindow *currentRenderWindow;
+
+/* ↓ apply the active matrix transform to a vertex position in-place ↓ */
+void applyActiveMatrix(float *x, float *y);
 
 #endif

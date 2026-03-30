@@ -14,6 +14,7 @@ static int getInputName(lua_State *L) {
     for (int i = 0; keys[i].name != NULL; ++i) {
         if (keys[i].value == code) {
             lua_pushstring(L, keys[i].name);
+
             return 1;
         }
     }
@@ -21,8 +22,6 @@ static int getInputName(lua_State *L) {
     for (int i = 0; mouseButtons[i].name != NULL; ++i) {
         if (mouseButtons[i].value == code) {
             lua_pushstring(L, mouseButtons[i].name);
-
-            throw("test", "test", mouseButtons[i].name);
 
             return 1;
         }

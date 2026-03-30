@@ -109,9 +109,7 @@ struct Pipeline *buildPipelines(struct glfwWindow *w, WGPUBlendFactor blendSrc, 
 
 /* ↓ textured draw helpers; implemented in graphics/shader.c ↓ */
 #define TEXTURED_VERTEX_STRIDE 6   // ↓ xyzw + uv ↓
-void drawTexturedQuadImmediate(struct glfwWindow *w, struct Texture *tex,
-                                float dx, float dy, float dw, float dh,
-                                float u0, float v0, float u1, float v1);
+void drawTexturedQuadImmediate(struct glfwWindow *w, struct Texture *tex, float dx, float dy, float dw, float dh, float u0, float v0, float u1, float v1);
 void flushBatchesTextured(struct glfwWindow *w);
 
 extern struct glfwWindow *currentRenderWindow;
