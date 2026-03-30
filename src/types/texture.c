@@ -1,6 +1,7 @@
 /* texture.c */
 #include "common.h"
 #include "../graphics/textures.h"
+#include "../modules/render.h"
 
 static const luaL_Reg textureMethods[];
 static const luaL_Reg textureMeta[];
@@ -129,18 +130,21 @@ static int textureMetaGetColor(lua_State *L) {
 }
 
 /* ↓ tex:draw(sx, sy, sw, sh, dx, dy [, dw, dh]) ↓ */
-/* ↓ sets this texture as active then calls drawTexturedRect ↓ */
+/* ↓ temporarily sets this texture as active so drawTexturedRect can find it, then restores the previous one ↓ */
 static int textureDraw(lua_State *L) {
     struct Texture *tex = getTexture(L, 1);
 
-    /* ↓ temporarily set as active so drawTexturedRect can find it ↓ */
-    extern struct Texture *activeTexture;
+    struct Texture *prev = activeTexture;
     activeTexture = tex;
 
     /* ↓ shift args down: remove self from stack so drawTexturedRect sees sx at 1 ↓ */
     lua_remove(L, 1);
 
-    return drawTexturedRect(L);
+    int ret = drawTexturedRect(L);
+
+    activeTexture = prev;
+
+    return ret;
 }
 
 /* ↓ tex:release() — frees GPU resources and invalidates this object ↓ */

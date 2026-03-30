@@ -221,7 +221,7 @@ int drawLine(lua_State *L) {
         return 0;
     
     struct color c; 
-    getGlobalColor(L, &c);
+    getGlobalColor(&c);
     
     pushVert(p, x1, y1, 0, c.r, c.g, c.b, c.a);
     pushVert(p, x2, y2, 0, c.r, c.g, c.b, c.a);
@@ -248,7 +248,7 @@ int drawRect(lua_State *L) {
         return 0;
     
     struct color c; 
-    getGlobalColor(L, &c);
+    getGlobalColor(&c);
     
     pushVert(p, x,      y,      0, c.r, c.g, c.b, c.a);
     pushVert(p, x + bw, y,      0, c.r, c.g, c.b, c.a);
@@ -292,13 +292,13 @@ int drawCircle(lua_State *L) {
         if (hasCb) 
             callColorCb(L, 5, i);
 
-        getGlobalColor(L, &c);
+        getGlobalColor(&c);
         pushVert(p, px[i],   py[i],   0, c.r, c.g, c.b, c.a);
 
         if (hasCb) 
             callColorCb(L, 5, i + 1);
 
-        getGlobalColor(L, &c);
+        getGlobalColor(&c);
         pushVert(p, px[i+1], py[i+1], 0, c.r, c.g, c.b, c.a);
     }
     
@@ -335,7 +335,7 @@ int drawFilledCircle(lua_State *L) {
 
     if (!hasCb) {
         struct color c; 
-        getGlobalColor(L, &c);
+        getGlobalColor(&c);
         
         for (int i = 0; i < segs; ++i) {
             pushVert(p, x,       y,       0, c.r, c.g, c.b, c.a);
@@ -350,7 +350,7 @@ int drawFilledCircle(lua_State *L) {
         
         for (int i = 0; i < segs; ++i) {
             callColorCb(L, 5, i);
-            getGlobalColor(L, &ec[i]);
+            getGlobalColor(&ec[i]);
         }
         
         ec[segs] = ec[0]; // close the loop
@@ -410,7 +410,7 @@ int drawPoly(lua_State *L) {
 
     if (!hasCb) {
         struct color c; 
-        getGlobalColor(L, &c);
+        getGlobalColor(&c);
         
         for (int i = 1; i < n - 1; ++i) {
             pushVert(p, vx[0],   vy[0],   vz[0],   c.r, c.g, c.b, c.a);
@@ -423,7 +423,7 @@ int drawPoly(lua_State *L) {
         
         for (int i = 0; i < n; ++i) {
             callColorCb(L, 2, i + 1); // Lua 1-indexed
-            getGlobalColor(L, &vc[i]);
+            getGlobalColor(&vc[i]);
         }
         
         for (int i = 1; i < n - 1; ++i) {
@@ -455,7 +455,7 @@ int drawVertex(lua_State *L) {
         return 0;
     
     struct color c; 
-    getGlobalColor(L, &c);
+    getGlobalColor(&c);
     
     pushVert(p, x, y, z, c.r, c.g, c.b, c.a);
     pushCmd(p, DRAW_TRIS, 1);
@@ -480,7 +480,7 @@ int drawRectOutline(lua_State *L) {
     float t = lua_isnoneornil(L, 5) ? 1.0f : (float)lua_tonumber(L, 5);
 
     struct color c;
-    getGlobalColor(L, &c);
+    getGlobalColor(&c);
 
     if (t <= 1.0f) {
         if (!vertReserve(p, 8)) 
@@ -541,7 +541,7 @@ int drawTriangle(lua_State *L) {
         return 0;
 
     struct color c;
-    getGlobalColor(L, &c);
+    getGlobalColor(&c);
 
     pushVert(p, x1, y1, 0, c.r,c.g,c.b,c.a);
     pushVert(p, x2, y2, 0, c.r,c.g,c.b,c.a);
@@ -578,7 +578,7 @@ static int drawRoundedBoxInternal(lua_State *L, float r, float x, float y, float
         return 0;
 
     struct color c;
-    getGlobalColor(L, &c);
+    getGlobalColor(&c);
 
     float cr = c.r, cg = c.g, cb = c.b, ca = c.a;
 
@@ -708,8 +708,6 @@ int drawTexturedRectUV(lua_State *L) {
 
     if (!w || !w->frame.encoder || !w->frame.passEncoder) return 0;
 
-    extern struct Texture *activeTexture;
-
     if (!activeTexture) return 0;
 
     float x  = (float)lua_tonumber(L, 1), y  = (float)lua_tonumber(L, 2);
@@ -748,7 +746,7 @@ int drawTexturedTriangleUV(lua_State *L) {
         return 0;
 
     struct color c;
-    getGlobalColor(L, &c);
+    getGlobalColor(&c);
 
     pushVert(p, vx[0], vy[0], 0, c.r,c.g,c.b,c.a);
     pushVert(p, vx[1], vy[1], 0, c.r,c.g,c.b,c.a);

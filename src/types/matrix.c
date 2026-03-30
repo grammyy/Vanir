@@ -75,13 +75,18 @@ static void mat3Identity(float m[9]) {
 /* ↓ __tostring ↓ */
 static int matToString(lua_State *L) {
     float m[9];
+    char buf[256];
+
     matGet(L, 1, m);
 
-    lua_pushfstring(L,
+    snprintf(buf, sizeof(buf),
         "| %.3f %.3f %.3f | %.3f %.3f %.3f | %.3f %.3f %.3f |",
         m[0], m[1], m[2],
         m[3], m[4], m[5],
-        m[6], m[7], m[8]);
+        m[6], m[7], m[8]
+    );
+
+    lua_pushstring(L, buf);
 
     return 1;
 }

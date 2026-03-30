@@ -328,14 +328,8 @@ static void colorFromTable(lua_State *L, int idx, struct color *out) {
     lua_getfield(L, idx, "a"); out->a = (float)lua_tonumber(L, -1) / 255.0f; lua_pop(L, 1);
 }
 
-/* ↓ kept for any callers that still pass a color table at stack index 1 ↓ */
-void getColor(lua_State *L, struct color *color) {
-    colorFromTable(L, 1, color);
-}
-
-/* ↓ draw calls call this; now just a direct struct copy, zero lua overhead ↓ */
-void getGlobalColor(lua_State *L, struct color *color) {
-    (void)L;
+/* ↓ draw calls call this; direct struct copy, zero lua overhead ↓ */
+void getGlobalColor(struct color *color) {
     *color = activeColor;
 }
 

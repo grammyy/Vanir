@@ -21,7 +21,6 @@
 
 extern struct VanirGPU gpu;
 extern struct windowPool windowPool;
-extern struct Texture *activeTexture;
 
 struct TexturePool texturePool = {NULL, 0};
 

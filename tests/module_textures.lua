@@ -29,7 +29,7 @@ hook.add("render", "texture_test", function()
             print(tex.path, tex.fileSize)
         end
 
-        --tex:setImage("C:/Users/Elias/Downloads/09384ae4f45f1dfe4ccfcc19502f8cde.png")
+        tex:setImage("C:/Users/Elias/Downloads/09384ae4f45f1dfe4ccfcc19502f8cde.png")
     end
 
     -- draw texture centered

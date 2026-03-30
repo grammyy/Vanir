@@ -22,3 +22,5 @@ maybe...
     meshes, joints, and all that junk
     class system perhaps
     runtime config before hooks.run perhaps, for use with the preload.lua
+
+forgot to add file moving to tools/build.bat/.sh, add laterrrr

@@ -479,7 +479,7 @@
 <body>
 <div id="sidebar">
 <h1>Vanir Docs</h1>
-<div class="gen-date">Generated: 2026-03-30 01:14:02</div>
+<div class="gen-date">Generated: 2026-03-30 17:51:29</div>
 <div id="search-wrap"><input id="search" type="text" placeholder="Search symbols…" oninput="doSearch(this.value)"></div>
 <div class="sb-folder" data-folder-path="graphics"><div class="sb-folder-hd" onclick="toggleFolder(this.parentElement)"><span class="sb-arrow">▶</span>graphics</div><div class="sb-files"><a class="sb-file" href="#graphics_draw_c" data-file="graphics_draw_c" data-path="graphics/draw.c">draw.c</a>
 <a class="sb-file" href="#graphics_render_h" data-file="graphics_render_h" data-path="graphics/render.h">render.h</a>
@@ -526,7 +526,7 @@
 <div id="main">
 <div class="meta-bar">
 <h1>Vanir</h1>
-<span class="sub">Source Documentation · 2026-03-30 01:14:02</span>
+<span class="sub">Source Documentation · 2026-03-30 17:51:29</span>
 </div>
 <h2 class="folder-heading">root</h2>
 <div class="file-block" id="enums_c" data-file-path="enums.c">
@@ -932,7 +932,7 @@ int vanir.c requiredir (string rel) * int vanir c">
 <div class="symbol-header">
 <span class="symbol-kind kind-macro">#define</span>
 <span class="symbol-name">vanir</span>
-<span class="symbol-ret">_log(fmt, ...)      ((void)0)</span>
+<span class="symbol-ret">_log(fmt, ...) ((void)0)</span>
 <span class="symbol-line">line 27</span>
 </div>
 </div>
@@ -1042,7 +1042,7 @@ int vanir.c requiredir (string rel) * int vanir c">
     } else {
         struct color *vc = alloca(n * sizeof(struct color));</pre></div><div class="inner-snippet"><div class="inner-snippet-header">Lua 1-indexed</div><pre class="inner-snippet-code">        for (int i = 0; i &lt; n; ++i) {
             callColorCb(L, 2, i + 1);
-            getGlobalColor(L, &amp;vc[i]);
+            getGlobalColor(&amp;vc[i]);
         }</pre></div></div>
 <div class="refs"><span class="refs-label">cross-refs:</span><span class="badge badge-used" title="used">graphics/render.h:?</span> <span class="badge badge-used" title="used">modules/render.c:?</span></div>
 </div></div>
@@ -1140,12 +1140,12 @@ int vanir.c requiredir (string rel) * int vanir c">
 
 <div class="refs"><span class="refs-label">cross-refs:</span><span class="badge badge-used" title="used">graphics/render.h:?</span> <span class="badge badge-used" title="used">modules/render.c:?</span></div>
 </div></div>
-<div class="symbol-card lua-card" id="graphics_draw_c__lua__drawTexturedTriangleUV__728" data-kind="lua" data-file="graphics_draw_c" data-filepath="graphics/draw.c" data-symbol="graphics_draw_c__lua__drawTexturedTriangleUV__728" data-search="drawtexturedtriangleuv render.drawtexturedtriangleuv(vert1, vert2, vert3) | each vert is a table {x, y [, u, v]}. uv is accepted but currently ignored — | the vertex format (x y z r g b a) has no uv channel; draws a flat-colored tri. (table arg1, table arg2, table arg3) int graphics/draw.c draw textured triangle uv render draw textured triangle uv(vert1, vert2, vert3) | each vert is a table {x, y [, u, v]} uv is accepted but currently ignored — | the vertex format (x y z r g b a) has no uv channel; draws a flat colored tri  (table arg1, table arg2, table arg3) int graphics draw c">
+<div class="symbol-card lua-card" id="graphics_draw_c__lua__drawTexturedTriangleUV__726" data-kind="lua" data-file="graphics_draw_c" data-filepath="graphics/draw.c" data-symbol="graphics_draw_c__lua__drawTexturedTriangleUV__726" data-search="drawtexturedtriangleuv render.drawtexturedtriangleuv(vert1, vert2, vert3) | each vert is a table {x, y [, u, v]}. uv is accepted but currently ignored — | the vertex format (x y z r g b a) has no uv channel; draws a flat-colored tri. (table arg1, table arg2, table arg3) int graphics/draw.c draw textured triangle uv render draw textured triangle uv(vert1, vert2, vert3) | each vert is a table {x, y [, u, v]} uv is accepted but currently ignored — | the vertex format (x y z r g b a) has no uv channel; draws a flat colored tri  (table arg1, table arg2, table arg3) int graphics draw c">
 <div class="symbol-header">
 <span class="symbol-kind kind-lua">lua</span>
 <span class="symbol-name">drawTexturedTriangleUV</span>
 <span class="symbol-lua-sig">(<span class="lsig"><span class="lsig-type">table</span> <span class="lsig-name">arg1</span><span class="lsig-sep">, </span><span class="lsig-type">table</span> <span class="lsig-name">arg2</span><span class="lsig-sep">, </span><span class="lsig-type">table</span> <span class="lsig-name">arg3</span></span>)</span>
-<span class="symbol-line">line 728</span>
+<span class="symbol-line">line 726</span>
 </div>
 <div class="symbol-body">
 <div class="symbol-comment">// render.drawTexturedTriangleUV(vert1, vert2, vert3) | Each vert is a table {x, y [, u, v]}. UV is accepted but currently ignored — | the vertex format (x y z r g b a) has no UV channel; draws a flat-colored tri.</div>
@@ -1153,12 +1153,12 @@ int vanir.c requiredir (string rel) * int vanir c">
 
 <div class="refs"><span class="refs-label">cross-refs:</span><span class="badge badge-used" title="used">graphics/render.h:?</span> <span class="badge badge-used" title="used">modules/render.c:?</span></div>
 </div></div>
-<div class="symbol-card lua-card" id="graphics_draw_c__lua__drawPixelsRGB__764" data-kind="lua" data-file="graphics_draw_c" data-filepath="graphics/draw.c" data-symbol="graphics_draw_c__lua__drawPixelsRGB__764" data-search="drawpixelsrgb render.drawpixelsrgb(w, h, datar, datag, datab) | each data table is a flat 1-indexed array of integers 0-255, length w*h. | uploads as a scratch texture and draws it at (0, 0) at native size. (integer arg1, integer arg2, table arg3, table arg4, table arg5) int graphics/draw.c draw pixels rgb render draw pixels rgb(w, h, data r, data g, data b) | each data table is a flat 1 indexed array of integers 0 255, length w*h | uploads as a scratch texture and draws it at (0, 0) at native size  (integer arg1, integer arg2, table arg3, table arg4, table arg5) int graphics draw c">
+<div class="symbol-card lua-card" id="graphics_draw_c__lua__drawPixelsRGB__762" data-kind="lua" data-file="graphics_draw_c" data-filepath="graphics/draw.c" data-symbol="graphics_draw_c__lua__drawPixelsRGB__762" data-search="drawpixelsrgb render.drawpixelsrgb(w, h, datar, datag, datab) | each data table is a flat 1-indexed array of integers 0-255, length w*h. | uploads as a scratch texture and draws it at (0, 0) at native size. (integer arg1, integer arg2, table arg3, table arg4, table arg5) int graphics/draw.c draw pixels rgb render draw pixels rgb(w, h, data r, data g, data b) | each data table is a flat 1 indexed array of integers 0 255, length w*h | uploads as a scratch texture and draws it at (0, 0) at native size  (integer arg1, integer arg2, table arg3, table arg4, table arg5) int graphics draw c">
 <div class="symbol-header">
 <span class="symbol-kind kind-lua">lua</span>
 <span class="symbol-name">drawPixelsRGB</span>
 <span class="symbol-lua-sig">(<span class="lsig"><span class="lsig-type">integer</span> <span class="lsig-name">arg1</span><span class="lsig-sep">, </span><span class="lsig-type">integer</span> <span class="lsig-name">arg2</span><span class="lsig-sep">, </span><span class="lsig-type">table</span> <span class="lsig-name">arg3</span><span class="lsig-sep">, </span><span class="lsig-type">table</span> <span class="lsig-name">arg4</span><span class="lsig-sep">, </span><span class="lsig-type">table</span> <span class="lsig-name">arg5</span></span>)</span>
-<span class="symbol-line">line 764</span>
+<span class="symbol-line">line 762</span>
 </div>
 <div class="symbol-body">
 <div class="symbol-comment">// render.drawPixelsRGB(w, h, dataR, dataG, dataB) | Each data table is a flat 1-indexed array of integers 0-255, length w*h. | Uploads as a scratch texture and draws it at (0, 0) at native size.</div>
@@ -1166,12 +1166,12 @@ int vanir.c requiredir (string rel) * int vanir c">
 <div class="inner-comments"><div class="inner-snippet"><div class="inner-snippet-header">↓ upload and draw as a scratch texture ↓</div><pre class="inner-snippet-code">    struct Texture *tex = textureUpload(&quot;__drawPixelsRGB_scratch__&quot;, pixels, (uint32_t)pw, (uint32_t)ph);</pre></div></div>
 <div class="refs"><span class="refs-label">cross-refs:</span><span class="badge badge-used" title="used">graphics/render.h:?</span> <span class="badge badge-used" title="used">modules/render.c:?</span></div>
 </div></div>
-<div class="symbol-card lua-card" id="graphics_draw_c__lua__drawPixelsSubrectRGB__813" data-kind="lua" data-file="graphics_draw_c" data-filepath="graphics/draw.c" data-symbol="graphics_draw_c__lua__drawPixelsSubrectRGB__813" data-search="drawpixelssubrectrgb render.drawpixelssubrectrgb(dstx, dsty, srcx, srcy, srcw, srch, subrectw, subrecth, datar, datag, datab) | draws a subrect of a pixel buffer at (dstx, dsty). (number arg1, number arg2, number arg3, number arg4, number arg5, number arg6, integer arg7, integer arg8, table arg9, table arg10, table arg11) int graphics/draw.c draw pixels subrect rgb render draw pixels subrect rgb(dst x, dst y, src x, src y, src w, src h, subrect w, subrect h, data r, data g, data b) | draws a subrect of a pixel buffer at (dst x, dst y)  (number arg1, number arg2, number arg3, number arg4, number arg5, number arg6, integer arg7, integer arg8, table arg9, table arg10, table arg11) int graphics draw c">
+<div class="symbol-card lua-card" id="graphics_draw_c__lua__drawPixelsSubrectRGB__811" data-kind="lua" data-file="graphics_draw_c" data-filepath="graphics/draw.c" data-symbol="graphics_draw_c__lua__drawPixelsSubrectRGB__811" data-search="drawpixelssubrectrgb render.drawpixelssubrectrgb(dstx, dsty, srcx, srcy, srcw, srch, subrectw, subrecth, datar, datag, datab) | draws a subrect of a pixel buffer at (dstx, dsty). (number arg1, number arg2, number arg3, number arg4, number arg5, number arg6, integer arg7, integer arg8, table arg9, table arg10, table arg11) int graphics/draw.c draw pixels subrect rgb render draw pixels subrect rgb(dst x, dst y, src x, src y, src w, src h, subrect w, subrect h, data r, data g, data b) | draws a subrect of a pixel buffer at (dst x, dst y)  (number arg1, number arg2, number arg3, number arg4, number arg5, number arg6, integer arg7, integer arg8, table arg9, table arg10, table arg11) int graphics draw c">
 <div class="symbol-header">
 <span class="symbol-kind kind-lua">lua</span>
 <span class="symbol-name">drawPixelsSubrectRGB</span>
 <span class="symbol-lua-sig">(<span class="lsig"><span class="lsig-type">number</span> <span class="lsig-name">arg1</span><span class="lsig-sep">, </span><span class="lsig-type">number</span> <span class="lsig-name">arg2</span><span class="lsig-sep">, </span><span class="lsig-type">number</span> <span class="lsig-name">arg3</span><span class="lsig-sep">, </span><span class="lsig-type">number</span> <span class="lsig-name">arg4</span><span class="lsig-sep">, </span><span class="lsig-type">number</span> <span class="lsig-name">arg5</span><span class="lsig-sep">, </span><span class="lsig-type">number</span> <span class="lsig-name">arg6</span><span class="lsig-sep">, </span><span class="lsig-type">integer</span> <span class="lsig-name">arg7</span><span class="lsig-sep">, </span><span class="lsig-type">integer</span> <span class="lsig-name">arg8</span><span class="lsig-sep">, </span><span class="lsig-type">table</span> <span class="lsig-name">arg9</span><span class="lsig-sep">, </span><span class="lsig-type">table</span> <span class="lsig-name">arg10</span><span class="lsig-sep">, </span><span class="lsig-type">table</span> <span class="lsig-name">arg11</span></span>)</span>
-<span class="symbol-line">line 813</span>
+<span class="symbol-line">line 811</span>
 </div>
 <div class="symbol-body">
 <div class="symbol-comment">// render.drawPixelsSubrectRGB(dstX, dstY, srcX, srcY, srcW, srcH, subrectW, subrectH, dataR, dataG, dataB) | Draws a subrect of a pixel buffer at (dstX, dstY).</div>
@@ -1319,14 +1319,6 @@ int vanir.c requiredir (string rel) * int vanir c">
 <span class="symbol-name">activeShader</span>
 <span class="symbol-ret">struct Shader *activeShader</span>
 <span class="symbol-line">line 16</span>
-</div>
-</div>
-<div class="symbol-card" onclick="toggle(this)">
-<div class="symbol-header">
-<span class="symbol-kind kind-extern">extern</span>
-<span class="symbol-name">activeTexture</span>
-<span class="symbol-ret">struct Texture *activeTexture</span>
-<span class="symbol-line">line 711</span>
 </div>
 </div>
 <div class="section-label">Macros</div>
@@ -1892,23 +1884,23 @@ int vanir.c requiredir (string rel) * int vanir c">
 <span class="func-divider-lbl fd-lua">Lua</span>
 <span class="func-divider-line"></span>
 </div>
-<div class="symbol-card lua-card" id="graphics_textures_c__lua__pushColorValue__35" data-kind="lua" data-file="graphics_textures_c" data-filepath="graphics/textures.c" data-symbol="graphics_textures_c__lua__pushColorValue__35" data-search="pushcolorvalue static void graphics/textures.c push color value static void graphics textures c">
+<div class="symbol-card lua-card" id="graphics_textures_c__lua__pushColorValue__34" data-kind="lua" data-file="graphics_textures_c" data-filepath="graphics/textures.c" data-symbol="graphics_textures_c__lua__pushColorValue__34" data-search="pushcolorvalue static void graphics/textures.c push color value static void graphics textures c">
 <div class="symbol-header">
 <span class="symbol-kind kind-lua">lua</span>
 <span class="symbol-name">pushColorValue</span>
 <span class="symbol-ret">→ static void</span>
-<span class="symbol-line">line 35</span>
+<span class="symbol-line">line 34</span>
 </div>
 <div class="symbol-body">
 
 
 </div></div>
-<div class="symbol-card lua-card" id="graphics_textures_c__lua__drawTexturedRect__406" data-kind="lua" data-file="graphics_textures_c" data-filepath="graphics/textures.c" data-symbol="graphics_textures_c__lua__drawTexturedRect__406" data-search="drawtexturedrect ↓ draw a texture (or sub-region) as a quad using the textured pipeline ↓ | ↓ drawtexturedrect(sx, sy, sw, sh, dx, dy [, dw, dh]) ↓ | ↓ sx/sy/sw/sh = source region on the texture; dx/dy = destination on screen; dw/dh default to sw/sh ↓ (number? arg1, number? arg2, number? arg3, number? arg4, number? arg5, number? arg6, number? arg7, number? arg8) int graphics/textures.c draw textured rect ↓ draw a texture (or sub region) as a quad using the textured pipeline ↓ | ↓ draw textured rect(sx, sy, sw, sh, dx, dy [, dw, dh]) ↓ | ↓ sx sy sw sh = source region on the texture; dx dy = destination on screen; dw dh default to sw sh ↓ (number? arg1, number? arg2, number? arg3, number? arg4, number? arg5, number? arg6, number? arg7, number? arg8) int graphics textures c">
+<div class="symbol-card lua-card" id="graphics_textures_c__lua__drawTexturedRect__405" data-kind="lua" data-file="graphics_textures_c" data-filepath="graphics/textures.c" data-symbol="graphics_textures_c__lua__drawTexturedRect__405" data-search="drawtexturedrect ↓ draw a texture (or sub-region) as a quad using the textured pipeline ↓ | ↓ drawtexturedrect(sx, sy, sw, sh, dx, dy [, dw, dh]) ↓ | ↓ sx/sy/sw/sh = source region on the texture; dx/dy = destination on screen; dw/dh default to sw/sh ↓ (number? arg1, number? arg2, number? arg3, number? arg4, number? arg5, number? arg6, number? arg7, number? arg8) int graphics/textures.c draw textured rect ↓ draw a texture (or sub region) as a quad using the textured pipeline ↓ | ↓ draw textured rect(sx, sy, sw, sh, dx, dy [, dw, dh]) ↓ | ↓ sx sy sw sh = source region on the texture; dx dy = destination on screen; dw dh default to sw sh ↓ (number? arg1, number? arg2, number? arg3, number? arg4, number? arg5, number? arg6, number? arg7, number? arg8) int graphics textures c">
 <div class="symbol-header">
 <span class="symbol-kind kind-lua">lua</span>
 <span class="symbol-name">drawTexturedRect</span>
 <span class="symbol-lua-sig">(<span class="lsig"><span class="lsig-type">number?</span> <span class="lsig-name">arg1</span><span class="lsig-sep">, </span><span class="lsig-type">number?</span> <span class="lsig-name">arg2</span><span class="lsig-sep">, </span><span class="lsig-type">number?</span> <span class="lsig-name">arg3</span><span class="lsig-sep">, </span><span class="lsig-type">number?</span> <span class="lsig-name">arg4</span><span class="lsig-sep">, </span><span class="lsig-type">number?</span> <span class="lsig-name">arg5</span><span class="lsig-sep">, </span><span class="lsig-type">number?</span> <span class="lsig-name">arg6</span><span class="lsig-sep">, </span><span class="lsig-type">number?</span> <span class="lsig-name">arg7</span><span class="lsig-sep">, </span><span class="lsig-type">number?</span> <span class="lsig-name">arg8</span></span>)</span>
-<span class="symbol-line">line 406</span>
+<span class="symbol-line">line 405</span>
 </div>
 <div class="symbol-body">
 <div class="symbol-comment">// ↓ draw a texture (or sub-region) as a quad using the textured pipeline ↓ | ↓ drawTexturedRect(sx, sy, sw, sh, dx, dy [, dw, dh]) ↓ | ↓ sx/sy/sw/sh = source region on the texture; dx/dy = destination on screen; dw/dh default to sw/sh ↓</div>
@@ -1919,12 +1911,12 @@ int vanir.c requiredir (string rel) * int vanir c">
     float v1 = (sy + sh) / (float)tex-&gt;height;</pre></div></div>
 <div class="refs"><span class="refs-label">cross-refs:</span><span class="badge badge-used" title="used">graphics/shader.c:?</span> <span class="badge badge-used" title="used">graphics/textures.h:?</span> <span class="badge badge-used" title="used">modules/render.c:?</span> <span class="badge badge-used" title="used">types/texture.c:?</span></div>
 </div></div>
-<div class="symbol-card lua-card" id="graphics_textures_c__lua__luaTextureLoad__448" data-kind="lua" data-file="graphics_textures_c" data-filepath="graphics/textures.c" data-symbol="graphics_textures_c__lua__luaTextureLoad__448" data-search="luatextureload ↓ textures.load(path [, name]) → loads using stb_image; name defaults to path ↓ | ↓ requires stb_image.h in src/graphics/ and vanir_has_stb_image compile flag ↓ (string path, string? name) int graphics/textures.c lua texture load ↓ textures load(path [, name]) → loads using stb image; name defaults to path ↓ | ↓ requires stb image h in src graphics and vanir has stb image compile flag ↓ (string path, string? name) int graphics textures c">
+<div class="symbol-card lua-card" id="graphics_textures_c__lua__luaTextureLoad__447" data-kind="lua" data-file="graphics_textures_c" data-filepath="graphics/textures.c" data-symbol="graphics_textures_c__lua__luaTextureLoad__447" data-search="luatextureload ↓ textures.load(path [, name]) → loads using stb_image; name defaults to path ↓ | ↓ requires stb_image.h in src/graphics/ and vanir_has_stb_image compile flag ↓ (string path, string? name) int graphics/textures.c lua texture load ↓ textures load(path [, name]) → loads using stb image; name defaults to path ↓ | ↓ requires stb image h in src graphics and vanir has stb image compile flag ↓ (string path, string? name) int graphics textures c">
 <div class="symbol-header">
 <span class="symbol-kind kind-lua">lua</span>
 <span class="symbol-name">luaTextureLoad</span>
 <span class="symbol-lua-sig">(<span class="lsig"><span class="lsig-type">string</span> <span class="lsig-name">path</span><span class="lsig-sep">, </span><span class="lsig-type">string?</span> <span class="lsig-name">name</span></span>)</span>
-<span class="symbol-line">line 448</span>
+<span class="symbol-line">line 447</span>
 </div>
 <div class="symbol-body">
 <div class="symbol-comment">// ↓ textures.load(path [, name]) → loads using stb_image; name defaults to path ↓ | ↓ requires stb_image.h in src/graphics/ and VANIR_HAS_STB_IMAGE compile flag ↓</div>
@@ -1932,24 +1924,24 @@ int vanir.c requiredir (string rel) * int vanir c">
 <div class="inner-comments"><div class="inner-snippet"><div class="inner-snippet-header">↓ get file size ↓</div><pre class="inner-snippet-code">    size_t fileSize = 0;
     FILE *f = fopen(path, &quot;rb&quot;);</pre></div></div>
 </div></div>
-<div class="symbol-card lua-card" id="graphics_textures_c__lua__luaTextureLoadFromPixels__509" data-kind="lua" data-file="graphics_textures_c" data-filepath="graphics/textures.c" data-symbol="graphics_textures_c__lua__luaTextureLoadFromPixels__509" data-search="luatextureloadfrompixels ↓ textures.loadfrompixels(name, width, height, pixels_string) ↓ | ↓ pixels_string is a raw rgba8 byte string; width*height*4 bytes ↓ (string name, integer arg2, integer arg3, string arg4) int graphics/textures.c lua texture load from pixels ↓ textures load from pixels(name, width, height, pixels string) ↓ | ↓ pixels string is a raw rgba8 byte string; width*height*4 bytes ↓ (string name, integer arg2, integer arg3, string arg4) int graphics textures c">
+<div class="symbol-card lua-card" id="graphics_textures_c__lua__luaTextureLoadFromPixels__508" data-kind="lua" data-file="graphics_textures_c" data-filepath="graphics/textures.c" data-symbol="graphics_textures_c__lua__luaTextureLoadFromPixels__508" data-search="luatextureloadfrompixels ↓ textures.loadfrompixels(name, width, height, pixels_string) ↓ | ↓ pixels_string is a raw rgba8 byte string; width*height*4 bytes ↓ (string name, integer arg2, integer arg3, string arg4) int graphics/textures.c lua texture load from pixels ↓ textures load from pixels(name, width, height, pixels string) ↓ | ↓ pixels string is a raw rgba8 byte string; width*height*4 bytes ↓ (string name, integer arg2, integer arg3, string arg4) int graphics textures c">
 <div class="symbol-header">
 <span class="symbol-kind kind-lua">lua</span>
 <span class="symbol-name">luaTextureLoadFromPixels</span>
 <span class="symbol-lua-sig">(<span class="lsig"><span class="lsig-type">string</span> <span class="lsig-name">name</span><span class="lsig-sep">, </span><span class="lsig-type">integer</span> <span class="lsig-name">arg2</span><span class="lsig-sep">, </span><span class="lsig-type">integer</span> <span class="lsig-name">arg3</span><span class="lsig-sep">, </span><span class="lsig-type">string</span> <span class="lsig-name">arg4</span></span>)</span>
-<span class="symbol-line">line 509</span>
+<span class="symbol-line">line 508</span>
 </div>
 <div class="symbol-body">
 <div class="symbol-comment">// ↓ textures.loadFromPixels(name, width, height, pixels_string) ↓ | ↓ pixels_string is a raw RGBA8 byte string; width*height*4 bytes ↓</div>
 <div class="lua-args-block"><div class="lua-args-label">Lua stack args</div><div class="lua-arg"><span class="lua-arg-idx">1</span><span class="lua-arg-type">string</span><span class="lua-arg-name">name</span></div><div class="lua-arg"><span class="lua-arg-idx">2</span><span class="lua-arg-type">integer</span><span class="lua-arg-name">arg2</span></div><div class="lua-arg"><span class="lua-arg-idx">3</span><span class="lua-arg-type">integer</span><span class="lua-arg-name">arg3</span></div><div class="lua-arg"><span class="lua-arg-idx">4</span><span class="lua-arg-type">string</span><span class="lua-arg-name">arg4</span></div></div>
 <div class="inner-comments"><div class="inner-snippet"><div class="inner-snippet-header">↓ path stays NULL; channels/fileSize stay 0 — pixel data was provided directly ↓</div></div></div>
 </div></div>
-<div class="symbol-card lua-card" id="graphics_textures_c__lua__luaTextureGetSize__555" data-kind="lua" data-file="graphics_textures_c" data-filepath="graphics/textures.c" data-symbol="graphics_textures_c__lua__luaTextureGetSize__555" data-search="luatexturegetsize ↓ textures.getsize(tex) → width, height  (module-level convenience) ↓ int graphics/textures.c lua texture get size ↓ textures get size(tex) → width, height (module level convenience) ↓ int graphics textures c">
+<div class="symbol-card lua-card" id="graphics_textures_c__lua__luaTextureGetSize__554" data-kind="lua" data-file="graphics_textures_c" data-filepath="graphics/textures.c" data-symbol="graphics_textures_c__lua__luaTextureGetSize__554" data-search="luatexturegetsize ↓ textures.getsize(tex) → width, height  (module-level convenience) ↓ int graphics/textures.c lua texture get size ↓ textures get size(tex) → width, height (module level convenience) ↓ int graphics textures c">
 <div class="symbol-header">
 <span class="symbol-kind kind-lua">lua</span>
 <span class="symbol-name">luaTextureGetSize</span>
 <span class="symbol-ret">→ int</span>
-<span class="symbol-line">line 555</span>
+<span class="symbol-line">line 554</span>
 </div>
 <div class="symbol-body">
 <div class="symbol-comment">// ↓ textures.getSize(tex) → width, height  (module-level convenience) ↓</div>
@@ -1960,24 +1952,24 @@ int vanir.c requiredir (string rel) * int vanir c">
 <span class="func-divider-lbl fd-c">C Internal</span>
 <span class="func-divider-line"></span>
 </div>
-<div class="symbol-card" id="graphics_textures_c__func__buildTextureBindGroup__59" data-kind="func" data-file="graphics_textures_c" data-filepath="graphics/textures.c" data-symbol="graphics_textures_c__func__buildTextureBindGroup__59" data-search="buildtexturebindgroup ↓ build a sampler + bind group for sampling this texture ↓ static bool graphics/textures.c build texture bind group ↓ build a sampler + bind group for sampling this texture ↓ static bool graphics textures c">
+<div class="symbol-card" id="graphics_textures_c__func__buildTextureBindGroup__58" data-kind="func" data-file="graphics_textures_c" data-filepath="graphics/textures.c" data-symbol="graphics_textures_c__func__buildTextureBindGroup__58" data-search="buildtexturebindgroup ↓ build a sampler + bind group for sampling this texture ↓ static bool graphics/textures.c build texture bind group ↓ build a sampler + bind group for sampling this texture ↓ static bool graphics textures c">
 <div class="symbol-header">
 <span class="symbol-kind kind-func">func</span>
 <span class="symbol-name">buildTextureBindGroup</span>
 <span class="symbol-ret">→ static bool</span>
-<span class="symbol-line">line 59</span>
+<span class="symbol-line">line 58</span>
 </div>
 <div class="symbol-body">
 <div class="symbol-comment">// ↓ build a sampler + bind group for sampling this texture ↓</div>
 
 
 </div></div>
-<div class="symbol-card" id="graphics_textures_c__func__textureRelease__232" data-kind="func" data-file="graphics_textures_c" data-filepath="graphics/textures.c" data-symbol="graphics_textures_c__func__textureRelease__232" data-search="texturerelease ↓ free all gpu resources for a texture and remove it from the pool ↓ void graphics/textures.c texture release ↓ free all gpu resources for a texture and remove it from the pool ↓ void graphics textures c">
+<div class="symbol-card" id="graphics_textures_c__func__textureRelease__231" data-kind="func" data-file="graphics_textures_c" data-filepath="graphics/textures.c" data-symbol="graphics_textures_c__func__textureRelease__231" data-search="texturerelease ↓ free all gpu resources for a texture and remove it from the pool ↓ void graphics/textures.c texture release ↓ free all gpu resources for a texture and remove it from the pool ↓ void graphics textures c">
 <div class="symbol-header">
 <span class="symbol-kind kind-func">func</span>
 <span class="symbol-name">textureRelease</span>
 <span class="symbol-ret">→ void</span>
-<span class="symbol-line">line 232</span>
+<span class="symbol-line">line 231</span>
 </div>
 <div class="symbol-body">
 <div class="symbol-comment">// ↓ free all GPU resources for a texture and remove it from the pool ↓</div>
@@ -1985,12 +1977,12 @@ int vanir.c requiredir (string rel) * int vanir c">
 <div class="inner-comments"><div class="inner-snippet"><div class="inner-snippet-header">↓ compact pool ↓</div><pre class="inner-snippet-code">        texturePool.textures[i] = texturePool.textures[--texturePool.count];</pre></div></div>
 <div class="refs"><span class="refs-label">cross-refs:</span><span class="badge badge-used" title="used">graphics/draw.c:?</span> <span class="badge badge-used" title="used">graphics/textures.h:?</span> <span class="badge badge-used" title="used">types/texture.c:?</span></div>
 </div></div>
-<div class="symbol-card" id="graphics_textures_c__func__textureSetImage__263" data-kind="func" data-file="graphics_textures_c" data-filepath="graphics/textures.c" data-symbol="graphics_textures_c__func__textureSetImage__263" data-search="texturesetimage ↓ load a new image from path into an existing texture; replaces gpu resources in-place ↓ | ↓ also updates tex-&gt;path so future :setimage() calls without args can use it ↓ | ↓ returns true on success; tex pointer stays valid ↓ bool graphics/textures.c texture set image ↓ load a new image from path into an existing texture; replaces gpu resources in place ↓ | ↓ also updates tex &gt;path so future :set image() calls without args can use it ↓ | ↓ returns true on success; tex pointer stays valid ↓ bool graphics textures c">
+<div class="symbol-card" id="graphics_textures_c__func__textureSetImage__262" data-kind="func" data-file="graphics_textures_c" data-filepath="graphics/textures.c" data-symbol="graphics_textures_c__func__textureSetImage__262" data-search="texturesetimage ↓ load a new image from path into an existing texture; replaces gpu resources in-place ↓ | ↓ also updates tex-&gt;path so future :setimage() calls without args can use it ↓ | ↓ returns true on success; tex pointer stays valid ↓ bool graphics/textures.c texture set image ↓ load a new image from path into an existing texture; replaces gpu resources in place ↓ | ↓ also updates tex &gt;path so future :set image() calls without args can use it ↓ | ↓ returns true on success; tex pointer stays valid ↓ bool graphics textures c">
 <div class="symbol-header">
 <span class="symbol-kind kind-func">func</span>
 <span class="symbol-name">textureSetImage</span>
 <span class="symbol-ret">→ bool</span>
-<span class="symbol-line">line 263</span>
+<span class="symbol-line">line 262</span>
 </div>
 <div class="symbol-body">
 <div class="symbol-comment">// ↓ load a new image from path into an existing texture; replaces GPU resources in-place ↓ | ↓ also updates tex-&gt;path so future :setImage() calls without args can use it ↓ | ↓ returns true on success; tex pointer stays valid ↓</div>
@@ -2004,12 +1996,12 @@ int vanir.c requiredir (string rel) * int vanir c">
     if (tex-&gt;pixels)          { free(tex-&gt;pixels);                                tex-&gt;pixels          = NULL; }</pre></div><div class="inner-snippet"><div class="inner-snippet-header">↓ re-upload ↓</div><pre class="inner-snippet-code">    tex-&gt;pixels = malloc((size_t)(4 * w * h));</pre></div></div>
 <div class="refs"><span class="refs-label">cross-refs:</span><span class="badge badge-used" title="used">graphics/textures.h:?</span> <span class="badge badge-used" title="used">types/texture.c:?</span></div>
 </div></div>
-<div class="symbol-card" id="graphics_textures_c__func__textureGetColor__375" data-kind="func" data-file="graphics_textures_c" data-filepath="graphics/textures.c" data-symbol="graphics_textures_c__func__textureGetColor__375" data-search="texturegetcolor ↓ get a pixel color from cpu-side pixel data ↓ bool graphics/textures.c texture get color ↓ get a pixel color from cpu side pixel data ↓ bool graphics textures c">
+<div class="symbol-card" id="graphics_textures_c__func__textureGetColor__374" data-kind="func" data-file="graphics_textures_c" data-filepath="graphics/textures.c" data-symbol="graphics_textures_c__func__textureGetColor__374" data-search="texturegetcolor ↓ get a pixel color from cpu-side pixel data ↓ bool graphics/textures.c texture get color ↓ get a pixel color from cpu side pixel data ↓ bool graphics textures c">
 <div class="symbol-header">
 <span class="symbol-kind kind-func">func</span>
 <span class="symbol-name">textureGetColor</span>
 <span class="symbol-ret">→ bool</span>
-<span class="symbol-line">line 375</span>
+<span class="symbol-line">line 374</span>
 </div>
 <div class="symbol-body">
 <div class="symbol-comment">// ↓ get a pixel color from cpu-side pixel data ↓</div>
@@ -2017,24 +2009,24 @@ int vanir.c requiredir (string rel) * int vanir c">
 
 <div class="refs"><span class="refs-label">cross-refs:</span><span class="badge badge-used" title="used">graphics/textures.h:?</span> <span class="badge badge-used" title="used">types/texture.c:?</span></div>
 </div></div>
-<div class="symbol-card" id="graphics_textures_c__func__destroyAllTextures__563" data-kind="func" data-file="graphics_textures_c" data-filepath="graphics/textures.c" data-symbol="graphics_textures_c__func__destroyAllTextures__563" data-search="destroyalltextures void graphics/textures.c destroy all textures void graphics textures c">
+<div class="symbol-card" id="graphics_textures_c__func__destroyAllTextures__562" data-kind="func" data-file="graphics_textures_c" data-filepath="graphics/textures.c" data-symbol="graphics_textures_c__func__destroyAllTextures__562" data-search="destroyalltextures void graphics/textures.c destroy all textures void graphics textures c">
 <div class="symbol-header">
 <span class="symbol-kind kind-func">func</span>
 <span class="symbol-name">destroyAllTextures</span>
 <span class="symbol-ret">→ void</span>
-<span class="symbol-line">line 563</span>
+<span class="symbol-line">line 562</span>
 </div>
 <div class="symbol-body">
 
 
 <div class="refs"><span class="refs-label">cross-refs:</span><span class="badge badge-used" title="used">vanir.c:?</span> <span class="badge badge-used" title="used">graphics/textures.h:?</span></div>
 </div></div>
-<div class="symbol-card" id="graphics_textures_c__func__texturesInit__596" data-kind="func" data-file="graphics_textures_c" data-filepath="graphics/textures.c" data-symbol="graphics_textures_c__func__texturesInit__596" data-search="texturesinit int graphics/textures.c textures init int graphics textures c">
+<div class="symbol-card" id="graphics_textures_c__func__texturesInit__595" data-kind="func" data-file="graphics_textures_c" data-filepath="graphics/textures.c" data-symbol="graphics_textures_c__func__texturesInit__595" data-search="texturesinit int graphics/textures.c textures init int graphics textures c">
 <div class="symbol-header">
 <span class="symbol-kind kind-func">func</span>
 <span class="symbol-name">texturesInit</span>
 <span class="symbol-ret">→ int</span>
-<span class="symbol-line">line 596</span>
+<span class="symbol-line">line 595</span>
 </div>
 <div class="symbol-body">
 
@@ -2056,14 +2048,6 @@ int vanir.c requiredir (string rel) * int vanir c">
 <span class="symbol-name">windowPool</span>
 <span class="symbol-ret">struct windowPool windowPool</span>
 <span class="symbol-line">line 23</span>
-</div>
-</div>
-<div class="symbol-card" onclick="toggle(this)">
-<div class="symbol-header">
-<span class="symbol-kind kind-extern">extern</span>
-<span class="symbol-name">activeTexture</span>
-<span class="symbol-ret">struct Texture *activeTexture</span>
-<span class="symbol-line">line 24</span>
 </div>
 </div>
 <div class="section-label">Macros</div>
@@ -2107,7 +2091,7 @@ int vanir.c requiredir (string rel) * int vanir c">
 <div class="symbol-body">
 <div class="symbol-comment">// ↓ a loaded GPU texture with its view, sampler, and bind group for sampling ↓</div>
 <div class="inner-comments"><span class="inner-comment">// ↓ bind group for use with the textured pipeline (group 1: binding 0 = tex, 1 = sampler) ↓</span><span class="inner-comment">// ↓ user-given label (defaults to path) ↓</span><span class="inner-comment">// ↓ original file path (NULL for loadFromPixels) ↓</span><span class="inner-comment">// ↓ original channel count from stb_image (0 if loadFromPixels) ↓</span><span class="inner-comment">// ↓ file size in bytes at load time (0 if loadFromPixels) ↓</span></div>
-<div class="refs"><span class="refs-label">cross-refs:</span><span class="badge badge-used" title="used">graphics/draw.c:?</span> <span class="badge badge-used" title="used">graphics/render.h:?</span> <span class="badge badge-used" title="used">graphics/rendertarget.c:?</span> <span class="badge badge-used" title="used">graphics/rendertarget.h:?</span> <span class="badge badge-used" title="used">graphics/shader.c:?</span> <span class="badge badge-used" title="used">graphics/shader.h:?</span> <span class="badge badge-used" title="used">graphics/textures.c:?</span> <span class="badge badge-used" title="used">modules/render.c:?</span> <span class="badge badge-used" title="used">modules/windows.h:?</span> <span class="badge badge-used" title="used">types/common.h:?</span> <span class="badge badge-used" title="used">types/texture.c:?</span></div>
+<div class="refs"><span class="refs-label">cross-refs:</span><span class="badge badge-used" title="used">graphics/draw.c:?</span> <span class="badge badge-used" title="used">graphics/render.h:?</span> <span class="badge badge-used" title="used">graphics/rendertarget.c:?</span> <span class="badge badge-used" title="used">graphics/rendertarget.h:?</span> <span class="badge badge-used" title="used">graphics/shader.c:?</span> <span class="badge badge-used" title="used">graphics/shader.h:?</span> <span class="badge badge-used" title="used">graphics/textures.c:?</span> <span class="badge badge-used" title="used">modules/render.c:?</span> <span class="badge badge-used" title="used">modules/render.h:?</span> <span class="badge badge-used" title="used">modules/windows.h:?</span> <span class="badge badge-used" title="used">types/common.h:?</span> <span class="badge badge-used" title="used">types/texture.c:?</span></div>
 </div></div>
 <div class="symbol-card" onclick="toggle(this)">
 <div class="symbol-header">
@@ -3713,24 +3697,24 @@ int vanir.c requiredir (string rel) * int vanir c">
 
 
 </div></div>
-<div class="symbol-card lua-card" id="modules_render_c__lua__setTexture__347" data-kind="lua" data-file="modules_render_c" data-filepath="modules/render.c" data-symbol="modules_render_c__lua__setTexture__347" data-search="settexture (nil arg1) int modules/render.c set texture (nil arg1) int modules render c">
+<div class="symbol-card lua-card" id="modules_render_c__lua__setTexture__341" data-kind="lua" data-file="modules_render_c" data-filepath="modules/render.c" data-symbol="modules_render_c__lua__setTexture__341" data-search="settexture (nil arg1) int modules/render.c set texture (nil arg1) int modules render c">
 <div class="symbol-header">
 <span class="symbol-kind kind-lua">lua</span>
 <span class="symbol-name">setTexture</span>
 <span class="symbol-lua-sig">(<span class="lsig"><span class="lsig-type">nil</span> <span class="lsig-name">arg1</span></span>)</span>
-<span class="symbol-line">line 347</span>
+<span class="symbol-line">line 341</span>
 </div>
 <div class="symbol-body">
 <div class="lua-args-block"><div class="lua-args-label">Lua stack args</div><div class="lua-arg"><span class="lua-arg-idx">1</span><span class="lua-arg-type">nil</span><span class="lua-arg-name">arg1</span></div></div>
 
-<div class="refs"><span class="refs-label">cross-refs:</span><span class="badge badge-used" title="used">graphics/rendertarget.h:?</span> <span class="badge badge-used" title="used">graphics/textures.c:?</span></div>
+<div class="refs"><span class="refs-label">cross-refs:</span><span class="badge badge-used" title="used">graphics/rendertarget.h:?</span> <span class="badge badge-used" title="used">graphics/textures.c:?</span> <span class="badge badge-used" title="used">modules/render.h:?</span></div>
 </div></div>
-<div class="symbol-card lua-card" id="modules_render_c__lua__setBlend__362" data-kind="lua" data-file="modules_render_c" data-filepath="modules/render.c" data-symbol="modules_render_c__lua__setBlend__362" data-search="setblend ↑ active color cached in c; render.setcolor writes here, draw calls read directly ↑ (integer source, integer blend) int modules/render.c set blend ↑ active color cached in c; render set color writes here, draw calls read directly ↑ (integer source, integer blend) int modules render c">
+<div class="symbol-card lua-card" id="modules_render_c__lua__setBlend__356" data-kind="lua" data-file="modules_render_c" data-filepath="modules/render.c" data-symbol="modules_render_c__lua__setBlend__356" data-search="setblend ↑ active color cached in c; render.setcolor writes here, draw calls read directly ↑ (integer source, integer blend) int modules/render.c set blend ↑ active color cached in c; render set color writes here, draw calls read directly ↑ (integer source, integer blend) int modules render c">
 <div class="symbol-header">
 <span class="symbol-kind kind-lua">lua</span>
 <span class="symbol-name">setBlend</span>
 <span class="symbol-lua-sig">(<span class="lsig"><span class="lsig-type">integer</span> <span class="lsig-name">source</span><span class="lsig-sep">, </span><span class="lsig-type">integer</span> <span class="lsig-name">blend</span></span>)</span>
-<span class="symbol-line">line 362</span>
+<span class="symbol-line">line 356</span>
 </div>
 <div class="symbol-body">
 <div class="symbol-comment">// ↑ active color cached in C; render.setColor writes here, draw calls read directly ↑</div>
@@ -3738,36 +3722,36 @@ int vanir.c requiredir (string rel) * int vanir c">
 <div class="inner-comments"><div class="inner-snippet"><div class="inner-snippet-header">TODO(webgpu): rebuild pipeline with new blend factors.</div></div></div>
 <div class="refs"><span class="refs-label">cross-refs:</span><span class="badge badge-used" title="used">modules/render.h:?</span></div>
 </div></div>
-<div class="symbol-card lua-card" id="modules_render_c__lua__enable__371" data-kind="lua" data-file="modules_render_c" data-filepath="modules/render.c" data-symbol="modules_render_c__lua__enable__371" data-search="enable (integer cap) int modules/render.c enable (integer cap) int modules render c">
+<div class="symbol-card lua-card" id="modules_render_c__lua__enable__365" data-kind="lua" data-file="modules_render_c" data-filepath="modules/render.c" data-symbol="modules_render_c__lua__enable__365" data-search="enable (integer cap) int modules/render.c enable (integer cap) int modules render c">
 <div class="symbol-header">
 <span class="symbol-kind kind-lua">lua</span>
 <span class="symbol-name">enable</span>
 <span class="symbol-lua-sig">(<span class="lsig"><span class="lsig-type">integer</span> <span class="lsig-name">cap</span></span>)</span>
-<span class="symbol-line">line 371</span>
+<span class="symbol-line">line 365</span>
 </div>
 <div class="symbol-body">
 <div class="lua-args-block"><div class="lua-args-label">Lua stack args</div><div class="lua-arg"><span class="lua-arg-idx">1</span><span class="lua-arg-type">integer</span><span class="lua-arg-name">cap</span></div></div>
 <div class="inner-comments"><div class="inner-snippet"><div class="inner-snippet-header">TODO(webgpu): map cap to the appropriate pipeline field.</div></div></div>
 <div class="refs"><span class="refs-label">cross-refs:</span><span class="badge badge-used" title="used">modules/render.h:?</span> <span class="badge badge-used" title="used">modules/windows.c:?</span></div>
 </div></div>
-<div class="symbol-card lua-card" id="modules_render_c__lua__disable__379" data-kind="lua" data-file="modules_render_c" data-filepath="modules/render.c" data-symbol="modules_render_c__lua__disable__379" data-search="disable (integer cap) int modules/render.c disable (integer cap) int modules render c">
+<div class="symbol-card lua-card" id="modules_render_c__lua__disable__373" data-kind="lua" data-file="modules_render_c" data-filepath="modules/render.c" data-symbol="modules_render_c__lua__disable__373" data-search="disable (integer cap) int modules/render.c disable (integer cap) int modules render c">
 <div class="symbol-header">
 <span class="symbol-kind kind-lua">lua</span>
 <span class="symbol-name">disable</span>
 <span class="symbol-lua-sig">(<span class="lsig"><span class="lsig-type">integer</span> <span class="lsig-name">cap</span></span>)</span>
-<span class="symbol-line">line 379</span>
+<span class="symbol-line">line 373</span>
 </div>
 <div class="symbol-body">
 <div class="lua-args-block"><div class="lua-args-label">Lua stack args</div><div class="lua-arg"><span class="lua-arg-idx">1</span><span class="lua-arg-type">integer</span><span class="lua-arg-name">cap</span></div></div>
 
 <div class="refs"><span class="refs-label">cross-refs:</span><span class="badge badge-used" title="used">modules/render.h:?</span> <span class="badge badge-used" title="used">modules/windows.c:?</span></div>
 </div></div>
-<div class="symbol-card lua-card" id="modules_render_c__lua__clear__389" data-kind="lua" data-file="modules_render_c" data-filepath="modules/render.c" data-symbol="modules_render_c__lua__clear__389" data-search="clear ↓ closes current pass and opens new one; clear color is applied as pass load action ↓ | render.clear([color or nil clr, boolean or nil cleardepth, boolean or nil clearstencil]) | cleardepth / clearstencil are accepted for api compatibility but are no-ops in this 2d webgpu pipeline clears the current render target to the window's stored clear colour. closes the active pass and reopens it with loadop_clear, so everything drawn after this call is on a blank background. (nil? arg1) int modules/render.c clear ↓ closes current pass and opens new one; clear color is applied as pass load action ↓ | render clear([color or nil clr, boolean or nil clear depth, boolean or nil clear stencil]) | clear depth clear stencil are accepted for api compatibility but are no ops in this 2d web gpu pipeline clears the current render target to the window's stored clear colour closes the active pass and reopens it with load op clear, so everything drawn after this call is on a blank background  (nil? arg1) int modules render c">
+<div class="symbol-card lua-card" id="modules_render_c__lua__clear__383" data-kind="lua" data-file="modules_render_c" data-filepath="modules/render.c" data-symbol="modules_render_c__lua__clear__383" data-search="clear ↓ closes current pass and opens new one; clear color is applied as pass load action ↓ | render.clear([color or nil clr, boolean or nil cleardepth, boolean or nil clearstencil]) | cleardepth / clearstencil are accepted for api compatibility but are no-ops in this 2d webgpu pipeline clears the current render target to the window's stored clear colour. closes the active pass and reopens it with loadop_clear, so everything drawn after this call is on a blank background. (nil? arg1) int modules/render.c clear ↓ closes current pass and opens new one; clear color is applied as pass load action ↓ | render clear([color or nil clr, boolean or nil clear depth, boolean or nil clear stencil]) | clear depth clear stencil are accepted for api compatibility but are no ops in this 2d web gpu pipeline clears the current render target to the window's stored clear colour closes the active pass and reopens it with load op clear, so everything drawn after this call is on a blank background  (nil? arg1) int modules render c">
 <div class="symbol-header">
 <span class="symbol-kind kind-lua">lua</span>
 <span class="symbol-name">clear</span>
 <span class="symbol-lua-sig">(<span class="lsig"><span class="lsig-type">nil?</span> <span class="lsig-name">arg1</span></span>)</span>
-<span class="symbol-line">line 389</span>
+<span class="symbol-line">line 383</span>
 </div>
 <div class="symbol-body">
 <div class="symbol-comment">// ↓ closes current pass and opens new one; clear color is applied as pass load action ↓ | render.clear([Color or nil clr, boolean or nil clearDepth, boolean or nil clearStencil]) | clearDepth / clearStencil are accepted for API compatibility but are no-ops in this 2D WebGPU pipeline</div>
@@ -3776,12 +3760,12 @@ int vanir.c requiredir (string rel) * int vanir c">
 <div class="inner-comments"><div class="inner-snippet"><div class="inner-snippet-header">default: reuse last clear color</div><pre class="inner-snippet-code">    struct color color = w-&gt;clearColor;</pre></div></div>
 <div class="refs"><span class="refs-label">cross-refs:</span><span class="badge badge-used" title="used">graphics/rendertarget.c:?</span> <span class="badge badge-used" title="used">modules/render.h:?</span></div>
 </div></div>
-<div class="symbol-card lua-card" id="modules_render_c__lua__clearRGBA__416" data-kind="lua" data-file="modules_render_c" data-filepath="modules/render.c" data-symbol="modules_render_c__lua__clearRGBA__416" data-search="clearrgba render.clearrgba(number r, number g, number b, number a [, boolean cleardepth, boolean clearstencil]) | like render.clear() but takes raw 0-255 component values instead of a color table (number arg1, number arg2, number arg3, number arg4) int modules/render.c clear rgba render clear rgba(number r, number g, number b, number a [, boolean clear depth, boolean clear stencil]) | like render clear() but takes raw 0 255 component values instead of a color table (number arg1, number arg2, number arg3, number arg4) int modules render c">
+<div class="symbol-card lua-card" id="modules_render_c__lua__clearRGBA__410" data-kind="lua" data-file="modules_render_c" data-filepath="modules/render.c" data-symbol="modules_render_c__lua__clearRGBA__410" data-search="clearrgba render.clearrgba(number r, number g, number b, number a [, boolean cleardepth, boolean clearstencil]) | like render.clear() but takes raw 0-255 component values instead of a color table (number arg1, number arg2, number arg3, number arg4) int modules/render.c clear rgba render clear rgba(number r, number g, number b, number a [, boolean clear depth, boolean clear stencil]) | like render clear() but takes raw 0 255 component values instead of a color table (number arg1, number arg2, number arg3, number arg4) int modules render c">
 <div class="symbol-header">
 <span class="symbol-kind kind-lua">lua</span>
 <span class="symbol-name">clearRGBA</span>
 <span class="symbol-lua-sig">(<span class="lsig"><span class="lsig-type">number</span> <span class="lsig-name">arg1</span><span class="lsig-sep">, </span><span class="lsig-type">number</span> <span class="lsig-name">arg2</span><span class="lsig-sep">, </span><span class="lsig-type">number</span> <span class="lsig-name">arg3</span><span class="lsig-sep">, </span><span class="lsig-type">number</span> <span class="lsig-name">arg4</span></span>)</span>
-<span class="symbol-line">line 416</span>
+<span class="symbol-line">line 410</span>
 </div>
 <div class="symbol-body">
 <div class="symbol-comment">// render.clearRGBA(number r, number g, number b, number a [, boolean clearDepth, boolean clearStencil]) | Like render.clear() but takes raw 0-255 component values instead of a Color table</div>
@@ -3793,12 +3777,12 @@ int vanir.c requiredir (string rel) * int vanir c">
     color.a = (float)luaL_checknumber(L, 4) / 255.0f;</pre></div></div>
 <div class="refs"><span class="refs-label">cross-refs:</span><span class="badge badge-used" title="used">modules/render.h:?</span></div>
 </div></div>
-<div class="symbol-card lua-card" id="modules_render_c__lua__renderTargetExists__473" data-kind="lua" data-file="modules_render_c" data-filepath="modules/render.c" data-symbol="modules_render_c__lua__renderTargetExists__473" data-search="rendertargetexists render.rendertargetexists(string name) → boolean (string name) int modules/render.c render target exists render render target exists(string name) → boolean (string name) int modules render c">
+<div class="symbol-card lua-card" id="modules_render_c__lua__renderTargetExists__467" data-kind="lua" data-file="modules_render_c" data-filepath="modules/render.c" data-symbol="modules_render_c__lua__renderTargetExists__467" data-search="rendertargetexists render.rendertargetexists(string name) → boolean (string name) int modules/render.c render target exists render render target exists(string name) → boolean (string name) int modules render c">
 <div class="symbol-header">
 <span class="symbol-kind kind-lua">lua</span>
 <span class="symbol-name">renderTargetExists</span>
 <span class="symbol-lua-sig">(<span class="lsig"><span class="lsig-type">string</span> <span class="lsig-name">name</span></span>)</span>
-<span class="symbol-line">line 473</span>
+<span class="symbol-line">line 467</span>
 </div>
 <div class="symbol-body">
 <div class="symbol-comment">// render.renderTargetExists(string name) → boolean</div>
@@ -3806,12 +3790,12 @@ int vanir.c requiredir (string rel) * int vanir c">
 
 <div class="refs"><span class="refs-label">cross-refs:</span><span class="badge badge-used" title="used">modules/render.h:?</span></div>
 </div></div>
-<div class="symbol-card lua-card" id="modules_render_c__lua__destroyRenderTarget__489" data-kind="lua" data-file="modules_render_c" data-filepath="modules/render.c" data-symbol="modules_render_c__lua__destroyRenderTarget__489" data-search="destroyrendertarget render.destroyrendertarget(string name) | looks up the render target by name, releases all gpu resources, and removes it from the pool (string name) int modules/render.c destroy render target render destroy render target(string name) | looks up the render target by name, releases all gpu resources, and removes it from the pool (string name) int modules render c">
+<div class="symbol-card lua-card" id="modules_render_c__lua__destroyRenderTarget__483" data-kind="lua" data-file="modules_render_c" data-filepath="modules/render.c" data-symbol="modules_render_c__lua__destroyRenderTarget__483" data-search="destroyrendertarget render.destroyrendertarget(string name) | looks up the render target by name, releases all gpu resources, and removes it from the pool (string name) int modules/render.c destroy render target render destroy render target(string name) | looks up the render target by name, releases all gpu resources, and removes it from the pool (string name) int modules render c">
 <div class="symbol-header">
 <span class="symbol-kind kind-lua">lua</span>
 <span class="symbol-name">destroyRenderTarget</span>
 <span class="symbol-lua-sig">(<span class="lsig"><span class="lsig-type">string</span> <span class="lsig-name">name</span></span>)</span>
-<span class="symbol-line">line 489</span>
+<span class="symbol-line">line 483</span>
 </div>
 <div class="symbol-body">
 <div class="symbol-comment">// render.destroyRenderTarget(string name) | Looks up the render target by name, releases all GPU resources, and removes it from the pool</div>
@@ -3820,23 +3804,23 @@ int vanir.c requiredir (string rel) * int vanir c">
         rtPool.targets[rtPool.count] = NULL;</pre></div></div>
 <div class="refs"><span class="refs-label">cross-refs:</span><span class="badge badge-used" title="used">modules/render.h:?</span></div>
 </div></div>
-<div class="symbol-card lua-card" id="modules_render_c__lua__begin__523" data-kind="lua" data-file="modules_render_c" data-filepath="modules/render.c" data-symbol="modules_render_c__lua__begin__523" data-search="begin (integer arg1) int modules/render.c begin (integer arg1) int modules render c">
+<div class="symbol-card lua-card" id="modules_render_c__lua__begin__517" data-kind="lua" data-file="modules_render_c" data-filepath="modules/render.c" data-symbol="modules_render_c__lua__begin__517" data-search="begin (integer arg1) int modules/render.c begin (integer arg1) int modules render c">
 <div class="symbol-header">
 <span class="symbol-kind kind-lua">lua</span>
 <span class="symbol-name">begin</span>
 <span class="symbol-lua-sig">(<span class="lsig"><span class="lsig-type">integer</span> <span class="lsig-name">arg1</span></span>)</span>
-<span class="symbol-line">line 523</span>
+<span class="symbol-line">line 517</span>
 </div>
 <div class="symbol-body">
 <div class="lua-args-block"><div class="lua-args-label">Lua stack args</div><div class="lua-arg"><span class="lua-arg-idx">1</span><span class="lua-arg-type">integer</span><span class="lua-arg-name">arg1</span></div></div>
 
 </div></div>
-<div class="symbol-card lua-card" id="modules_render_c__lua__pushMatrix__555" data-kind="lua" data-file="modules_render_c" data-filepath="modules/render.c" data-symbol="modules_render_c__lua__pushMatrix__555" data-search="pushmatrix render.pushmatrix([mat]) ↓ | ↓ saves the current matrix, optionally sets a new one                     ↓ | ↓ if mat is given:  push current → set current = mat                      ↓ | ↓ if no arg:        just push current (save slot for a later popmatrix)   ↓ (nil? arg1) int modules/render.c push matrix render push matrix([mat]) ↓ | ↓ saves the current matrix, optionally sets a new one ↓ | ↓ if mat is given: push current → set current = mat ↓ | ↓ if no arg: just push current (save slot for a later pop matrix) ↓ (nil? arg1) int modules render c">
+<div class="symbol-card lua-card" id="modules_render_c__lua__pushMatrix__549" data-kind="lua" data-file="modules_render_c" data-filepath="modules/render.c" data-symbol="modules_render_c__lua__pushMatrix__549" data-search="pushmatrix render.pushmatrix([mat]) ↓ | ↓ saves the current matrix, optionally sets a new one                     ↓ | ↓ if mat is given:  push current → set current = mat                      ↓ | ↓ if no arg:        just push current (save slot for a later popmatrix)   ↓ (nil? arg1) int modules/render.c push matrix render push matrix([mat]) ↓ | ↓ saves the current matrix, optionally sets a new one ↓ | ↓ if mat is given: push current → set current = mat ↓ | ↓ if no arg: just push current (save slot for a later pop matrix) ↓ (nil? arg1) int modules render c">
 <div class="symbol-header">
 <span class="symbol-kind kind-lua">lua</span>
 <span class="symbol-name">pushMatrix</span>
 <span class="symbol-lua-sig">(<span class="lsig"><span class="lsig-type">nil?</span> <span class="lsig-name">arg1</span></span>)</span>
-<span class="symbol-line">line 555</span>
+<span class="symbol-line">line 549</span>
 </div>
 <div class="symbol-body">
 <div class="symbol-comment">// render.pushMatrix([mat]) ↓ | ↓ saves the current matrix, optionally sets a new one                     ↓ | ↓ if mat is given:  push current → set current = mat                      ↓ | ↓ if no arg:        just push current (save slot for a later popMatrix)   ↓</div>
@@ -3846,35 +3830,35 @@ int vanir.c requiredir (string rel) * int vanir c">
         matrixGet(L, 1, activeMatrix);
         matrixCheckIdentity();</pre></div></div>
 </div></div>
-<div class="symbol-card lua-card" id="modules_render_c__lua__setMatrix__611" data-kind="lua" data-file="modules_render_c" data-filepath="modules/render.c" data-symbol="modules_render_c__lua__setMatrix__611" data-search="setmatrix render.setmatrix(mat) ↓ (table arg1) static int modules/render.c set matrix render set matrix(mat) ↓ (table arg1) static int modules render c">
+<div class="symbol-card lua-card" id="modules_render_c__lua__setMatrix__605" data-kind="lua" data-file="modules_render_c" data-filepath="modules/render.c" data-symbol="modules_render_c__lua__setMatrix__605" data-search="setmatrix render.setmatrix(mat) ↓ (table arg1) static int modules/render.c set matrix render set matrix(mat) ↓ (table arg1) static int modules render c">
 <div class="symbol-header">
 <span class="symbol-kind kind-lua">lua</span>
 <span class="symbol-name">setMatrix</span>
 <span class="symbol-lua-sig">(<span class="lsig"><span class="lsig-type">table</span> <span class="lsig-name">arg1</span></span>)</span>
-<span class="symbol-line">line 611</span>
+<span class="symbol-line">line 605</span>
 </div>
 <div class="symbol-body">
 <div class="symbol-comment">// render.setMatrix(mat) ↓</div>
 <div class="lua-args-block"><div class="lua-args-label">Lua stack args</div><div class="lua-arg"><span class="lua-arg-idx">1</span><span class="lua-arg-type">table</span><span class="lua-arg-name">arg1</span></div></div>
 
 </div></div>
-<div class="symbol-card lua-card" id="modules_render_c__lua__scissor__641" data-kind="lua" data-file="modules_render_c" data-filepath="modules/render.c" data-symbol="modules_render_c__lua__scissor__641" data-search="scissor (number arg1, number arg2, number arg3, number arg4) int modules/render.c scissor (number arg1, number arg2, number arg3, number arg4) int modules render c">
+<div class="symbol-card lua-card" id="modules_render_c__lua__scissor__635" data-kind="lua" data-file="modules_render_c" data-filepath="modules/render.c" data-symbol="modules_render_c__lua__scissor__635" data-search="scissor (number arg1, number arg2, number arg3, number arg4) int modules/render.c scissor (number arg1, number arg2, number arg3, number arg4) int modules render c">
 <div class="symbol-header">
 <span class="symbol-kind kind-lua">lua</span>
 <span class="symbol-name">scissor</span>
 <span class="symbol-lua-sig">(<span class="lsig"><span class="lsig-type">number</span> <span class="lsig-name">arg1</span><span class="lsig-sep">, </span><span class="lsig-type">number</span> <span class="lsig-name">arg2</span><span class="lsig-sep">, </span><span class="lsig-type">number</span> <span class="lsig-name">arg3</span><span class="lsig-sep">, </span><span class="lsig-type">number</span> <span class="lsig-name">arg4</span></span>)</span>
-<span class="symbol-line">line 641</span>
+<span class="symbol-line">line 635</span>
 </div>
 <div class="symbol-body">
 <div class="lua-args-block"><div class="lua-args-label">Lua stack args</div><div class="lua-arg"><span class="lua-arg-idx">1</span><span class="lua-arg-type">number</span><span class="lua-arg-name">arg1</span></div><div class="lua-arg"><span class="lua-arg-idx">2</span><span class="lua-arg-type">number</span><span class="lua-arg-name">arg2</span></div><div class="lua-arg"><span class="lua-arg-idx">3</span><span class="lua-arg-type">number</span><span class="lua-arg-name">arg3</span></div><div class="lua-arg"><span class="lua-arg-idx">4</span><span class="lua-arg-type">number</span><span class="lua-arg-name">arg4</span></div></div>
 
 </div></div>
-<div class="symbol-card lua-card" id="modules_render_c__lua__setViewport__661" data-kind="lua" data-file="modules_render_c" data-filepath="modules/render.c" data-symbol="modules_render_c__lua__setViewport__661" data-search="setviewport ↓ set gpu viewport rect in pixel coords; resets scissor to full viewport ↓ (number arg1, number arg2, number arg3, number arg4) int modules/render.c set viewport ↓ set gpu viewport rect in pixel coords; resets scissor to full viewport ↓ (number arg1, number arg2, number arg3, number arg4) int modules render c">
+<div class="symbol-card lua-card" id="modules_render_c__lua__setViewport__655" data-kind="lua" data-file="modules_render_c" data-filepath="modules/render.c" data-symbol="modules_render_c__lua__setViewport__655" data-search="setviewport ↓ set gpu viewport rect in pixel coords; resets scissor to full viewport ↓ (number arg1, number arg2, number arg3, number arg4) int modules/render.c set viewport ↓ set gpu viewport rect in pixel coords; resets scissor to full viewport ↓ (number arg1, number arg2, number arg3, number arg4) int modules render c">
 <div class="symbol-header">
 <span class="symbol-kind kind-lua">lua</span>
 <span class="symbol-name">setViewport</span>
 <span class="symbol-lua-sig">(<span class="lsig"><span class="lsig-type">number</span> <span class="lsig-name">arg1</span><span class="lsig-sep">, </span><span class="lsig-type">number</span> <span class="lsig-name">arg2</span><span class="lsig-sep">, </span><span class="lsig-type">number</span> <span class="lsig-name">arg3</span><span class="lsig-sep">, </span><span class="lsig-type">number</span> <span class="lsig-name">arg4</span></span>)</span>
-<span class="symbol-line">line 661</span>
+<span class="symbol-line">line 655</span>
 </div>
 <div class="symbol-body">
 <div class="symbol-comment">// ↓ set gpu viewport rect in pixel coords; resets scissor to full viewport ↓</div>
@@ -3912,38 +3896,25 @@ int vanir.c requiredir (string rel) * int vanir c">
 
 
 </div></div>
-<div class="symbol-card" id="modules_render_c__func__getColor__332" data-kind="func" data-file="modules_render_c" data-filepath="modules/render.c" data-symbol="modules_render_c__func__getColor__332" data-search="getcolor ↓ kept for any callers that still pass a color table at stack index 1 ↓ void modules/render.c get color ↓ kept for any callers that still pass a color table at stack index 1 ↓ void modules render c">
-<div class="symbol-header">
-<span class="symbol-kind kind-func">func</span>
-<span class="symbol-name">getColor</span>
-<span class="symbol-ret">→ void</span>
-<span class="symbol-line">line 332</span>
-</div>
-<div class="symbol-body">
-<div class="symbol-comment">// ↓ kept for any callers that still pass a color table at stack index 1 ↓</div>
-
-
-<div class="refs"><span class="refs-label">cross-refs:</span><span class="badge badge-used" title="used">modules/render.h:?</span> <span class="badge badge-used" title="used">types/texture.c:?</span></div>
-</div></div>
-<div class="symbol-card" id="modules_render_c__func__getGlobalColor__337" data-kind="func" data-file="modules_render_c" data-filepath="modules/render.c" data-symbol="modules_render_c__func__getGlobalColor__337" data-search="getglobalcolor ↓ draw calls call this; now just a direct struct copy, zero lua overhead ↓ void modules/render.c get global color ↓ draw calls call this; now just a direct struct copy, zero lua overhead ↓ void modules render c">
+<div class="symbol-card" id="modules_render_c__func__getGlobalColor__332" data-kind="func" data-file="modules_render_c" data-filepath="modules/render.c" data-symbol="modules_render_c__func__getGlobalColor__332" data-search="getglobalcolor ↓ draw calls call this; direct struct copy, zero lua overhead ↓ void modules/render.c get global color ↓ draw calls call this; direct struct copy, zero lua overhead ↓ void modules render c">
 <div class="symbol-header">
 <span class="symbol-kind kind-func">func</span>
 <span class="symbol-name">getGlobalColor</span>
 <span class="symbol-ret">→ void</span>
-<span class="symbol-line">line 337</span>
+<span class="symbol-line">line 332</span>
 </div>
 <div class="symbol-body">
-<div class="symbol-comment">// ↓ draw calls call this; now just a direct struct copy, zero lua overhead ↓</div>
+<div class="symbol-comment">// ↓ draw calls call this; direct struct copy, zero lua overhead ↓</div>
 
 
 <div class="refs"><span class="refs-label">cross-refs:</span><span class="badge badge-used" title="used">graphics/draw.c:?</span> <span class="badge badge-used" title="used">modules/render.h:?</span></div>
 </div></div>
-<div class="symbol-card" id="modules_render_c__func__setColor__341" data-kind="func" data-file="modules_render_c" data-filepath="modules/render.c" data-symbol="modules_render_c__func__setColor__341" data-search="setcolor sets the active draw colour used by all subsequent shape-drawing calls until changed again. colour values are floats in the range 0–255 as in the rest of vanir's colour api. int modules/render.c set color sets the active draw colour used by all subsequent shape drawing calls until changed again colour values are floats in the range 0–255 as in the rest of vanir's colour api  int modules render c">
+<div class="symbol-card" id="modules_render_c__func__setColor__335" data-kind="func" data-file="modules_render_c" data-filepath="modules/render.c" data-symbol="modules_render_c__func__setColor__335" data-search="setcolor sets the active draw colour used by all subsequent shape-drawing calls until changed again. colour values are floats in the range 0–255 as in the rest of vanir's colour api. int modules/render.c set color sets the active draw colour used by all subsequent shape drawing calls until changed again colour values are floats in the range 0–255 as in the rest of vanir's colour api  int modules render c">
 <div class="symbol-header">
 <span class="symbol-kind kind-func">func</span>
 <span class="symbol-name">setColor</span>
 <span class="symbol-ret">→ int</span>
-<span class="symbol-line">line 341</span>
+<span class="symbol-line">line 335</span>
 </div>
 <div class="symbol-body">
 <div class="symbol-description">Sets the active draw colour used by all subsequent shape-drawing calls until changed again. Colour values are floats in the range 0–255 as in the rest of Vanir's colour API.</div>
@@ -3951,12 +3922,12 @@ int vanir.c requiredir (string rel) * int vanir c">
 
 <div class="refs"><span class="refs-label">cross-refs:</span><span class="badge badge-used" title="used">modules/render.h:?</span></div>
 </div></div>
-<div class="symbol-card" id="modules_render_c__func__clearDepth__412" data-kind="func" data-file="modules_render_c" data-filepath="modules/render.c" data-symbol="modules_render_c__func__clearDepth__412" data-search="cleardepth render.cleardepth([boolean or nil clearstencil]) | no depth attachment in this 2d webgpu pipeline — no-op stub int modules/render.c clear depth render clear depth([boolean or nil clear stencil]) | no depth attachment in this 2d web gpu pipeline — no op stub int modules render c">
+<div class="symbol-card" id="modules_render_c__func__clearDepth__406" data-kind="func" data-file="modules_render_c" data-filepath="modules/render.c" data-symbol="modules_render_c__func__clearDepth__406" data-search="cleardepth render.cleardepth([boolean or nil clearstencil]) | no depth attachment in this 2d webgpu pipeline — no-op stub int modules/render.c clear depth render clear depth([boolean or nil clear stencil]) | no depth attachment in this 2d web gpu pipeline — no op stub int modules render c">
 <div class="symbol-header">
 <span class="symbol-kind kind-func">func</span>
 <span class="symbol-name">clearDepth</span>
 <span class="symbol-ret">→ int</span>
-<span class="symbol-line">line 412</span>
+<span class="symbol-line">line 406</span>
 </div>
 <div class="symbol-body">
 <div class="symbol-comment">// render.clearDepth([boolean or nil clearStencil]) | No depth attachment in this 2D WebGPU pipeline — no-op stub</div>
@@ -3964,12 +3935,12 @@ int vanir.c requiredir (string rel) * int vanir c">
 
 <div class="refs"><span class="refs-label">cross-refs:</span><span class="badge badge-used" title="used">modules/render.h:?</span></div>
 </div></div>
-<div class="symbol-card" id="modules_render_c__func__depthRange__441" data-kind="func" data-file="modules_render_c" data-filepath="modules/render.c" data-symbol="modules_render_c__func__depthRange__441" data-search="depthrange render.depthrange(number min, number max) | webgpu depth is fixed-range ndc 0..1; not user-configurable in this pipeline — no-op int modules/render.c depth range render depth range(number min, number max) | web gpu depth is fixed range ndc 0 1; not user configurable in this pipeline — no op int modules render c">
+<div class="symbol-card" id="modules_render_c__func__depthRange__435" data-kind="func" data-file="modules_render_c" data-filepath="modules/render.c" data-symbol="modules_render_c__func__depthRange__435" data-search="depthrange render.depthrange(number min, number max) | webgpu depth is fixed-range ndc 0..1; not user-configurable in this pipeline — no-op int modules/render.c depth range render depth range(number min, number max) | web gpu depth is fixed range ndc 0 1; not user configurable in this pipeline — no op int modules render c">
 <div class="symbol-header">
 <span class="symbol-kind kind-func">func</span>
 <span class="symbol-name">depthRange</span>
 <span class="symbol-ret">→ int</span>
-<span class="symbol-line">line 441</span>
+<span class="symbol-line">line 435</span>
 </div>
 <div class="symbol-body">
 <div class="symbol-comment">// render.depthRange(number min, number max) | WebGPU depth is fixed-range NDC 0..1; not user-configurable in this pipeline — no-op</div>
@@ -3977,12 +3948,12 @@ int vanir.c requiredir (string rel) * int vanir c">
 
 <div class="refs"><span class="refs-label">cross-refs:</span><span class="badge badge-used" title="used">modules/render.h:?</span></div>
 </div></div>
-<div class="symbol-card" id="modules_render_c__func__enableDepth__445" data-kind="func" data-file="modules_render_c" data-filepath="modules/render.c" data-symbol="modules_render_c__func__enableDepth__445" data-search="enabledepth render.enabledepth(boolean enable) | no depth buffer in this 2d pipeline — no-op stub int modules/render.c enable depth render enable depth(boolean enable) | no depth buffer in this 2d pipeline — no op stub int modules render c">
+<div class="symbol-card" id="modules_render_c__func__enableDepth__439" data-kind="func" data-file="modules_render_c" data-filepath="modules/render.c" data-symbol="modules_render_c__func__enableDepth__439" data-search="enabledepth render.enabledepth(boolean enable) | no depth buffer in this 2d pipeline — no-op stub int modules/render.c enable depth render enable depth(boolean enable) | no depth buffer in this 2d pipeline — no op stub int modules render c">
 <div class="symbol-header">
 <span class="symbol-kind kind-func">func</span>
 <span class="symbol-name">enableDepth</span>
 <span class="symbol-ret">→ int</span>
-<span class="symbol-line">line 445</span>
+<span class="symbol-line">line 439</span>
 </div>
 <div class="symbol-body">
 <div class="symbol-comment">// render.enableDepth(boolean enable) | No depth buffer in this 2D pipeline — no-op stub</div>
@@ -3990,12 +3961,12 @@ int vanir.c requiredir (string rel) * int vanir c">
 
 <div class="refs"><span class="refs-label">cross-refs:</span><span class="badge badge-used" title="used">modules/render.h:?</span></div>
 </div></div>
-<div class="symbol-card" id="modules_render_c__func__pushCustomClipPlane__449" data-kind="func" data-file="modules_render_c" data-filepath="modules/render.c" data-symbol="modules_render_c__func__pushCustomClipPlane__449" data-search="pushcustomclipplane render.pushcustomclipplane(vector normal, number distance) | webgpu has no clip plane api — no-op stub int modules/render.c push custom clip plane render push custom clip plane(vector normal, number distance) | web gpu has no clip plane api — no op stub int modules render c">
+<div class="symbol-card" id="modules_render_c__func__pushCustomClipPlane__443" data-kind="func" data-file="modules_render_c" data-filepath="modules/render.c" data-symbol="modules_render_c__func__pushCustomClipPlane__443" data-search="pushcustomclipplane render.pushcustomclipplane(vector normal, number distance) | webgpu has no clip plane api — no-op stub int modules/render.c push custom clip plane render push custom clip plane(vector normal, number distance) | web gpu has no clip plane api — no op stub int modules render c">
 <div class="symbol-header">
 <span class="symbol-kind kind-func">func</span>
 <span class="symbol-name">pushCustomClipPlane</span>
 <span class="symbol-ret">→ int</span>
-<span class="symbol-line">line 449</span>
+<span class="symbol-line">line 443</span>
 </div>
 <div class="symbol-body">
 <div class="symbol-comment">// render.pushCustomClipPlane(Vector normal, number distance) | WebGPU has no clip plane API — no-op stub</div>
@@ -4003,12 +3974,12 @@ int vanir.c requiredir (string rel) * int vanir c">
 
 <div class="refs"><span class="refs-label">cross-refs:</span><span class="badge badge-used" title="used">modules/render.h:?</span></div>
 </div></div>
-<div class="symbol-card" id="modules_render_c__func__popCustomClipPlane__452" data-kind="func" data-file="modules_render_c" data-filepath="modules/render.c" data-symbol="modules_render_c__func__popCustomClipPlane__452" data-search="popcustomclipplane render.popcustomclipplane() int modules/render.c pop custom clip plane render pop custom clip plane() int modules render c">
+<div class="symbol-card" id="modules_render_c__func__popCustomClipPlane__446" data-kind="func" data-file="modules_render_c" data-filepath="modules/render.c" data-symbol="modules_render_c__func__popCustomClipPlane__446" data-search="popcustomclipplane render.popcustomclipplane() int modules/render.c pop custom clip plane render pop custom clip plane() int modules render c">
 <div class="symbol-header">
 <span class="symbol-kind kind-func">func</span>
 <span class="symbol-name">popCustomClipPlane</span>
 <span class="symbol-ret">→ int</span>
-<span class="symbol-line">line 452</span>
+<span class="symbol-line">line 446</span>
 </div>
 <div class="symbol-body">
 <div class="symbol-comment">// render.popCustomClipPlane()</div>
@@ -4016,12 +3987,12 @@ int vanir.c requiredir (string rel) * int vanir c">
 
 <div class="refs"><span class="refs-label">cross-refs:</span><span class="badge badge-used" title="used">modules/render.h:?</span></div>
 </div></div>
-<div class="symbol-card" id="modules_render_c__func__renderViewsLeft__456" data-kind="func" data-file="modules_render_c" data-filepath="modules/render.c" data-symbol="modules_render_c__func__renderViewsLeft__456" data-search="renderviewsleft render.renderviewsleft() → number | this engine renders one view per frame; returns 1 for compatibility int modules/render.c render views left render render views left() → number | this engine renders one view per frame; returns 1 for compatibility int modules render c">
+<div class="symbol-card" id="modules_render_c__func__renderViewsLeft__450" data-kind="func" data-file="modules_render_c" data-filepath="modules/render.c" data-symbol="modules_render_c__func__renderViewsLeft__450" data-search="renderviewsleft render.renderviewsleft() → number | this engine renders one view per frame; returns 1 for compatibility int modules/render.c render views left render render views left() → number | this engine renders one view per frame; returns 1 for compatibility int modules render c">
 <div class="symbol-header">
 <span class="symbol-kind kind-func">func</span>
 <span class="symbol-name">renderViewsLeft</span>
 <span class="symbol-ret">→ int</span>
-<span class="symbol-line">line 456</span>
+<span class="symbol-line">line 450</span>
 </div>
 <div class="symbol-body">
 <div class="symbol-comment">// render.renderViewsLeft() → number | This engine renders one view per frame; returns 1 for compatibility</div>
@@ -4029,12 +4000,12 @@ int vanir.c requiredir (string rel) * int vanir c">
 
 <div class="refs"><span class="refs-label">cross-refs:</span><span class="badge badge-used" title="used">modules/render.h:?</span></div>
 </div></div>
-<div class="symbol-card" id="modules_render_c__func__readPixel__463" data-kind="func" data-file="modules_render_c" data-filepath="modules/render.c" data-symbol="modules_render_c__func__readPixel__463" data-search="readpixel render.readpixel(number x, number y) → r, g, b, a | webgpu gpu readback requires async buffer mapping — returns 0,0,0,0 as stub int modules/render.c read pixel render read pixel(number x, number y) → r, g, b, a | web gpu gpu readback requires async buffer mapping — returns 0,0,0,0 as stub int modules render c">
+<div class="symbol-card" id="modules_render_c__func__readPixel__457" data-kind="func" data-file="modules_render_c" data-filepath="modules/render.c" data-symbol="modules_render_c__func__readPixel__457" data-search="readpixel render.readpixel(number x, number y) → r, g, b, a | webgpu gpu readback requires async buffer mapping — returns 0,0,0,0 as stub int modules/render.c read pixel render read pixel(number x, number y) → r, g, b, a | web gpu gpu readback requires async buffer mapping — returns 0,0,0,0 as stub int modules render c">
 <div class="symbol-header">
 <span class="symbol-kind kind-func">func</span>
 <span class="symbol-name">readPixel</span>
 <span class="symbol-ret">→ int</span>
-<span class="symbol-line">line 463</span>
+<span class="symbol-line">line 457</span>
 </div>
 <div class="symbol-body">
 <div class="symbol-comment">// render.readPixel(number x, number y) → r, g, b, a | WebGPU GPU readback requires async buffer mapping — returns 0,0,0,0 as stub</div>
@@ -4042,96 +4013,96 @@ int vanir.c requiredir (string rel) * int vanir c">
 
 <div class="refs"><span class="refs-label">cross-refs:</span><span class="badge badge-used" title="used">modules/render.h:?</span></div>
 </div></div>
-<div class="symbol-card" id="modules_render_c__func__force__522" data-kind="func" data-file="modules_render_c" data-filepath="modules/render.c" data-symbol="modules_render_c__func__force__522" data-search="force stubs ↓↓↓ stubs int modules/render.c force stubs ↓↓↓ stubs int modules render c">
+<div class="symbol-card" id="modules_render_c__func__force__516" data-kind="func" data-file="modules_render_c" data-filepath="modules/render.c" data-symbol="modules_render_c__func__force__516" data-search="force stubs ↓↓↓ stubs int modules/render.c force stubs ↓↓↓ stubs int modules render c">
 <div class="symbol-header">
 <span class="symbol-kind kind-func">func</span>
 <span class="symbol-name">force</span>
 <span class="symbol-ret">→ int</span>
-<span class="symbol-line">line 522</span>
+<span class="symbol-line">line 516</span>
 </div>
 <div class="symbol-body">
 <div class="symbol-comment">// stubs ↓↓↓ stubs</div>
 
 
 </div></div>
-<div class="symbol-card" id="modules_render_c__func__end__524" data-kind="func" data-file="modules_render_c" data-filepath="modules/render.c" data-symbol="modules_render_c__func__end__524" data-search="end int modules/render.c end int modules render c">
+<div class="symbol-card" id="modules_render_c__func__end__518" data-kind="func" data-file="modules_render_c" data-filepath="modules/render.c" data-symbol="modules_render_c__func__end__518" data-search="end int modules/render.c end int modules render c">
 <div class="symbol-header">
 <span class="symbol-kind kind-func">func</span>
 <span class="symbol-name">end</span>
 <span class="symbol-ret">→ int</span>
-<span class="symbol-line">line 524</span>
+<span class="symbol-line">line 518</span>
 </div>
 <div class="symbol-body">
 
 
 <div class="refs"><span class="refs-label">cross-refs:</span><span class="badge badge-used" title="used">modules/files.c:?</span> <span class="badge badge-used" title="used">modules/memory.c:?</span></div>
 </div></div>
-<div class="symbol-card" id="modules_render_c__func__matrixCheckIdentity__536" data-kind="func" data-file="modules_render_c" data-filepath="modules/render.c" data-symbol="modules_render_c__func__matrixCheckIdentity__536" data-search="matrixcheckidentity static int   matrixstacktop = 0;           /* ↓ number of saved matrices ↓ | static float activematrix[9];              /* ↓ current transform applied to all verts ↓ | static bool  matrixisidentity = true;      /* ↓ fast path: skip transform when identity ↓ static void modules/render.c matrix check identity static int matrix stack top = 0; * ↓ number of saved matrices ↓ | static float active matrix[9]; * ↓ current transform applied to all verts ↓ | static bool matrix is identity = true; * ↓ fast path: skip transform when identity ↓ static void modules render c">
+<div class="symbol-card" id="modules_render_c__func__matrixCheckIdentity__530" data-kind="func" data-file="modules_render_c" data-filepath="modules/render.c" data-symbol="modules_render_c__func__matrixCheckIdentity__530" data-search="matrixcheckidentity static int   matrixstacktop = 0;           /* ↓ number of saved matrices ↓ | static float activematrix[9];              /* ↓ current transform applied to all verts ↓ | static bool  matrixisidentity = true;      /* ↓ fast path: skip transform when identity ↓ static void modules/render.c matrix check identity static int matrix stack top = 0; * ↓ number of saved matrices ↓ | static float active matrix[9]; * ↓ current transform applied to all verts ↓ | static bool matrix is identity = true; * ↓ fast path: skip transform when identity ↓ static void modules render c">
 <div class="symbol-header">
 <span class="symbol-kind kind-func">func</span>
 <span class="symbol-name">matrixCheckIdentity</span>
 <span class="symbol-ret">→ static void</span>
-<span class="symbol-line">line 536</span>
+<span class="symbol-line">line 530</span>
 </div>
 <div class="symbol-body">
 <div class="symbol-comment">// static int   matrixStackTop = 0;           /* ↓ number of saved matrices ↓ | static float activeMatrix[9];              /* ↓ current transform applied to all verts ↓ | static bool  matrixIsIdentity = true;      /* ↓ fast path: skip transform when identity ↓</div>
 
 
 </div></div>
-<div class="symbol-card" id="modules_render_c__func__matrixStackInit__545" data-kind="func" data-file="modules_render_c" data-filepath="modules/render.c" data-symbol="modules_render_c__func__matrixStackInit__545" data-search="matrixstackinit ↓ called once on module load ↓ static void modules/render.c matrix stack init ↓ called once on module load ↓ static void modules render c">
+<div class="symbol-card" id="modules_render_c__func__matrixStackInit__539" data-kind="func" data-file="modules_render_c" data-filepath="modules/render.c" data-symbol="modules_render_c__func__matrixStackInit__539" data-search="matrixstackinit ↓ called once on module load ↓ static void modules/render.c matrix stack init ↓ called once on module load ↓ static void modules render c">
 <div class="symbol-header">
 <span class="symbol-kind kind-func">func</span>
 <span class="symbol-name">matrixStackInit</span>
 <span class="symbol-ret">→ static void</span>
-<span class="symbol-line">line 545</span>
+<span class="symbol-line">line 539</span>
 </div>
 <div class="symbol-body">
 <div class="symbol-comment">// ↓ called once on module load ↓</div>
 
 
 </div></div>
-<div class="symbol-card" id="modules_render_c__func__popMatrix__581" data-kind="func" data-file="modules_render_c" data-filepath="modules/render.c" data-symbol="modules_render_c__func__popMatrix__581" data-search="popmatrix render.popmatrix() ↓ int modules/render.c pop matrix render pop matrix() ↓ int modules render c">
+<div class="symbol-card" id="modules_render_c__func__popMatrix__575" data-kind="func" data-file="modules_render_c" data-filepath="modules/render.c" data-symbol="modules_render_c__func__popMatrix__575" data-search="popmatrix render.popmatrix() ↓ int modules/render.c pop matrix render pop matrix() ↓ int modules render c">
 <div class="symbol-header">
 <span class="symbol-kind kind-func">func</span>
 <span class="symbol-name">popMatrix</span>
 <span class="symbol-ret">→ int</span>
-<span class="symbol-line">line 581</span>
+<span class="symbol-line">line 575</span>
 </div>
 <div class="symbol-body">
 <div class="symbol-comment">// render.popMatrix() ↓</div>
 
 
 </div></div>
-<div class="symbol-card" id="modules_render_c__func__resetMatrix__599" data-kind="func" data-file="modules_render_c" data-filepath="modules/render.c" data-symbol="modules_render_c__func__resetMatrix__599" data-search="resetmatrix render.resetmatrix() ↓ int modules/render.c reset matrix render reset matrix() ↓ int modules render c">
+<div class="symbol-card" id="modules_render_c__func__resetMatrix__593" data-kind="func" data-file="modules_render_c" data-filepath="modules/render.c" data-symbol="modules_render_c__func__resetMatrix__593" data-search="resetmatrix render.resetmatrix() ↓ int modules/render.c reset matrix render reset matrix() ↓ int modules render c">
 <div class="symbol-header">
 <span class="symbol-kind kind-func">func</span>
 <span class="symbol-name">resetMatrix</span>
 <span class="symbol-ret">→ int</span>
-<span class="symbol-line">line 599</span>
+<span class="symbol-line">line 593</span>
 </div>
 <div class="symbol-body">
 <div class="symbol-comment">// render.resetMatrix() ↓</div>
 
 
 </div></div>
-<div class="symbol-card" id="modules_render_c__func__getMatrix__624" data-kind="func" data-file="modules_render_c" data-filepath="modules/render.c" data-symbol="modules_render_c__func__getMatrix__624" data-search="getmatrix render.getmatrix() → matrix ↓ static int modules/render.c get matrix render get matrix() → matrix ↓ static int modules render c">
+<div class="symbol-card" id="modules_render_c__func__getMatrix__618" data-kind="func" data-file="modules_render_c" data-filepath="modules/render.c" data-symbol="modules_render_c__func__getMatrix__618" data-search="getmatrix render.getmatrix() → matrix ↓ static int modules/render.c get matrix render get matrix() → matrix ↓ static int modules render c">
 <div class="symbol-header">
 <span class="symbol-kind kind-func">func</span>
 <span class="symbol-name">getMatrix</span>
 <span class="symbol-ret">→ static int</span>
-<span class="symbol-line">line 624</span>
+<span class="symbol-line">line 618</span>
 </div>
 <div class="symbol-body">
 <div class="symbol-comment">// render.getMatrix() → Matrix ↓</div>
 
 
 </div></div>
-<div class="symbol-card" id="modules_render_c__func__applyActiveMatrix__630" data-kind="func" data-file="modules_render_c" data-filepath="modules/render.c" data-symbol="modules_render_c__func__applyActiveMatrix__630" data-search="applyactivematrix ↓ apply the active matrix to a point in-place; called by pushvert in draw.c ↓ void modules/render.c apply active matrix ↓ apply the active matrix to a point in place; called by push vert in draw c ↓ void modules render c">
+<div class="symbol-card" id="modules_render_c__func__applyActiveMatrix__624" data-kind="func" data-file="modules_render_c" data-filepath="modules/render.c" data-symbol="modules_render_c__func__applyActiveMatrix__624" data-search="applyactivematrix ↓ apply the active matrix to a point in-place; called by pushvert in draw.c ↓ void modules/render.c apply active matrix ↓ apply the active matrix to a point in place; called by push vert in draw c ↓ void modules render c">
 <div class="symbol-header">
 <span class="symbol-kind kind-func">func</span>
 <span class="symbol-name">applyActiveMatrix</span>
 <span class="symbol-ret">→ void</span>
-<span class="symbol-line">line 630</span>
+<span class="symbol-line">line 624</span>
 </div>
 <div class="symbol-body">
 <div class="symbol-comment">// ↓ apply the active matrix to a point in-place; called by pushVert in draw.c ↓</div>
@@ -4139,12 +4110,12 @@ int vanir.c requiredir (string rel) * int vanir c">
 
 <div class="refs"><span class="refs-label">cross-refs:</span><span class="badge badge-used" title="used">graphics/draw.c:?</span> <span class="badge badge-used" title="used">modules/render.h:?</span></div>
 </div></div>
-<div class="symbol-card" id="modules_render_c__func__resetViewport__689" data-kind="func" data-file="modules_render_c" data-filepath="modules/render.c" data-symbol="modules_render_c__func__resetViewport__689" data-search="resetviewport ↓ reset viewport to the full framebuffer ↓ int modules/render.c reset viewport ↓ reset viewport to the full framebuffer ↓ int modules render c">
+<div class="symbol-card" id="modules_render_c__func__resetViewport__683" data-kind="func" data-file="modules_render_c" data-filepath="modules/render.c" data-symbol="modules_render_c__func__resetViewport__683" data-search="resetviewport ↓ reset viewport to the full framebuffer ↓ int modules/render.c reset viewport ↓ reset viewport to the full framebuffer ↓ int modules render c">
 <div class="symbol-header">
 <span class="symbol-kind kind-func">func</span>
 <span class="symbol-name">resetViewport</span>
 <span class="symbol-ret">→ int</span>
-<span class="symbol-line">line 689</span>
+<span class="symbol-line">line 683</span>
 </div>
 <div class="symbol-body">
 <div class="symbol-comment">// ↓ reset viewport to the full framebuffer ↓</div>
@@ -4152,24 +4123,24 @@ int vanir.c requiredir (string rel) * int vanir c">
 
 <div class="refs"><span class="refs-label">cross-refs:</span><span class="badge badge-used" title="used">modules/render.h:?</span></div>
 </div></div>
-<div class="symbol-card" id="modules_render_c__func__setQuality__708" data-kind="func" data-file="modules_render_c" data-filepath="modules/render.c" data-symbol="modules_render_c__func__setQuality__708" data-search="setquality int modules/render.c set quality int modules render c">
+<div class="symbol-card" id="modules_render_c__func__setQuality__702" data-kind="func" data-file="modules_render_c" data-filepath="modules/render.c" data-symbol="modules_render_c__func__setQuality__702" data-search="setquality int modules/render.c set quality int modules render c">
 <div class="symbol-header">
 <span class="symbol-kind kind-func">func</span>
 <span class="symbol-name">setQuality</span>
 <span class="symbol-ret">→ int</span>
-<span class="symbol-line">line 708</span>
+<span class="symbol-line">line 702</span>
 </div>
 <div class="symbol-body">
 
 
 <div class="refs"><span class="refs-label">cross-refs:</span><span class="badge badge-used" title="used">modules/render.h:?</span></div>
 </div></div>
-<div class="symbol-card" id="modules_render_c__func__renderInit__779" data-kind="func" data-file="modules_render_c" data-filepath="modules/render.c" data-symbol="modules_render_c__func__renderInit__779" data-search="renderinit int modules/render.c render init int modules render c">
+<div class="symbol-card" id="modules_render_c__func__renderInit__773" data-kind="func" data-file="modules_render_c" data-filepath="modules/render.c" data-symbol="modules_render_c__func__renderInit__773" data-search="renderinit int modules/render.c render init int modules render c">
 <div class="symbol-header">
 <span class="symbol-kind kind-func">func</span>
 <span class="symbol-name">renderInit</span>
 <span class="symbol-ret">→ int</span>
-<span class="symbol-line">line 779</span>
+<span class="symbol-line">line 773</span>
 </div>
 <div class="symbol-body">
 
@@ -4202,7 +4173,7 @@ int vanir.c requiredir (string rel) * int vanir c">
 <span class="symbol-kind kind-macro">#define</span>
 <span class="symbol-name">MATRIX</span>
 <span class="symbol-ret">_STACK_MAX 64</span>
-<span class="symbol-line">line 530</span>
+<span class="symbol-line">line 524</span>
 </div>
 <div class="symbol-body">
 <div class="symbol-comment">// TODO: fix this mess later, its horrible | ↓ the active matrix is applied to every vertex pushed by draw calls       ↓ | ↓ a stack lets you save/restore it across scopes with push/pop            ↓</div>
@@ -4226,9 +4197,20 @@ int vanir.c requiredir (string rel) * int vanir c">
 <div class="symbol-card" onclick="toggle(this)">
 <div class="symbol-header">
 <span class="symbol-kind kind-extern">extern</span>
+<span class="symbol-name">activeTexture</span>
+<span class="symbol-ret">struct Texture *activeTexture</span>
+<span class="symbol-line">line 41</span>
+</div>
+<div class="symbol-body">
+<div class="symbol-comment">// ↓ active texture; written by render.setTexture, read by textured draw calls ↓</div>
+</div>
+</div>
+<div class="symbol-card" onclick="toggle(this)">
+<div class="symbol-header">
+<span class="symbol-kind kind-extern">extern</span>
 <span class="symbol-name">currentRenderWindow</span>
 <span class="symbol-ret">struct glfwWindow *currentRenderWindow</span>
-<span class="symbol-line">line 40</span>
+<span class="symbol-line">line 43</span>
 </div>
 </div>
 </div>
@@ -5888,12 +5870,12 @@ static int</span>
 
 
 </div></div>
-<div class="symbol-card lua-card" id="types_matrix_c__lua__matMul__90" data-kind="lua" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__lua__matMul__90" data-search="matmul ↓ __mul: matrix * matrix  or  matrix * vector ↓ (table arg2) static int types/matrix.c mat mul ↓ mul: matrix * matrix or matrix * vector ↓ (table arg2) static int types matrix c">
+<div class="symbol-card lua-card" id="types_matrix_c__lua__matMul__95" data-kind="lua" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__lua__matMul__95" data-search="matmul ↓ __mul: matrix * matrix  or  matrix * vector ↓ (table arg2) static int types/matrix.c mat mul ↓ mul: matrix * matrix or matrix * vector ↓ (table arg2) static int types matrix c">
 <div class="symbol-header">
 <span class="symbol-kind kind-lua">lua</span>
 <span class="symbol-name">matMul</span>
 <span class="symbol-lua-sig">(<span class="lsig"><span class="lsig-type">table</span> <span class="lsig-name">arg2</span></span>)</span>
-<span class="symbol-line">line 90</span>
+<span class="symbol-line">line 95</span>
 </div>
 <div class="symbol-body">
 <div class="symbol-comment">// ↓ __mul: Matrix * Matrix  or  Matrix * Vector ↓</div>
@@ -5905,12 +5887,12 @@ static int</span>
     mat3Mul(a, b, out);
     matPush(L, out);</pre></div></div>
 </div></div>
-<div class="symbol-card lua-card" id="types_matrix_c__lua__matTranslate__145" data-kind="lua" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__lua__matTranslate__145" data-search="mattranslate ↓ :translate(dx, dy)                                                         ↓ | ↓ mutates self in-place, returns self so chaining works                      ↓ (number arg2, number? arg3) static int types/matrix.c mat translate ↓ :translate(dx, dy) ↓ | ↓ mutates self in place, returns self so chaining works ↓ (number arg2, number? arg3) static int types matrix c">
+<div class="symbol-card lua-card" id="types_matrix_c__lua__matTranslate__150" data-kind="lua" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__lua__matTranslate__150" data-search="mattranslate ↓ :translate(dx, dy)                                                         ↓ | ↓ mutates self in-place, returns self so chaining works                      ↓ (number arg2, number? arg3) static int types/matrix.c mat translate ↓ :translate(dx, dy) ↓ | ↓ mutates self in place, returns self so chaining works ↓ (number arg2, number? arg3) static int types matrix c">
 <div class="symbol-header">
 <span class="symbol-kind kind-lua">lua</span>
 <span class="symbol-name">matTranslate</span>
 <span class="symbol-lua-sig">(<span class="lsig"><span class="lsig-type">number</span> <span class="lsig-name">arg2</span><span class="lsig-sep">, </span><span class="lsig-type">number?</span> <span class="lsig-name">arg3</span></span>)</span>
-<span class="symbol-line">line 145</span>
+<span class="symbol-line">line 150</span>
 </div>
 <div class="symbol-body">
 <div class="symbol-comment">// ↓ :translate(dx, dy)                                                         ↓ | ↓ mutates self in-place, returns self so chaining works                      ↓</div>
@@ -5918,12 +5900,12 @@ static int</span>
 <div class="inner-comments"><div class="inner-snippet"><div class="inner-snippet-header">↓ return self ↓</div><pre class="inner-snippet-code">    lua_pushvalue(L, 1);
     return 1;</pre></div></div>
 </div></div>
-<div class="symbol-card lua-card" id="types_matrix_c__lua__matRotate__165" data-kind="lua" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__lua__matRotate__165" data-search="matrotate ↓ :rotate(degrees_or_angle)                                                  ↓ | ↓ mutates self in-place, returns self                                        ↓ (number arg2) static int types/matrix.c mat rotate ↓ :rotate(degrees or angle) ↓ | ↓ mutates self in place, returns self ↓ (number arg2) static int types matrix c">
+<div class="symbol-card lua-card" id="types_matrix_c__lua__matRotate__170" data-kind="lua" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__lua__matRotate__170" data-search="matrotate ↓ :rotate(degrees_or_angle)                                                  ↓ | ↓ mutates self in-place, returns self                                        ↓ (number arg2) static int types/matrix.c mat rotate ↓ :rotate(degrees or angle) ↓ | ↓ mutates self in place, returns self ↓ (number arg2) static int types matrix c">
 <div class="symbol-header">
 <span class="symbol-kind kind-lua">lua</span>
 <span class="symbol-name">matRotate</span>
 <span class="symbol-lua-sig">(<span class="lsig"><span class="lsig-type">number</span> <span class="lsig-name">arg2</span></span>)</span>
-<span class="symbol-line">line 165</span>
+<span class="symbol-line">line 170</span>
 </div>
 <div class="symbol-body">
 <div class="symbol-comment">// ↓ :rotate(degrees_or_Angle)                                                  ↓ | ↓ mutates self in-place, returns self                                        ↓</div>
@@ -5931,12 +5913,12 @@ static int</span>
 <div class="inner-comments"><div class="inner-snippet"><div class="inner-snippet-header">↓ return self ↓</div><pre class="inner-snippet-code">    lua_pushvalue(L, 1);
     return 1;</pre></div></div>
 </div></div>
-<div class="symbol-card lua-card" id="types_matrix_c__lua__matScale__196" data-kind="lua" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__lua__matScale__196" data-search="matscale ↓ :scale(sx [, sy])                                                          ↓ | ↓ mutates self in-place, returns self                                        ↓ (number arg2, number? arg3) static int types/matrix.c mat scale ↓ :scale(sx [, sy]) ↓ | ↓ mutates self in place, returns self ↓ (number arg2, number? arg3) static int types matrix c">
+<div class="symbol-card lua-card" id="types_matrix_c__lua__matScale__201" data-kind="lua" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__lua__matScale__201" data-search="matscale ↓ :scale(sx [, sy])                                                          ↓ | ↓ mutates self in-place, returns self                                        ↓ (number arg2, number? arg3) static int types/matrix.c mat scale ↓ :scale(sx [, sy]) ↓ | ↓ mutates self in place, returns self ↓ (number arg2, number? arg3) static int types matrix c">
 <div class="symbol-header">
 <span class="symbol-kind kind-lua">lua</span>
 <span class="symbol-name">matScale</span>
 <span class="symbol-lua-sig">(<span class="lsig"><span class="lsig-type">number</span> <span class="lsig-name">arg2</span><span class="lsig-sep">, </span><span class="lsig-type">number?</span> <span class="lsig-name">arg3</span></span>)</span>
-<span class="symbol-line">line 196</span>
+<span class="symbol-line">line 201</span>
 </div>
 <div class="symbol-body">
 <div class="symbol-comment">// ↓ :scale(sx [, sy])                                                          ↓ | ↓ mutates self in-place, returns self                                        ↓</div>
@@ -5944,24 +5926,24 @@ static int</span>
 <div class="inner-comments"><div class="inner-snippet"><div class="inner-snippet-header">↓ return self ↓</div><pre class="inner-snippet-code">    lua_pushvalue(L, 1);
     return 1;</pre></div></div>
 </div></div>
-<div class="symbol-card lua-card" id="types_matrix_c__lua__matTransformPoint__215" data-kind="lua" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__lua__matTransformPoint__215" data-search="mattransformpoint ↓ :transformpoint(x, y) → rx, ry — read-only, returns two numbers ↓ (number arg2, number arg3) static int types/matrix.c mat transform point ↓ :transform point(x, y) → rx, ry — read only, returns two numbers ↓ (number arg2, number arg3) static int types matrix c">
+<div class="symbol-card lua-card" id="types_matrix_c__lua__matTransformPoint__220" data-kind="lua" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__lua__matTransformPoint__220" data-search="mattransformpoint ↓ :transformpoint(x, y) → rx, ry — read-only, returns two numbers ↓ (number arg2, number arg3) static int types/matrix.c mat transform point ↓ :transform point(x, y) → rx, ry — read only, returns two numbers ↓ (number arg2, number arg3) static int types matrix c">
 <div class="symbol-header">
 <span class="symbol-kind kind-lua">lua</span>
 <span class="symbol-name">matTransformPoint</span>
 <span class="symbol-lua-sig">(<span class="lsig"><span class="lsig-type">number</span> <span class="lsig-name">arg2</span><span class="lsig-sep">, </span><span class="lsig-type">number</span> <span class="lsig-name">arg3</span></span>)</span>
-<span class="symbol-line">line 215</span>
+<span class="symbol-line">line 220</span>
 </div>
 <div class="symbol-body">
 <div class="symbol-comment">// ↓ :transformPoint(x, y) → rx, ry — read-only, returns two numbers ↓</div>
 <div class="lua-args-block"><div class="lua-args-label">Lua stack args</div><div class="lua-arg"><span class="lua-arg-idx">2</span><span class="lua-arg-type">number</span><span class="lua-arg-name">arg2</span></div><div class="lua-arg"><span class="lua-arg-idx">3</span><span class="lua-arg-type">number</span><span class="lua-arg-name">arg3</span></div></div>
 
 </div></div>
-<div class="symbol-card lua-card" id="types_matrix_c__lua__Matrix__287" data-kind="lua" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__lua__Matrix__287" data-search="matrix ↓ matrix(angle_or_nil, vector_or_nil)                                        ↓ | ↓ no args → identity                                                         ↓ | ↓ first arg = number → rotation by that many degrees                         ↓ | ↓ first arg = angle  → rotation by .yaw                                      ↓ | ↓ second arg = vector → translation by .x/.y                                 ↓ (nil? arg1, nil? arg2) int types/matrix.c matrix ↓ matrix(angle or nil, vector or nil) ↓ | ↓ no args → identity ↓ | ↓ first arg = number → rotation by that many degrees ↓ | ↓ first arg = angle → rotation by yaw ↓ | ↓ second arg = vector → translation by x y ↓ (nil? arg1, nil? arg2) int types matrix c">
+<div class="symbol-card lua-card" id="types_matrix_c__lua__Matrix__292" data-kind="lua" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__lua__Matrix__292" data-search="matrix ↓ matrix(angle_or_nil, vector_or_nil)                                        ↓ | ↓ no args → identity                                                         ↓ | ↓ first arg = number → rotation by that many degrees                         ↓ | ↓ first arg = angle  → rotation by .yaw                                      ↓ | ↓ second arg = vector → translation by .x/.y                                 ↓ (nil? arg1, nil? arg2) int types/matrix.c matrix ↓ matrix(angle or nil, vector or nil) ↓ | ↓ no args → identity ↓ | ↓ first arg = number → rotation by that many degrees ↓ | ↓ first arg = angle → rotation by yaw ↓ | ↓ second arg = vector → translation by x y ↓ (nil? arg1, nil? arg2) int types matrix c">
 <div class="symbol-header">
 <span class="symbol-kind kind-lua">lua</span>
 <span class="symbol-name">Matrix</span>
 <span class="symbol-lua-sig">(<span class="lsig"><span class="lsig-type">nil?</span> <span class="lsig-name">arg1</span><span class="lsig-sep">, </span><span class="lsig-type">nil?</span> <span class="lsig-name">arg2</span></span>)</span>
-<span class="symbol-line">line 287</span>
+<span class="symbol-line">line 292</span>
 </div>
 <div class="symbol-body">
 <div class="symbol-comment">// ↓ Matrix(angle_or_nil, vector_or_nil)                                        ↓ | ↓ no args → identity                                                         ↓ | ↓ first arg = number → rotation by that many degrees                         ↓ | ↓ first arg = Angle  → rotation by .yaw                                      ↓ | ↓ second arg = Vector → translation by .x/.y                                 ↓</div>
@@ -6032,47 +6014,47 @@ static int</span>
 
 
 </div></div>
-<div class="symbol-card" id="types_matrix_c__func__matEq__129" data-kind="func" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__func__matEq__129" data-search="mateq static int types/matrix.c mat eq static int types matrix c">
+<div class="symbol-card" id="types_matrix_c__func__matEq__134" data-kind="func" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__func__matEq__134" data-search="mateq static int types/matrix.c mat eq static int types matrix c">
 <div class="symbol-header">
 <span class="symbol-kind kind-func">func</span>
 <span class="symbol-name">matEq</span>
 <span class="symbol-ret">→ static int</span>
-<span class="symbol-line">line 129</span>
+<span class="symbol-line">line 134</span>
 </div>
 <div class="symbol-body">
 
 
 </div></div>
-<div class="symbol-card" id="types_matrix_c__func__matInverse__229" data-kind="func" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__func__matInverse__229" data-search="matinverse ↓ :inverse() — returns a new matrix, does not mutate ↓ static int types/matrix.c mat inverse ↓ :inverse() — returns a new matrix, does not mutate ↓ static int types matrix c">
+<div class="symbol-card" id="types_matrix_c__func__matInverse__234" data-kind="func" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__func__matInverse__234" data-search="matinverse ↓ :inverse() — returns a new matrix, does not mutate ↓ static int types/matrix.c mat inverse ↓ :inverse() — returns a new matrix, does not mutate ↓ static int types matrix c">
 <div class="symbol-header">
 <span class="symbol-kind kind-func">func</span>
 <span class="symbol-name">matInverse</span>
 <span class="symbol-ret">→ static int</span>
-<span class="symbol-line">line 229</span>
+<span class="symbol-line">line 234</span>
 </div>
 <div class="symbol-body">
 <div class="symbol-comment">// ↓ :inverse() — returns a new matrix, does not mutate ↓</div>
 
 
 </div></div>
-<div class="symbol-card" id="types_matrix_c__func__matCopy__256" data-kind="func" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__func__matCopy__256" data-search="matcopy ↓ :copy() — returns a new matrix ↓ static int types/matrix.c mat copy ↓ :copy() — returns a new matrix ↓ static int types matrix c">
+<div class="symbol-card" id="types_matrix_c__func__matCopy__261" data-kind="func" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__func__matCopy__261" data-search="matcopy ↓ :copy() — returns a new matrix ↓ static int types/matrix.c mat copy ↓ :copy() — returns a new matrix ↓ static int types matrix c">
 <div class="symbol-header">
 <span class="symbol-kind kind-func">func</span>
 <span class="symbol-name">matCopy</span>
 <span class="symbol-ret">→ static int</span>
-<span class="symbol-line">line 256</span>
+<span class="symbol-line">line 261</span>
 </div>
 <div class="symbol-body">
 <div class="symbol-comment">// ↓ :copy() — returns a new matrix ↓</div>
 
 
 </div></div>
-<div class="symbol-card" id="types_matrix_c__func__matrixGet__327" data-kind="func" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__func__matrixGet__327" data-search="matrixget ── public helpers used by render.c ─────────────────────────────────────── void types/matrix.c matrix get ── public helpers used by render c ─────────────────────────────────────── void types matrix c">
+<div class="symbol-card" id="types_matrix_c__func__matrixGet__332" data-kind="func" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__func__matrixGet__332" data-search="matrixget ── public helpers used by render.c ─────────────────────────────────────── void types/matrix.c matrix get ── public helpers used by render c ─────────────────────────────────────── void types matrix c">
 <div class="symbol-header">
 <span class="symbol-kind kind-func">func</span>
 <span class="symbol-name">matrixGet</span>
 <span class="symbol-ret">→ void</span>
-<span class="symbol-line">line 327</span>
+<span class="symbol-line">line 332</span>
 </div>
 <div class="symbol-body">
 <div class="symbol-comment">// ── public helpers used by render.c ───────────────────────────────────────</div>
@@ -6080,36 +6062,36 @@ static int</span>
 
 <div class="refs"><span class="refs-label">cross-refs:</span><span class="badge badge-used" title="used">modules/render.c:?</span> <span class="badge badge-used" title="used">types/common.h:?</span></div>
 </div></div>
-<div class="symbol-card" id="types_matrix_c__func__matrixPush__331" data-kind="func" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__func__matrixPush__331" data-search="matrixpush void types/matrix.c matrix push void types matrix c">
+<div class="symbol-card" id="types_matrix_c__func__matrixPush__336" data-kind="func" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__func__matrixPush__336" data-search="matrixpush void types/matrix.c matrix push void types matrix c">
 <div class="symbol-header">
 <span class="symbol-kind kind-func">func</span>
 <span class="symbol-name">matrixPush</span>
 <span class="symbol-ret">→ void</span>
-<span class="symbol-line">line 331</span>
+<span class="symbol-line">line 336</span>
 </div>
 <div class="symbol-body">
 
 
 <div class="refs"><span class="refs-label">cross-refs:</span><span class="badge badge-used" title="used">modules/render.c:?</span> <span class="badge badge-used" title="used">types/common.h:?</span></div>
 </div></div>
-<div class="symbol-card" id="types_matrix_c__func__matrixIdentity__335" data-kind="func" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__func__matrixIdentity__335" data-search="matrixidentity void types/matrix.c matrix identity void types matrix c">
+<div class="symbol-card" id="types_matrix_c__func__matrixIdentity__340" data-kind="func" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__func__matrixIdentity__340" data-search="matrixidentity void types/matrix.c matrix identity void types matrix c">
 <div class="symbol-header">
 <span class="symbol-kind kind-func">func</span>
 <span class="symbol-name">matrixIdentity</span>
 <span class="symbol-ret">→ void</span>
-<span class="symbol-line">line 335</span>
+<span class="symbol-line">line 340</span>
 </div>
 <div class="symbol-body">
 
 
 <div class="refs"><span class="refs-label">cross-refs:</span><span class="badge badge-used" title="used">modules/render.c:?</span> <span class="badge badge-used" title="used">types/common.h:?</span></div>
 </div></div>
-<div class="symbol-card" id="types_matrix_c__func__matrixTransformPoint__339" data-kind="func" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__func__matrixTransformPoint__339" data-search="matrixtransformpoint void types/matrix.c matrix transform point void types matrix c">
+<div class="symbol-card" id="types_matrix_c__func__matrixTransformPoint__344" data-kind="func" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__func__matrixTransformPoint__344" data-search="matrixtransformpoint void types/matrix.c matrix transform point void types matrix c">
 <div class="symbol-header">
 <span class="symbol-kind kind-func">func</span>
 <span class="symbol-name">matrixTransformPoint</span>
 <span class="symbol-ret">→ void</span>
-<span class="symbol-line">line 339</span>
+<span class="symbol-line">line 344</span>
 </div>
 <div class="symbol-body">
 
@@ -6282,24 +6264,24 @@ static int</span>
 <span class="func-divider-lbl fd-lua">Lua</span>
 <span class="func-divider-line"></span>
 </div>
-<div class="symbol-card lua-card" id="types_texture_c__lua__textureMetaGetColor__88" data-kind="lua" data-file="types_texture_c" data-filepath="types/texture.c" data-symbol="types_texture_c__lua__textureMetaGetColor__88" data-search="texturemetagetcolor ↓ tex:getcolor(x, y) → color ↓ (integer arg2, integer arg3) static int types/texture.c texture meta get color ↓ tex:get color(x, y) → color ↓ (integer arg2, integer arg3) static int types texture c">
+<div class="symbol-card lua-card" id="types_texture_c__lua__textureMetaGetColor__89" data-kind="lua" data-file="types_texture_c" data-filepath="types/texture.c" data-symbol="types_texture_c__lua__textureMetaGetColor__89" data-search="texturemetagetcolor ↓ tex:getcolor(x, y) → color ↓ (integer arg2, integer arg3) static int types/texture.c texture meta get color ↓ tex:get color(x, y) → color ↓ (integer arg2, integer arg3) static int types texture c">
 <div class="symbol-header">
 <span class="symbol-kind kind-lua">lua</span>
 <span class="symbol-name">textureMetaGetColor</span>
 <span class="symbol-lua-sig">(<span class="lsig"><span class="lsig-type">integer</span> <span class="lsig-name">arg2</span><span class="lsig-sep">, </span><span class="lsig-type">integer</span> <span class="lsig-name">arg3</span></span>)</span>
-<span class="symbol-line">line 88</span>
+<span class="symbol-line">line 89</span>
 </div>
 <div class="symbol-body">
 <div class="symbol-comment">// ↓ tex:getColor(x, y) → Color ↓</div>
 <div class="lua-args-block"><div class="lua-args-label">Lua stack args</div><div class="lua-arg"><span class="lua-arg-idx">2</span><span class="lua-arg-type">integer</span><span class="lua-arg-name">arg2</span></div><div class="lua-arg"><span class="lua-arg-idx">3</span><span class="lua-arg-type">integer</span><span class="lua-arg-name">arg3</span></div></div>
 
 </div></div>
-<div class="symbol-card lua-card" id="types_texture_c__lua__textureSetImageMeta__160" data-kind="lua" data-file="types_texture_c" data-filepath="types/texture.c" data-symbol="types_texture_c__lua__textureSetImageMeta__160" data-search="texturesetimagemeta ↓ tex:setimage(path) — loads a new image into this texture from a file ↓ | ↓ path defaults to tex.path so tex:setimage() reloads the original file ↓ (string? path) static int types/texture.c texture set image meta ↓ tex:set image(path) — loads a new image into this texture from a file ↓ | ↓ path defaults to tex path so tex:set image() reloads the original file ↓ (string? path) static int types texture c">
+<div class="symbol-card lua-card" id="types_texture_c__lua__textureSetImageMeta__164" data-kind="lua" data-file="types_texture_c" data-filepath="types/texture.c" data-symbol="types_texture_c__lua__textureSetImageMeta__164" data-search="texturesetimagemeta ↓ tex:setimage(path) — loads a new image into this texture from a file ↓ | ↓ path defaults to tex.path so tex:setimage() reloads the original file ↓ (string? path) static int types/texture.c texture set image meta ↓ tex:set image(path) — loads a new image into this texture from a file ↓ | ↓ path defaults to tex path so tex:set image() reloads the original file ↓ (string? path) static int types texture c">
 <div class="symbol-header">
 <span class="symbol-kind kind-lua">lua</span>
 <span class="symbol-name">textureSetImageMeta</span>
 <span class="symbol-lua-sig">(<span class="lsig"><span class="lsig-type">string?</span> <span class="lsig-name">path</span></span>)</span>
-<span class="symbol-line">line 160</span>
+<span class="symbol-line">line 164</span>
 </div>
 <div class="symbol-body">
 <div class="symbol-comment">// ↓ tex:setImage(path) — loads a new image into this texture from a file ↓ | ↓ path defaults to tex.path so tex:setImage() reloads the original file ↓</div>
@@ -6311,12 +6293,12 @@ static int</span>
 <span class="func-divider-lbl fd-c">C Internal</span>
 <span class="func-divider-line"></span>
 </div>
-<div class="symbol-card" id="types_texture_c__func__pushTexture__7" data-kind="func" data-file="types_texture_c" data-filepath="types/texture.c" data-symbol="types_texture_c__func__pushTexture__7" data-search="pushtexture void types/texture.c push texture void types texture c">
+<div class="symbol-card" id="types_texture_c__func__pushTexture__8" data-kind="func" data-file="types_texture_c" data-filepath="types/texture.c" data-symbol="types_texture_c__func__pushTexture__8" data-search="pushtexture void types/texture.c push texture void types texture c">
 <div class="symbol-header">
 <span class="symbol-kind kind-func">func</span>
 <span class="symbol-name">pushTexture</span>
 <span class="symbol-ret">→ void</span>
-<span class="symbol-line">line 7</span>
+<span class="symbol-line">line 8</span>
 </div>
 <div class="symbol-body">
 
@@ -6324,90 +6306,77 @@ static int</span>
     lua_setfield(L, -2, &quot;name&quot;);</pre></div></div>
 <div class="refs"><span class="refs-label">cross-refs:</span><span class="badge badge-used" title="used">graphics/rendertarget.c:?</span> <span class="badge badge-used" title="used">graphics/textures.c:?</span> <span class="badge badge-used" title="used">types/common.h:?</span></div>
 </div></div>
-<div class="symbol-card" id="types_texture_c__func__toStringTexture__50" data-kind="func" data-file="types_texture_c" data-filepath="types/texture.c" data-symbol="types_texture_c__func__toStringTexture__50" data-search="tostringtexture static int types/texture.c to string texture static int types texture c">
+<div class="symbol-card" id="types_texture_c__func__toStringTexture__51" data-kind="func" data-file="types_texture_c" data-filepath="types/texture.c" data-symbol="types_texture_c__func__toStringTexture__51" data-search="tostringtexture static int types/texture.c to string texture static int types texture c">
 <div class="symbol-header">
 <span class="symbol-kind kind-func">func</span>
 <span class="symbol-name">toStringTexture</span>
 <span class="symbol-ret">→ static int</span>
-<span class="symbol-line">line 50</span>
+<span class="symbol-line">line 51</span>
 </div>
 <div class="symbol-body">
 
 
 </div></div>
-<div class="symbol-card" id="types_texture_c__func__textureGetWidth__60" data-kind="func" data-file="types_texture_c" data-filepath="types/texture.c" data-symbol="types_texture_c__func__textureGetWidth__60" data-search="texturegetwidth ↓ tex:getwidth() → width ↓ static int types/texture.c texture get width ↓ tex:get width() → width ↓ static int types texture c">
+<div class="symbol-card" id="types_texture_c__func__textureGetWidth__61" data-kind="func" data-file="types_texture_c" data-filepath="types/texture.c" data-symbol="types_texture_c__func__textureGetWidth__61" data-search="texturegetwidth ↓ tex:getwidth() → width ↓ static int types/texture.c texture get width ↓ tex:get width() → width ↓ static int types texture c">
 <div class="symbol-header">
 <span class="symbol-kind kind-func">func</span>
 <span class="symbol-name">textureGetWidth</span>
 <span class="symbol-ret">→ static int</span>
-<span class="symbol-line">line 60</span>
+<span class="symbol-line">line 61</span>
 </div>
 <div class="symbol-body">
 <div class="symbol-comment">// ↓ tex:getWidth() → width ↓</div>
 
 
 </div></div>
-<div class="symbol-card" id="types_texture_c__func__textureGetHeight__69" data-kind="func" data-file="types_texture_c" data-filepath="types/texture.c" data-symbol="types_texture_c__func__textureGetHeight__69" data-search="texturegetheight ↓ tex:getheight() → height ↓ static int types/texture.c texture get height ↓ tex:get height() → height ↓ static int types texture c">
+<div class="symbol-card" id="types_texture_c__func__textureGetHeight__70" data-kind="func" data-file="types_texture_c" data-filepath="types/texture.c" data-symbol="types_texture_c__func__textureGetHeight__70" data-search="texturegetheight ↓ tex:getheight() → height ↓ static int types/texture.c texture get height ↓ tex:get height() → height ↓ static int types texture c">
 <div class="symbol-header">
 <span class="symbol-kind kind-func">func</span>
 <span class="symbol-name">textureGetHeight</span>
 <span class="symbol-ret">→ static int</span>
-<span class="symbol-line">line 69</span>
+<span class="symbol-line">line 70</span>
 </div>
 <div class="symbol-body">
 <div class="symbol-comment">// ↓ tex:getHeight() → height ↓</div>
 
 
 </div></div>
-<div class="symbol-card" id="types_texture_c__func__textureGetSize__78" data-kind="func" data-file="types_texture_c" data-filepath="types/texture.c" data-symbol="types_texture_c__func__textureGetSize__78" data-search="texturegetsize ↓ tex:getsize() → width, height ↓ static int types/texture.c texture get size ↓ tex:get size() → width, height ↓ static int types texture c">
+<div class="symbol-card" id="types_texture_c__func__textureGetSize__79" data-kind="func" data-file="types_texture_c" data-filepath="types/texture.c" data-symbol="types_texture_c__func__textureGetSize__79" data-search="texturegetsize ↓ tex:getsize() → width, height ↓ static int types/texture.c texture get size ↓ tex:get size() → width, height ↓ static int types texture c">
 <div class="symbol-header">
 <span class="symbol-kind kind-func">func</span>
 <span class="symbol-name">textureGetSize</span>
 <span class="symbol-ret">→ static int</span>
-<span class="symbol-line">line 78</span>
+<span class="symbol-line">line 79</span>
 </div>
 <div class="symbol-body">
 <div class="symbol-comment">// ↓ tex:getSize() → width, height ↓</div>
 
 
 </div></div>
-<div class="symbol-card" id="types_texture_c__func__textureDraw__133" data-kind="func" data-file="types_texture_c" data-filepath="types/texture.c" data-symbol="types_texture_c__func__textureDraw__133" data-search="texturedraw ↓ tex:draw(sx, sy, sw, sh, dx, dy [, dw, dh]) ↓ | ↓ sets this texture as active then calls drawtexturedrect ↓ static int types/texture.c texture draw ↓ tex:draw(sx, sy, sw, sh, dx, dy [, dw, dh]) ↓ | ↓ sets this texture as active then calls draw textured rect ↓ static int types texture c">
+<div class="symbol-card" id="types_texture_c__func__textureDraw__134" data-kind="func" data-file="types_texture_c" data-filepath="types/texture.c" data-symbol="types_texture_c__func__textureDraw__134" data-search="texturedraw ↓ tex:draw(sx, sy, sw, sh, dx, dy [, dw, dh]) ↓ | ↓ temporarily sets this texture as active so drawtexturedrect can find it, then restores the previous one ↓ static int types/texture.c texture draw ↓ tex:draw(sx, sy, sw, sh, dx, dy [, dw, dh]) ↓ | ↓ temporarily sets this texture as active so draw textured rect can find it, then restores the previous one ↓ static int types texture c">
 <div class="symbol-header">
 <span class="symbol-kind kind-func">func</span>
 <span class="symbol-name">textureDraw</span>
 <span class="symbol-ret">→ static int</span>
-<span class="symbol-line">line 133</span>
+<span class="symbol-line">line 134</span>
 </div>
 <div class="symbol-body">
-<div class="symbol-comment">// ↓ tex:draw(sx, sy, sw, sh, dx, dy [, dw, dh]) ↓ | ↓ sets this texture as active then calls drawTexturedRect ↓</div>
+<div class="symbol-comment">// ↓ tex:draw(sx, sy, sw, sh, dx, dy [, dw, dh]) ↓ | ↓ temporarily sets this texture as active so drawTexturedRect can find it, then restores the previous one ↓</div>
 
-<div class="inner-comments"><div class="inner-snippet"><div class="inner-snippet-header">↓ temporarily set as active so drawTexturedRect can find it ↓</div><pre class="inner-snippet-code">    extern struct Texture *activeTexture;
-    activeTexture = tex;</pre></div><div class="inner-snippet"><div class="inner-snippet-header">↓ shift args down: remove self from stack so drawTexturedRect sees sx at 1 ↓</div><pre class="inner-snippet-code">    lua_remove(L, 1);</pre></div></div>
+<div class="inner-comments"><div class="inner-snippet"><div class="inner-snippet-header">↓ shift args down: remove self from stack so drawTexturedRect sees sx at 1 ↓</div><pre class="inner-snippet-code">    lua_remove(L, 1);</pre></div></div>
 </div></div>
-<div class="symbol-card" id="types_texture_c__func__textureReleaseMeta__147" data-kind="func" data-file="types_texture_c" data-filepath="types/texture.c" data-symbol="types_texture_c__func__textureReleaseMeta__147" data-search="texturereleasemeta ↓ tex:release() — frees gpu resources and invalidates this object ↓ static int types/texture.c texture release meta ↓ tex:release() — frees gpu resources and invalidates this object ↓ static int types texture c">
+<div class="symbol-card" id="types_texture_c__func__textureReleaseMeta__151" data-kind="func" data-file="types_texture_c" data-filepath="types/texture.c" data-symbol="types_texture_c__func__textureReleaseMeta__151" data-search="texturereleasemeta ↓ tex:release() — frees gpu resources and invalidates this object ↓ static int types/texture.c texture release meta ↓ tex:release() — frees gpu resources and invalidates this object ↓ static int types texture c">
 <div class="symbol-header">
 <span class="symbol-kind kind-func">func</span>
 <span class="symbol-name">textureReleaseMeta</span>
 <span class="symbol-ret">→ static int</span>
-<span class="symbol-line">line 147</span>
+<span class="symbol-line">line 151</span>
 </div>
 <div class="symbol-body">
 <div class="symbol-comment">// ↓ tex:release() — frees GPU resources and invalidates this object ↓</div>
 
 
 </div></div>
-<div class="section-label">Externs</div>
-<div class="symbol-card" onclick="toggle(this)">
-<div class="symbol-header">
-<span class="symbol-kind kind-extern">extern</span>
-<span class="symbol-name">activeTexture</span>
-<span class="symbol-ret">struct Texture *activeTexture</span>
-<span class="symbol-line">line 137</span>
-</div>
-<div class="symbol-body">
-<div class="symbol-comment">// ↓ temporarily set as active so drawTexturedRect can find it ↓</div>
-</div>
-</div>
 </div>
 <div class="file-block" id="types_vector_c" data-file-path="types/vector.c">
 <h3 class="file-heading">types/vector.c</h3>

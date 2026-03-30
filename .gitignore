@@ -4,3 +4,4 @@ Vanir.dll
 Vanir.so
 *.jpg
 tools/symbols.json
+tools/index.html

@@ -31,11 +31,14 @@ int readPixel(lua_State *L);
 int renderTargetExists(lua_State *L);
 int destroyRenderTarget(lua_State *L);
 
-void getGlobalColor(lua_State *L, struct color *color);
-void getColor(lua_State *L, struct color *color);
+/* ↓ read the active draw color set by render.setColor; no lua overhead ↓ */
+void getGlobalColor(struct color *color);
 
 /* ↓ active color; written by render.setColor, read directly by draw calls ↓ */
 extern struct color activeColor;
+
+/* ↓ active texture; written by render.setTexture, read by textured draw calls ↓ */
+extern struct Texture *activeTexture;
 
 extern struct glfwWindow *currentRenderWindow;
 
