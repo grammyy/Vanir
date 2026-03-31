@@ -5,3 +5,4 @@ Vanir.so
 *.jpg
 tools/symbols.json
 tools/index.html
+.vscode/settings.json

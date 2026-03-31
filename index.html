@@ -479,7 +479,7 @@
 <body>
 <div id="sidebar">
 <h1>Vanir Docs</h1>
-<div class="gen-date">Generated: 2026-03-30 17:51:29</div>
+<div class="gen-date">Generated: 2026-03-31 00:31:18</div>
 <div id="search-wrap"><input id="search" type="text" placeholder="Search symbols…" oninput="doSearch(this.value)"></div>
 <div class="sb-folder" data-folder-path="graphics"><div class="sb-folder-hd" onclick="toggleFolder(this.parentElement)"><span class="sb-arrow">▶</span>graphics</div><div class="sb-files"><a class="sb-file" href="#graphics_draw_c" data-file="graphics_draw_c" data-path="graphics/draw.c">draw.c</a>
 <a class="sb-file" href="#graphics_render_h" data-file="graphics_render_h" data-path="graphics/render.h">render.h</a>
@@ -526,7 +526,7 @@
 <div id="main">
 <div class="meta-bar">
 <h1>Vanir</h1>
-<span class="sub">Source Documentation · 2026-03-30 17:51:29</span>
+<span class="sub">Source Documentation · 2026-03-31 00:31:18</span>
 </div>
 <h2 class="folder-heading">root</h2>
 <div class="file-block" id="enums_c" data-file-path="enums.c">
@@ -5603,14 +5603,159 @@ int modules/testfunc.c l test (string? msg) endif int modules testfunc c">
 <span class="func-divider-lbl fd-lua">Lua</span>
 <span class="func-divider-line"></span>
 </div>
-<div class="symbol-card lua-card" id="types_angle_c__lua__Angle__18" data-kind="lua" data-file="types_angle_c" data-filepath="types/angle.c" data-symbol="types_angle_c__lua__Angle__18" data-search="angle (number? arg1, number? arg2, number? arg3) int types/angle.c angle (number? arg1, number? arg2, number? arg3) int types angle c">
+<div class="symbol-card lua-card" id="types_angle_c__lua__angleIndex__28" data-kind="lua" data-file="types_angle_c" data-filepath="types/angle.c" data-symbol="types_angle_c__lua__angleIndex__28" data-search="angleindex ↓ __index: numeric 1/2/3 → p/y/r, then method table ↓ (number arg2) static int types/angle.c angle index ↓ index: numeric 1 2 3 → p y r, then method table ↓ (number arg2) static int types angle c">
+<div class="symbol-header">
+<span class="symbol-kind kind-lua">lua</span>
+<span class="symbol-name">angleIndex</span>
+<span class="symbol-lua-sig">(<span class="lsig"><span class="lsig-type">number</span> <span class="lsig-name">arg2</span></span>)</span>
+<span class="symbol-line">line 28</span>
+</div>
+<div class="symbol-body">
+<div class="symbol-comment">// ↓ __index: numeric 1/2/3 → p/y/r, then method table ↓</div>
+<div class="lua-args-block"><div class="lua-args-label">Lua stack args</div><div class="lua-arg"><span class="lua-arg-idx">2</span><span class="lua-arg-type">number</span><span class="lua-arg-name">arg2</span></div></div>
+
+</div></div>
+<div class="symbol-card lua-card" id="types_angle_c__lua__angleMul__57" data-kind="lua" data-file="types_angle_c" data-filepath="types/angle.c" data-symbol="types_angle_c__lua__angleMul__57" data-search="anglemul ↓ __mul: angle * scalar  or  scalar * angle ↓ (number arg1, number arg2) static int types/angle.c angle mul ↓ mul: angle * scalar or scalar * angle ↓ (number arg1, number arg2) static int types angle c">
+<div class="symbol-header">
+<span class="symbol-kind kind-lua">lua</span>
+<span class="symbol-name">angleMul</span>
+<span class="symbol-lua-sig">(<span class="lsig"><span class="lsig-type">number</span> <span class="lsig-name">arg1</span><span class="lsig-sep">, </span><span class="lsig-type">number</span> <span class="lsig-name">arg2</span></span>)</span>
+<span class="symbol-line">line 57</span>
+</div>
+<div class="symbol-body">
+<div class="symbol-comment">// ↓ __mul: Angle * scalar  or  scalar * Angle ↓</div>
+<div class="lua-args-block"><div class="lua-args-label">Lua stack args</div><div class="lua-arg"><span class="lua-arg-idx">1</span><span class="lua-arg-type">number</span><span class="lua-arg-name">arg1</span></div><div class="lua-arg"><span class="lua-arg-idx">2</span><span class="lua-arg-type">number</span><span class="lua-arg-name">arg2</span></div></div>
+
+</div></div>
+<div class="symbol-card lua-card" id="types_angle_c__lua__angleDiv__74" data-kind="lua" data-file="types_angle_c" data-filepath="types/angle.c" data-symbol="types_angle_c__lua__angleDiv__74" data-search="anglediv ↓ __div: angle / scalar ↓ (number arg2) static int types/angle.c angle div ↓ div: angle scalar ↓ (number arg2) static int types angle c">
+<div class="symbol-header">
+<span class="symbol-kind kind-lua">lua</span>
+<span class="symbol-name">angleDiv</span>
+<span class="symbol-lua-sig">(<span class="lsig"><span class="lsig-type">number</span> <span class="lsig-name">arg2</span></span>)</span>
+<span class="symbol-line">line 74</span>
+</div>
+<div class="symbol-body">
+<div class="symbol-comment">// ↓ __div: Angle / scalar ↓</div>
+<div class="lua-args-block"><div class="lua-args-label">Lua stack args</div><div class="lua-arg"><span class="lua-arg-idx">2</span><span class="lua-arg-type">number</span><span class="lua-arg-name">arg2</span></div></div>
+
+</div></div>
+<div class="symbol-card lua-card" id="types_angle_c__lua__angleGetForward__137" data-kind="lua" data-file="types_angle_c" data-filepath="types/angle.c" data-symbol="types_angle_c__lua__angleGetForward__137" data-search="anglegetforward ↓ :getforward() → vector ↓ static int types/angle.c angle get forward ↓ :get forward() → vector ↓ static int types angle c">
+<div class="symbol-header">
+<span class="symbol-kind kind-lua">lua</span>
+<span class="symbol-name">angleGetForward</span>
+<span class="symbol-ret">→ static int</span>
+<span class="symbol-line">line 137</span>
+</div>
+<div class="symbol-body">
+<div class="symbol-comment">// ↓ :getForward() → Vector ↓</div>
+
+
+</div></div>
+<div class="symbol-card lua-card" id="types_angle_c__lua__angleGetRight__160" data-kind="lua" data-file="types_angle_c" data-filepath="types/angle.c" data-symbol="types_angle_c__lua__angleGetRight__160" data-search="anglegetright ↓ :getright() → vector ↓ static int types/angle.c angle get right ↓ :get right() → vector ↓ static int types angle c">
+<div class="symbol-header">
+<span class="symbol-kind kind-lua">lua</span>
+<span class="symbol-name">angleGetRight</span>
+<span class="symbol-ret">→ static int</span>
+<span class="symbol-line">line 160</span>
+</div>
+<div class="symbol-body">
+<div class="symbol-comment">// ↓ :getRight() → Vector ↓</div>
+
+
+</div></div>
+<div class="symbol-card lua-card" id="types_angle_c__lua__angleGetUp__185" data-kind="lua" data-file="types_angle_c" data-filepath="types/angle.c" data-symbol="types_angle_c__lua__angleGetUp__185" data-search="anglegetup ↓ :getup() → vector ↓ static int types/angle.c angle get up ↓ :get up() → vector ↓ static int types angle c">
+<div class="symbol-header">
+<span class="symbol-kind kind-lua">lua</span>
+<span class="symbol-name">angleGetUp</span>
+<span class="symbol-ret">→ static int</span>
+<span class="symbol-line">line 185</span>
+</div>
+<div class="symbol-body">
+<div class="symbol-comment">// ↓ :getUp() → Vector ↓</div>
+
+
+</div></div>
+<div class="symbol-card lua-card" id="types_angle_c__lua__angleRotateAroundAxis__210" data-kind="lua" data-file="types_angle_c" data-filepath="types/angle.c" data-symbol="types_angle_c__lua__angleRotateAroundAxis__210" data-search="anglerotatearoundaxis ↓ :rotatearoundaxis(axis_vec, degrees) → new angle ↓ (number arg3) static int types/angle.c angle rotate around axis ↓ :rotate around axis(axis vec, degrees) → new angle ↓ (number arg3) static int types angle c">
+<div class="symbol-header">
+<span class="symbol-kind kind-lua">lua</span>
+<span class="symbol-name">angleRotateAroundAxis</span>
+<span class="symbol-lua-sig">(<span class="lsig"><span class="lsig-type">number</span> <span class="lsig-name">arg3</span></span>)</span>
+<span class="symbol-line">line 210</span>
+</div>
+<div class="symbol-body">
+<div class="symbol-comment">// ↓ :rotateAroundAxis(axis_vec, degrees) → new Angle ↓</div>
+<div class="lua-args-block"><div class="lua-args-label">Lua stack args</div><div class="lua-arg"><span class="lua-arg-idx">3</span><span class="lua-arg-type">number</span><span class="lua-arg-name">arg3</span></div></div>
+
+</div></div>
+<div class="symbol-card lua-card" id="types_angle_c__lua__angleRound__241" data-kind="lua" data-file="types_angle_c" data-filepath="types/angle.c" data-symbol="types_angle_c__lua__angleRound__241" data-search="angleround ↓ :round([decimals]) → new angle ↓ (nil? arg2) static int types/angle.c angle round ↓ :round([decimals]) → new angle ↓ (nil? arg2) static int types angle c">
+<div class="symbol-header">
+<span class="symbol-kind kind-lua">lua</span>
+<span class="symbol-name">angleRound</span>
+<span class="symbol-lua-sig">(<span class="lsig"><span class="lsig-type">nil?</span> <span class="lsig-name">arg2</span></span>)</span>
+<span class="symbol-line">line 241</span>
+</div>
+<div class="symbol-body">
+<div class="symbol-comment">// ↓ :round([decimals]) → new Angle ↓</div>
+<div class="lua-args-block"><div class="lua-args-label">Lua stack args</div><div class="lua-arg"><span class="lua-arg-idx">2</span><span class="lua-arg-type">nil?</span><span class="lua-arg-name">arg2</span></div></div>
+
+</div></div>
+<div class="symbol-card lua-card" id="types_angle_c__lua__angleSet__271" data-kind="lua" data-file="types_angle_c" data-filepath="types/angle.c" data-symbol="types_angle_c__lua__angleSet__271" data-search="angleset ↓ :set(p, y, r) — mutates in-place, returns self ↓ (number arg2, number arg3, number arg4) static int types/angle.c angle set ↓ :set(p, y, r) — mutates in place, returns self ↓ (number arg2, number arg3, number arg4) static int types angle c">
+<div class="symbol-header">
+<span class="symbol-kind kind-lua">lua</span>
+<span class="symbol-name">angleSet</span>
+<span class="symbol-lua-sig">(<span class="lsig"><span class="lsig-type">number</span> <span class="lsig-name">arg2</span><span class="lsig-sep">, </span><span class="lsig-type">number</span> <span class="lsig-name">arg3</span><span class="lsig-sep">, </span><span class="lsig-type">number</span> <span class="lsig-name">arg4</span></span>)</span>
+<span class="symbol-line">line 271</span>
+</div>
+<div class="symbol-body">
+<div class="symbol-comment">// ↓ :set(p, y, r) — mutates in-place, returns self ↓</div>
+<div class="lua-args-block"><div class="lua-args-label">Lua stack args</div><div class="lua-arg"><span class="lua-arg-idx">2</span><span class="lua-arg-type">number</span><span class="lua-arg-name">arg2</span></div><div class="lua-arg"><span class="lua-arg-idx">3</span><span class="lua-arg-type">number</span><span class="lua-arg-name">arg3</span></div><div class="lua-arg"><span class="lua-arg-idx">4</span><span class="lua-arg-type">number</span><span class="lua-arg-name">arg4</span></div></div>
+
+</div></div>
+<div class="symbol-card lua-card" id="types_angle_c__lua__angleSetP__291" data-kind="lua" data-file="types_angle_c" data-filepath="types/angle.c" data-symbol="types_angle_c__lua__angleSetP__291" data-search="anglesetp ↓ :setp(v) ↓ (number arg2) static int types/angle.c angle set p ↓ :set p(v) ↓ (number arg2) static int types angle c">
+<div class="symbol-header">
+<span class="symbol-kind kind-lua">lua</span>
+<span class="symbol-name">angleSetP</span>
+<span class="symbol-lua-sig">(<span class="lsig"><span class="lsig-type">number</span> <span class="lsig-name">arg2</span></span>)</span>
+<span class="symbol-line">line 291</span>
+</div>
+<div class="symbol-body">
+<div class="symbol-comment">// ↓ :setP(v) ↓</div>
+<div class="lua-args-block"><div class="lua-args-label">Lua stack args</div><div class="lua-arg"><span class="lua-arg-idx">2</span><span class="lua-arg-type">number</span><span class="lua-arg-name">arg2</span></div></div>
+
+</div></div>
+<div class="symbol-card lua-card" id="types_angle_c__lua__angleSetY__299" data-kind="lua" data-file="types_angle_c" data-filepath="types/angle.c" data-symbol="types_angle_c__lua__angleSetY__299" data-search="anglesety ↓ :sety(v) ↓ (number arg2) static int types/angle.c angle set y ↓ :set y(v) ↓ (number arg2) static int types angle c">
+<div class="symbol-header">
+<span class="symbol-kind kind-lua">lua</span>
+<span class="symbol-name">angleSetY</span>
+<span class="symbol-lua-sig">(<span class="lsig"><span class="lsig-type">number</span> <span class="lsig-name">arg2</span></span>)</span>
+<span class="symbol-line">line 299</span>
+</div>
+<div class="symbol-body">
+<div class="symbol-comment">// ↓ :setY(v) ↓</div>
+<div class="lua-args-block"><div class="lua-args-label">Lua stack args</div><div class="lua-arg"><span class="lua-arg-idx">2</span><span class="lua-arg-type">number</span><span class="lua-arg-name">arg2</span></div></div>
+
+</div></div>
+<div class="symbol-card lua-card" id="types_angle_c__lua__angleSetR__307" data-kind="lua" data-file="types_angle_c" data-filepath="types/angle.c" data-symbol="types_angle_c__lua__angleSetR__307" data-search="anglesetr ↓ :setr(v) ↓ (number arg2) static int types/angle.c angle set r ↓ :set r(v) ↓ (number arg2) static int types angle c">
+<div class="symbol-header">
+<span class="symbol-kind kind-lua">lua</span>
+<span class="symbol-name">angleSetR</span>
+<span class="symbol-lua-sig">(<span class="lsig"><span class="lsig-type">number</span> <span class="lsig-name">arg2</span></span>)</span>
+<span class="symbol-line">line 307</span>
+</div>
+<div class="symbol-body">
+<div class="symbol-comment">// ↓ :setR(v) ↓</div>
+<div class="lua-args-block"><div class="lua-args-label">Lua stack args</div><div class="lua-arg"><span class="lua-arg-idx">2</span><span class="lua-arg-type">number</span><span class="lua-arg-name">arg2</span></div></div>
+
+</div></div>
+<div class="symbol-card lua-card" id="types_angle_c__lua__Angle__345" data-kind="lua" data-file="types_angle_c" data-filepath="types/angle.c" data-symbol="types_angle_c__lua__Angle__345" data-search="angle ↓ angle(p, y, r) ↓ (number? arg1, number? arg2, number? arg3) int types/angle.c angle ↓ angle(p, y, r) ↓ (number? arg1, number? arg2, number? arg3) int types angle c">
 <div class="symbol-header">
 <span class="symbol-kind kind-lua">lua</span>
 <span class="symbol-name">Angle</span>
 <span class="symbol-lua-sig">(<span class="lsig"><span class="lsig-type">number?</span> <span class="lsig-name">arg1</span><span class="lsig-sep">, </span><span class="lsig-type">number?</span> <span class="lsig-name">arg2</span><span class="lsig-sep">, </span><span class="lsig-type">number?</span> <span class="lsig-name">arg3</span></span>)</span>
-<span class="symbol-line">line 18</span>
+<span class="symbol-line">line 345</span>
 </div>
 <div class="symbol-body">
+<div class="symbol-comment">// ↓ Angle(p, y, r) ↓</div>
 <div class="lua-args-block"><div class="lua-args-label">Lua stack args</div><div class="lua-arg"><span class="lua-arg-idx">1</span><span class="lua-arg-type">number?</span><span class="lua-arg-name">arg1</span></div><div class="lua-arg"><span class="lua-arg-idx">2</span><span class="lua-arg-type">number?</span><span class="lua-arg-name">arg2</span></div><div class="lua-arg"><span class="lua-arg-idx">3</span><span class="lua-arg-type">number?</span><span class="lua-arg-name">arg3</span></div></div>
 
 <div class="refs"><span class="refs-label">cross-refs:</span><span class="badge badge-used" title="used">vanir.c:?</span> <span class="badge badge-used" title="used">types/common.h:?</span> <span class="badge badge-used" title="used">types/matrix.c:?</span> <span class="badge badge-used" title="used">types/quaternion.c:?</span></div>
@@ -5619,18 +5764,110 @@ int modules/testfunc.c l test (string? msg) endif int modules testfunc c">
 <span class="func-divider-lbl fd-c">C Internal</span>
 <span class="func-divider-line"></span>
 </div>
-<div class="symbol-card" id="types_angle_c__func__toStringAngle__1" data-kind="func" data-file="types_angle_c" data-filepath="types/angle.c" data-symbol="types_angle_c__func__toStringAngle__1" data-search="tostringangle include           
+<div class="symbol-card" id="types_angle_c__func__pushAngle__7" data-kind="func" data-file="types_angle_c" data-filepath="types/angle.c" data-symbol="types_angle_c__func__pushAngle__7" data-search="pushangle static void types/angle.c push angle static void types angle c">
+<div class="symbol-header">
+<span class="symbol-kind kind-func">func</span>
+<span class="symbol-name">pushAngle</span>
+<span class="symbol-ret">→ static void</span>
+<span class="symbol-line">line 7</span>
+</div>
+<div class="symbol-body">
 
-static int types/angle.c to string angle include static int types angle c">
+
+</div></div>
+<div class="symbol-card" id="types_angle_c__func__toStringAngle__17" data-kind="func" data-file="types_angle_c" data-filepath="types/angle.c" data-symbol="types_angle_c__func__toStringAngle__17" data-search="tostringangle ↓ __tostring ↓ static int types/angle.c to string angle ↓ tostring ↓ static int types angle c">
 <div class="symbol-header">
 <span class="symbol-kind kind-func">func</span>
 <span class="symbol-name">toStringAngle</span>
-<span class="symbol-ret">→ include           
-
-static int</span>
-<span class="symbol-line">line 1</span>
+<span class="symbol-ret">→ static int</span>
+<span class="symbol-line">line 17</span>
 </div>
 <div class="symbol-body">
+<div class="symbol-comment">// ↓ __tostring ↓</div>
+
+
+</div></div>
+<div class="symbol-card" id="types_angle_c__func__angleUnm__86" data-kind="func" data-file="types_angle_c" data-filepath="types/angle.c" data-symbol="types_angle_c__func__angleUnm__86" data-search="angleunm ↓ __unm: -angle ↓ static int types/angle.c angle unm ↓ unm: angle ↓ static int types angle c">
+<div class="symbol-header">
+<span class="symbol-kind kind-func">func</span>
+<span class="symbol-name">angleUnm</span>
+<span class="symbol-ret">→ static int</span>
+<span class="symbol-line">line 86</span>
+</div>
+<div class="symbol-body">
+<div class="symbol-comment">// ↓ __unm: -Angle ↓</div>
+
+
+</div></div>
+<div class="symbol-card" id="types_angle_c__func__angleEq__93" data-kind="func" data-file="types_angle_c" data-filepath="types/angle.c" data-symbol="types_angle_c__func__angleEq__93" data-search="angleeq ↓ __eq ↓ static int types/angle.c angle eq ↓ eq ↓ static int types angle c">
+<div class="symbol-header">
+<span class="symbol-kind kind-func">func</span>
+<span class="symbol-name">angleEq</span>
+<span class="symbol-ret">→ static int</span>
+<span class="symbol-line">line 93</span>
+</div>
+<div class="symbol-body">
+<div class="symbol-comment">// ↓ __eq ↓</div>
+
+
+</div></div>
+<div class="symbol-card" id="types_angle_c__func__angleAdd__104" data-kind="func" data-file="types_angle_c" data-filepath="types/angle.c" data-symbol="types_angle_c__func__angleAdd__104" data-search="angleadd ↓ __add ↓ static int types/angle.c angle add ↓ add ↓ static int types angle c">
+<div class="symbol-header">
+<span class="symbol-kind kind-func">func</span>
+<span class="symbol-name">angleAdd</span>
+<span class="symbol-ret">→ static int</span>
+<span class="symbol-line">line 104</span>
+</div>
+<div class="symbol-body">
+<div class="symbol-comment">// ↓ __add ↓</div>
+
+
+</div></div>
+<div class="symbol-card" id="types_angle_c__func__angleSub__115" data-kind="func" data-file="types_angle_c" data-filepath="types/angle.c" data-symbol="types_angle_c__func__angleSub__115" data-search="anglesub ↓ __sub ↓ static int types/angle.c angle sub ↓ sub ↓ static int types angle c">
+<div class="symbol-header">
+<span class="symbol-kind kind-func">func</span>
+<span class="symbol-name">angleSub</span>
+<span class="symbol-ret">→ static int</span>
+<span class="symbol-line">line 115</span>
+</div>
+<div class="symbol-body">
+<div class="symbol-comment">// ↓ __sub ↓</div>
+
+
+</div></div>
+<div class="symbol-card" id="types_angle_c__func__angleIsZero__126" data-kind="func" data-file="types_angle_c" data-filepath="types/angle.c" data-symbol="types_angle_c__func__angleIsZero__126" data-search="angleiszero ↓ :iszero() ↓ static int types/angle.c angle is zero ↓ :is zero() ↓ static int types angle c">
+<div class="symbol-header">
+<span class="symbol-kind kind-func">func</span>
+<span class="symbol-name">angleIsZero</span>
+<span class="symbol-ret">→ static int</span>
+<span class="symbol-line">line 126</span>
+</div>
+<div class="symbol-body">
+<div class="symbol-comment">// ↓ :isZero() ↓</div>
+
+
+</div></div>
+<div class="symbol-card" id="types_angle_c__func__angleClone__264" data-kind="func" data-file="types_angle_c" data-filepath="types/angle.c" data-symbol="types_angle_c__func__angleClone__264" data-search="angleclone ↓ :clone() ↓ static int types/angle.c angle clone ↓ :clone() ↓ static int types angle c">
+<div class="symbol-header">
+<span class="symbol-kind kind-func">func</span>
+<span class="symbol-name">angleClone</span>
+<span class="symbol-ret">→ static int</span>
+<span class="symbol-line">line 264</span>
+</div>
+<div class="symbol-body">
+<div class="symbol-comment">// ↓ :clone() ↓</div>
+
+
+</div></div>
+<div class="symbol-card" id="types_angle_c__func__angleSetZero__281" data-kind="func" data-file="types_angle_c" data-filepath="types/angle.c" data-symbol="types_angle_c__func__angleSetZero__281" data-search="anglesetzero ↓ :setzero() — mutates in-place, returns self ↓ static int types/angle.c angle set zero ↓ :set zero() — mutates in place, returns self ↓ static int types angle c">
+<div class="symbol-header">
+<span class="symbol-kind kind-func">func</span>
+<span class="symbol-name">angleSetZero</span>
+<span class="symbol-ret">→ static int</span>
+<span class="symbol-line">line 281</span>
+</div>
+<div class="symbol-body">
+<div class="symbol-comment">// ↓ :setZero() — mutates in-place, returns self ↓</div>
 
 
 </div></div>
@@ -5642,24 +5879,146 @@ static int</span>
 <span class="func-divider-lbl fd-lua">Lua</span>
 <span class="func-divider-line"></span>
 </div>
-<div class="symbol-card lua-card" id="types_color_c__lua__colorLerp__37" data-kind="lua" data-file="types_color_c" data-filepath="types/color.c" data-symbol="types_color_c__lua__colorLerp__37" data-search="colorlerp ↓ color:lerp(other, t) linear interpolate between two colors ↓ (number arg3) static int types/color.c color lerp ↓ color:lerp(other, t) linear interpolate between two colors ↓ (number arg3) static int types color c">
+<div class="symbol-card lua-card" id="types_color_c__lua__colorIndex__28" data-kind="lua" data-file="types_color_c" data-filepath="types/color.c" data-symbol="types_color_c__lua__colorIndex__28" data-search="colorindex ↓ __index: numeric 1/2/3/4 → r/g/b/a, then method table ↓ | ↓ do i really need this ↓ (number arg2) static int types/color.c color index ↓ index: numeric 1 2 3 4 → r g b a, then method table ↓ | ↓ do i really need this ↓ (number arg2) static int types color c">
+<div class="symbol-header">
+<span class="symbol-kind kind-lua">lua</span>
+<span class="symbol-name">colorIndex</span>
+<span class="symbol-lua-sig">(<span class="lsig"><span class="lsig-type">number</span> <span class="lsig-name">arg2</span></span>)</span>
+<span class="symbol-line">line 28</span>
+</div>
+<div class="symbol-body">
+<div class="symbol-comment">// ↓ __index: numeric 1/2/3/4 → r/g/b/a, then method table ↓ | ↓ do i really need this ↓</div>
+<div class="lua-args-block"><div class="lua-args-label">Lua stack args</div><div class="lua-arg"><span class="lua-arg-idx">2</span><span class="lua-arg-type">number</span><span class="lua-arg-name">arg2</span></div></div>
+
+</div></div>
+<div class="symbol-card lua-card" id="types_color_c__lua__colorConcat__56" data-kind="lua" data-file="types_color_c" data-filepath="types/color.c" data-symbol="types_color_c__lua__colorConcat__56" data-search="colorconcat ↓ __concat: color .. color  or  color .. string ↓ static int types/color.c color concat ↓ concat: color color or color string ↓ static int types color c">
+<div class="symbol-header">
+<span class="symbol-kind kind-lua">lua</span>
+<span class="symbol-name">colorConcat</span>
+<span class="symbol-ret">→ static int</span>
+<span class="symbol-line">line 56</span>
+</div>
+<div class="symbol-body">
+<div class="symbol-comment">// ↓ __concat: Color .. Color  or  Color .. string ↓</div>
+
+<div class="inner-comments"><div class="inner-snippet"><div class="inner-snippet-header">↓ convert both operands to string, concatenate ↓</div><pre class="inner-snippet-code">    lua_getglobal(L, &quot;tostring&quot;);
+    lua_pushvalue(L, 1);
+    lua_call(L, 1, 1);</pre></div></div>
+</div></div>
+<div class="symbol-card lua-card" id="types_color_c__lua__colorMul__116" data-kind="lua" data-file="types_color_c" data-filepath="types/color.c" data-symbol="types_color_c__lua__colorMul__116" data-search="colormul ↓ __mul: color * scalar  or  scalar * color ↓ (number arg1, number arg2) static int types/color.c color mul ↓ mul: color * scalar or scalar * color ↓ (number arg1, number arg2) static int types color c">
+<div class="symbol-header">
+<span class="symbol-kind kind-lua">lua</span>
+<span class="symbol-name">colorMul</span>
+<span class="symbol-lua-sig">(<span class="lsig"><span class="lsig-type">number</span> <span class="lsig-name">arg1</span><span class="lsig-sep">, </span><span class="lsig-type">number</span> <span class="lsig-name">arg2</span></span>)</span>
+<span class="symbol-line">line 116</span>
+</div>
+<div class="symbol-body">
+<div class="symbol-comment">// ↓ __mul: Color * scalar  or  scalar * Color ↓</div>
+<div class="lua-args-block"><div class="lua-args-label">Lua stack args</div><div class="lua-arg"><span class="lua-arg-idx">1</span><span class="lua-arg-type">number</span><span class="lua-arg-name">arg1</span></div><div class="lua-arg"><span class="lua-arg-idx">2</span><span class="lua-arg-type">number</span><span class="lua-arg-name">arg2</span></div></div>
+
+</div></div>
+<div class="symbol-card lua-card" id="types_color_c__lua__colorDiv__135" data-kind="lua" data-file="types_color_c" data-filepath="types/color.c" data-symbol="types_color_c__lua__colorDiv__135" data-search="colordiv ↓ __div: color / scalar ↓ (number arg2) static int types/color.c color div ↓ div: color scalar ↓ (number arg2) static int types color c">
+<div class="symbol-header">
+<span class="symbol-kind kind-lua">lua</span>
+<span class="symbol-name">colorDiv</span>
+<span class="symbol-lua-sig">(<span class="lsig"><span class="lsig-type">number</span> <span class="lsig-name">arg2</span></span>)</span>
+<span class="symbol-line">line 135</span>
+</div>
+<div class="symbol-body">
+<div class="symbol-comment">// ↓ __div: Color / scalar ↓</div>
+<div class="lua-args-block"><div class="lua-args-label">Lua stack args</div><div class="lua-arg"><span class="lua-arg-idx">2</span><span class="lua-arg-type">number</span><span class="lua-arg-name">arg2</span></div></div>
+
+</div></div>
+<div class="symbol-card lua-card" id="types_color_c__lua__colorRound__166" data-kind="lua" data-file="types_color_c" data-filepath="types/color.c" data-symbol="types_color_c__lua__colorRound__166" data-search="colorround ↓ :round([decimals]) → new color ↓ (nil? arg2) static int types/color.c color round ↓ :round([decimals]) → new color ↓ (nil? arg2) static int types color c">
+<div class="symbol-header">
+<span class="symbol-kind kind-lua">lua</span>
+<span class="symbol-name">colorRound</span>
+<span class="symbol-lua-sig">(<span class="lsig"><span class="lsig-type">nil?</span> <span class="lsig-name">arg2</span></span>)</span>
+<span class="symbol-line">line 166</span>
+</div>
+<div class="symbol-body">
+<div class="symbol-comment">// ↓ :round([decimals]) → new Color ↓</div>
+<div class="lua-args-block"><div class="lua-args-label">Lua stack args</div><div class="lua-arg"><span class="lua-arg-idx">2</span><span class="lua-arg-type">nil?</span><span class="lua-arg-name">arg2</span></div></div>
+
+</div></div>
+<div class="symbol-card lua-card" id="types_color_c__lua__colorSet__201" data-kind="lua" data-file="types_color_c" data-filepath="types/color.c" data-symbol="types_color_c__lua__colorSet__201" data-search="colorset ↓ :set(r, g, b [, a]) — mutates in-place, returns self ↓ (number arg2, number arg3, number arg4, nil? arg5) static int types/color.c color set ↓ :set(r, g, b [, a]) — mutates in place, returns self ↓ (number arg2, number arg3, number arg4, nil? arg5) static int types color c">
+<div class="symbol-header">
+<span class="symbol-kind kind-lua">lua</span>
+<span class="symbol-name">colorSet</span>
+<span class="symbol-lua-sig">(<span class="lsig"><span class="lsig-type">number</span> <span class="lsig-name">arg2</span><span class="lsig-sep">, </span><span class="lsig-type">number</span> <span class="lsig-name">arg3</span><span class="lsig-sep">, </span><span class="lsig-type">number</span> <span class="lsig-name">arg4</span><span class="lsig-sep">, </span><span class="lsig-type">nil?</span> <span class="lsig-name">arg5</span></span>)</span>
+<span class="symbol-line">line 201</span>
+</div>
+<div class="symbol-body">
+<div class="symbol-comment">// ↓ :set(r, g, b [, a]) — mutates in-place, returns self ↓</div>
+<div class="lua-args-block"><div class="lua-args-label">Lua stack args</div><div class="lua-arg"><span class="lua-arg-idx">2</span><span class="lua-arg-type">number</span><span class="lua-arg-name">arg2</span></div><div class="lua-arg"><span class="lua-arg-idx">3</span><span class="lua-arg-type">number</span><span class="lua-arg-name">arg3</span></div><div class="lua-arg"><span class="lua-arg-idx">4</span><span class="lua-arg-type">number</span><span class="lua-arg-name">arg4</span></div><div class="lua-arg"><span class="lua-arg-idx">5</span><span class="lua-arg-type">nil?</span><span class="lua-arg-name">arg5</span></div></div>
+
+</div></div>
+<div class="symbol-card lua-card" id="types_color_c__lua__colorSetR__215" data-kind="lua" data-file="types_color_c" data-filepath="types/color.c" data-symbol="types_color_c__lua__colorSetR__215" data-search="colorsetr ↓ :setr(v) ↓ (number arg2) static int types/color.c color set r ↓ :set r(v) ↓ (number arg2) static int types color c">
+<div class="symbol-header">
+<span class="symbol-kind kind-lua">lua</span>
+<span class="symbol-name">colorSetR</span>
+<span class="symbol-lua-sig">(<span class="lsig"><span class="lsig-type">number</span> <span class="lsig-name">arg2</span></span>)</span>
+<span class="symbol-line">line 215</span>
+</div>
+<div class="symbol-body">
+<div class="symbol-comment">// ↓ :setR(v) ↓</div>
+<div class="lua-args-block"><div class="lua-args-label">Lua stack args</div><div class="lua-arg"><span class="lua-arg-idx">2</span><span class="lua-arg-type">number</span><span class="lua-arg-name">arg2</span></div></div>
+
+</div></div>
+<div class="symbol-card lua-card" id="types_color_c__lua__colorSetG__223" data-kind="lua" data-file="types_color_c" data-filepath="types/color.c" data-symbol="types_color_c__lua__colorSetG__223" data-search="colorsetg ↓ :setg(v) ↓ (number arg2) static int types/color.c color set g ↓ :set g(v) ↓ (number arg2) static int types color c">
+<div class="symbol-header">
+<span class="symbol-kind kind-lua">lua</span>
+<span class="symbol-name">colorSetG</span>
+<span class="symbol-lua-sig">(<span class="lsig"><span class="lsig-type">number</span> <span class="lsig-name">arg2</span></span>)</span>
+<span class="symbol-line">line 223</span>
+</div>
+<div class="symbol-body">
+<div class="symbol-comment">// ↓ :setG(v) ↓</div>
+<div class="lua-args-block"><div class="lua-args-label">Lua stack args</div><div class="lua-arg"><span class="lua-arg-idx">2</span><span class="lua-arg-type">number</span><span class="lua-arg-name">arg2</span></div></div>
+
+</div></div>
+<div class="symbol-card lua-card" id="types_color_c__lua__colorSetB__231" data-kind="lua" data-file="types_color_c" data-filepath="types/color.c" data-symbol="types_color_c__lua__colorSetB__231" data-search="colorsetb ↓ :setb(v) ↓ (number arg2) static int types/color.c color set b ↓ :set b(v) ↓ (number arg2) static int types color c">
+<div class="symbol-header">
+<span class="symbol-kind kind-lua">lua</span>
+<span class="symbol-name">colorSetB</span>
+<span class="symbol-lua-sig">(<span class="lsig"><span class="lsig-type">number</span> <span class="lsig-name">arg2</span></span>)</span>
+<span class="symbol-line">line 231</span>
+</div>
+<div class="symbol-body">
+<div class="symbol-comment">// ↓ :setB(v) ↓</div>
+<div class="lua-args-block"><div class="lua-args-label">Lua stack args</div><div class="lua-arg"><span class="lua-arg-idx">2</span><span class="lua-arg-type">number</span><span class="lua-arg-name">arg2</span></div></div>
+
+</div></div>
+<div class="symbol-card lua-card" id="types_color_c__lua__colorSetA__239" data-kind="lua" data-file="types_color_c" data-filepath="types/color.c" data-symbol="types_color_c__lua__colorSetA__239" data-search="colorseta ↓ :seta(v) ↓ (number arg2) static int types/color.c color set a ↓ :set a(v) ↓ (number arg2) static int types color c">
+<div class="symbol-header">
+<span class="symbol-kind kind-lua">lua</span>
+<span class="symbol-name">colorSetA</span>
+<span class="symbol-lua-sig">(<span class="lsig"><span class="lsig-type">number</span> <span class="lsig-name">arg2</span></span>)</span>
+<span class="symbol-line">line 239</span>
+</div>
+<div class="symbol-body">
+<div class="symbol-comment">// ↓ :setA(v) ↓</div>
+<div class="lua-args-block"><div class="lua-args-label">Lua stack args</div><div class="lua-arg"><span class="lua-arg-idx">2</span><span class="lua-arg-type">number</span><span class="lua-arg-name">arg2</span></div></div>
+
+</div></div>
+<div class="symbol-card lua-card" id="types_color_c__lua__colorLerp__247" data-kind="lua" data-file="types_color_c" data-filepath="types/color.c" data-symbol="types_color_c__lua__colorLerp__247" data-search="colorlerp ↓ color:lerp(other, t) linear interpolate between two colors ↓ (number arg3) static int types/color.c color lerp ↓ color:lerp(other, t) linear interpolate between two colors ↓ (number arg3) static int types color c">
 <div class="symbol-header">
 <span class="symbol-kind kind-lua">lua</span>
 <span class="symbol-name">colorLerp</span>
 <span class="symbol-lua-sig">(<span class="lsig"><span class="lsig-type">number</span> <span class="lsig-name">arg3</span></span>)</span>
-<span class="symbol-line">line 37</span>
+<span class="symbol-line">line 247</span>
 </div>
 <div class="symbol-body">
 <div class="symbol-comment">// ↓ color:lerp(other, t) linear interpolate between two colors ↓</div>
 <div class="lua-args-block"><div class="lua-args-label">Lua stack args</div><div class="lua-arg"><span class="lua-arg-idx">3</span><span class="lua-arg-type">number</span><span class="lua-arg-name">arg3</span></div></div>
 
 </div></div>
-<div class="symbol-card lua-card" id="types_color_c__lua__Color__155" data-kind="lua" data-file="types_color_c" data-filepath="types/color.c" data-symbol="types_color_c__lua__Color__155" data-search="color (number? arg1, number? arg2, number? arg3, number? arg4) int types/color.c color (number? arg1, number? arg2, number? arg3, number? arg4) int types color c">
+<div class="symbol-card lua-card" id="types_color_c__lua__Color__377" data-kind="lua" data-file="types_color_c" data-filepath="types/color.c" data-symbol="types_color_c__lua__Color__377" data-search="color (number? arg1, number? arg2, number? arg3, number? arg4) int types/color.c color (number? arg1, number? arg2, number? arg3, number? arg4) int types color c">
 <div class="symbol-header">
 <span class="symbol-kind kind-lua">lua</span>
 <span class="symbol-name">Color</span>
 <span class="symbol-lua-sig">(<span class="lsig"><span class="lsig-type">number?</span> <span class="lsig-name">arg1</span><span class="lsig-sep">, </span><span class="lsig-type">number?</span> <span class="lsig-name">arg2</span><span class="lsig-sep">, </span><span class="lsig-type">number?</span> <span class="lsig-name">arg3</span><span class="lsig-sep">, </span><span class="lsig-type">number?</span> <span class="lsig-name">arg4</span></span>)</span>
-<span class="symbol-line">line 155</span>
+<span class="symbol-line">line 377</span>
 </div>
 <div class="symbol-body">
 <div class="lua-args-block"><div class="lua-args-label">Lua stack args</div><div class="lua-arg"><span class="lua-arg-idx">1</span><span class="lua-arg-type">number?</span><span class="lua-arg-name">arg1</span></div><div class="lua-arg"><span class="lua-arg-idx">2</span><span class="lua-arg-type">number?</span><span class="lua-arg-name">arg2</span></div><div class="lua-arg"><span class="lua-arg-idx">3</span><span class="lua-arg-type">number?</span><span class="lua-arg-name">arg3</span></div><div class="lua-arg"><span class="lua-arg-idx">4</span><span class="lua-arg-type">number?</span><span class="lua-arg-name">arg4</span></div></div>
@@ -5692,47 +6051,96 @@ static int</span>
 
 
 </div></div>
-<div class="symbol-card" id="types_color_c__func__colorEq__25" data-kind="func" data-file="types_color_c" data-filepath="types/color.c" data-symbol="types_color_c__func__colorEq__25" data-search="coloreq static int types/color.c color eq static int types color c">
+<div class="symbol-card" id="types_color_c__func__colorEq__80" data-kind="func" data-file="types_color_c" data-filepath="types/color.c" data-symbol="types_color_c__func__colorEq__80" data-search="coloreq ↓ __eq ↓ static int types/color.c color eq ↓ eq ↓ static int types color c">
 <div class="symbol-header">
 <span class="symbol-kind kind-func">func</span>
 <span class="symbol-name">colorEq</span>
 <span class="symbol-ret">→ static int</span>
-<span class="symbol-line">line 25</span>
+<span class="symbol-line">line 80</span>
 </div>
 <div class="symbol-body">
+<div class="symbol-comment">// ↓ __eq ↓</div>
 
 
 </div></div>
-<div class="symbol-card" id="types_color_c__func__colorUnpack__54" data-kind="func" data-file="types_color_c" data-filepath="types/color.c" data-symbol="types_color_c__func__colorUnpack__54" data-search="colorunpack ↓ color:unpack() ↓ static int types/color.c color unpack ↓ color:unpack() ↓ static int types color c">
+<div class="symbol-card" id="types_color_c__func__colorAdd__92" data-kind="func" data-file="types_color_c" data-filepath="types/color.c" data-symbol="types_color_c__func__colorAdd__92" data-search="coloradd ↓ __add: component-wise ↓ static int types/color.c color add ↓ add: component wise ↓ static int types color c">
+<div class="symbol-header">
+<span class="symbol-kind kind-func">func</span>
+<span class="symbol-name">colorAdd</span>
+<span class="symbol-ret">→ static int</span>
+<span class="symbol-line">line 92</span>
+</div>
+<div class="symbol-body">
+<div class="symbol-comment">// ↓ __add: component-wise ↓</div>
+
+
+</div></div>
+<div class="symbol-card" id="types_color_c__func__colorSub__104" data-kind="func" data-file="types_color_c" data-filepath="types/color.c" data-symbol="types_color_c__func__colorSub__104" data-search="colorsub ↓ __sub: component-wise ↓ static int types/color.c color sub ↓ sub: component wise ↓ static int types color c">
+<div class="symbol-header">
+<span class="symbol-kind kind-func">func</span>
+<span class="symbol-name">colorSub</span>
+<span class="symbol-ret">→ static int</span>
+<span class="symbol-line">line 104</span>
+</div>
+<div class="symbol-body">
+<div class="symbol-comment">// ↓ __sub: component-wise ↓</div>
+
+
+</div></div>
+<div class="symbol-card" id="types_color_c__func__colorToHex__146" data-kind="func" data-file="types_color_c" data-filepath="types/color.c" data-symbol="types_color_c__func__colorToHex__146" data-search="colortohex ↓ :tohex() → string &quot;#rrggbb&quot; or &quot;#rrggbbaa&quot; ↓ static int types/color.c color to hex ↓ :to hex() → string &quot;#rrggbb&quot; or &quot;#rrggbbaa&quot; ↓ static int types color c">
+<div class="symbol-header">
+<span class="symbol-kind kind-func">func</span>
+<span class="symbol-name">colorToHex</span>
+<span class="symbol-ret">→ static int</span>
+<span class="symbol-line">line 146</span>
+</div>
+<div class="symbol-body">
+<div class="symbol-comment">// ↓ :toHex() → string &quot;#RRGGBB&quot; or &quot;#RRGGBBAA&quot; ↓</div>
+
+
+</div></div>
+<div class="symbol-card" id="types_color_c__func__colorClone__189" data-kind="func" data-file="types_color_c" data-filepath="types/color.c" data-symbol="types_color_c__func__colorClone__189" data-search="colorclone ↓ :clone() ↓ static int types/color.c color clone ↓ :clone() ↓ static int types color c">
+<div class="symbol-header">
+<span class="symbol-kind kind-func">func</span>
+<span class="symbol-name">colorClone</span>
+<span class="symbol-ret">→ static int</span>
+<span class="symbol-line">line 189</span>
+</div>
+<div class="symbol-body">
+<div class="symbol-comment">// ↓ :clone() ↓</div>
+
+
+</div></div>
+<div class="symbol-card" id="types_color_c__func__colorUnpack__265" data-kind="func" data-file="types_color_c" data-filepath="types/color.c" data-symbol="types_color_c__func__colorUnpack__265" data-search="colorunpack ↓ :unpack() → r, g, b, a ↓ static int types/color.c color unpack ↓ :unpack() → r, g, b, a ↓ static int types color c">
 <div class="symbol-header">
 <span class="symbol-kind kind-func">func</span>
 <span class="symbol-name">colorUnpack</span>
 <span class="symbol-ret">→ static int</span>
-<span class="symbol-line">line 54</span>
+<span class="symbol-line">line 265</span>
 </div>
 <div class="symbol-body">
-<div class="symbol-comment">// ↓ color:unpack() ↓</div>
+<div class="symbol-comment">// ↓ :unpack() → r, g, b, a ↓</div>
 
 
 </div></div>
-<div class="symbol-card" id="types_color_c__func__colorToHSV__64" data-kind="func" data-file="types_color_c" data-filepath="types/color.c" data-symbol="types_color_c__func__colorToHSV__64" data-search="colortohsv ↓ color:tohsv() metafunction, another alias being :rgbtohsv() ↓ static int types/color.c color to hsv ↓ color:to hsv() metafunction, another alias being :rgb to hsv() ↓ static int types color c">
+<div class="symbol-card" id="types_color_c__func__colorToHSV__275" data-kind="func" data-file="types_color_c" data-filepath="types/color.c" data-symbol="types_color_c__func__colorToHSV__275" data-search="colortohsv ↓ color:tohsv() metafunction, another alias being :rgbtohsv() ↓ static int types/color.c color to hsv ↓ color:to hsv() metafunction, another alias being :rgb to hsv() ↓ static int types color c">
 <div class="symbol-header">
 <span class="symbol-kind kind-func">func</span>
 <span class="symbol-name">colorToHSV</span>
 <span class="symbol-ret">→ static int</span>
-<span class="symbol-line">line 64</span>
+<span class="symbol-line">line 275</span>
 </div>
 <div class="symbol-body">
 <div class="symbol-comment">// ↓ color:toHSV() metafunction, another alias being :rgbToHSV() ↓</div>
 
 
 </div></div>
-<div class="symbol-card" id="types_color_c__func__colorToRGB__99" data-kind="func" data-file="types_color_c" data-filepath="types/color.c" data-symbol="types_color_c__func__colorToRGB__99" data-search="colortorgb ↓ color:torgb() metafunction, another alias being :hsvtorgb() ↓ static int types/color.c color to rgb ↓ color:to rgb() metafunction, another alias being :hsv to rgb() ↓ static int types color c">
+<div class="symbol-card" id="types_color_c__func__colorToRGB__310" data-kind="func" data-file="types_color_c" data-filepath="types/color.c" data-symbol="types_color_c__func__colorToRGB__310" data-search="colortorgb ↓ color:torgb() metafunction, another alias being :hsvtorgb() ↓ static int types/color.c color to rgb ↓ color:to rgb() metafunction, another alias being :hsv to rgb() ↓ static int types color c">
 <div class="symbol-header">
 <span class="symbol-kind kind-func">func</span>
 <span class="symbol-name">colorToRGB</span>
 <span class="symbol-ret">→ static int</span>
-<span class="symbol-line">line 99</span>
+<span class="symbol-line">line 310</span>
 </div>
 <div class="symbol-body">
 <div class="symbol-comment">// ↓ color:toRGB() metafunction, another alias being :hsvToRGB() ↓</div>
@@ -5747,7 +6155,7 @@ static int</span>
 <div class="symbol-header">
 <span class="symbol-kind kind-struct">struct</span>
 <span class="symbol-name">color</span>
-<span class="symbol-line">line 14</span>
+<span class="symbol-line">line 19</span>
 </div>
 <div class="symbol-body">
 <div class="symbol-comment">// ↓ luas color type disassembles to this struct ↓</div>
@@ -5759,7 +6167,7 @@ static int</span>
 <div class="symbol-header">
 <span class="symbol-kind kind-struct">struct</span>
 <span class="symbol-name">File</span>
-<span class="symbol-line">line 19</span>
+<span class="symbol-line">line 24</span>
 </div>
 <div class="symbol-body">
 <div class="symbol-comment">// ↓ a file handle; stored as lightuserdata inside the lua table ↓</div>
@@ -5772,46 +6180,87 @@ static int</span>
 <span class="func-divider-lbl fd-lua">Lua</span>
 <span class="func-divider-line"></span>
 </div>
-<div class="symbol-card lua-card" id="types_common_h__lua__getfieldf__31" data-kind="lua" data-file="types_common_h" data-filepath="types/common.h" data-symbol="types_common_h__lua__getfieldf__31" data-search="getfieldf static inline float types/common.h getfieldf static inline float types common h">
+<div class="symbol-card lua-card" id="types_common_h__lua__getfieldf__36" data-kind="lua" data-file="types_common_h" data-filepath="types/common.h" data-symbol="types_common_h__lua__getfieldf__36" data-search="getfieldf static inline float types/common.h getfieldf static inline float types common h">
 <div class="symbol-header">
 <span class="symbol-kind kind-lua">lua</span>
 <span class="symbol-name">getfieldf</span>
 <span class="symbol-ret">→ static inline float</span>
-<span class="symbol-line">line 31</span>
+<span class="symbol-line">line 36</span>
 </div>
 <div class="symbol-body">
 
 
-<div class="refs"><span class="refs-label">cross-refs:</span><span class="badge badge-used" title="used">types/angle.c:?</span> <span class="badge badge-used" title="used">types/color.c:?</span> <span class="badge badge-used" title="used">types/quaternion.c:?</span> <span class="badge badge-used" title="used">types/vector.c:?</span></div>
+<div class="refs"><span class="refs-label">cross-refs:</span><span class="badge badge-used" title="used">types/angle.c:?</span> <span class="badge badge-used" title="used">types/color.c:?</span> <span class="badge badge-used" title="used">types/matrix.c:?</span> <span class="badge badge-used" title="used">types/quaternion.c:?</span> <span class="badge badge-used" title="used">types/vector.c:?</span></div>
 </div></div>
 <div class="func-divider">
 <span class="func-divider-lbl fd-c">C Internal</span>
 <span class="func-divider-line"></span>
 </div>
-<div class="symbol-card" id="types_common_h__func__pushRegList__25" data-kind="func" data-file="types_common_h" data-filepath="types/common.h" data-symbol="types_common_h__func__pushRegList__25" data-search="pushreglist ↓ internal helpers ↓ static inline void types/common.h push reg list ↓ internal helpers ↓ static inline void types common h">
+<div class="symbol-card" id="types_common_h__func__pushRegList__30" data-kind="func" data-file="types_common_h" data-filepath="types/common.h" data-symbol="types_common_h__func__pushRegList__30" data-search="pushreglist ↓ internal helpers ↓ static inline void types/common.h push reg list ↓ internal helpers ↓ static inline void types common h">
 <div class="symbol-header">
 <span class="symbol-kind kind-func">func</span>
 <span class="symbol-name">pushRegList</span>
 <span class="symbol-ret">→ static inline void</span>
-<span class="symbol-line">line 25</span>
+<span class="symbol-line">line 30</span>
 </div>
 <div class="symbol-body">
 <div class="symbol-comment">// ↓ internal helpers ↓</div>
 
 
 </div></div>
-<div class="symbol-card" id="types_common_h__func__addMethods__40" data-kind="func" data-file="types_common_h" data-filepath="types/common.h" data-symbol="types_common_h__func__addMethods__40" data-search="addmethods static inline void types/common.h add methods static inline void types common h">
+<div class="symbol-card" id="types_common_h__func__addMethods__45" data-kind="func" data-file="types_common_h" data-filepath="types/common.h" data-symbol="types_common_h__func__addMethods__45" data-search="addmethods static inline void types/common.h add methods static inline void types common h">
 <div class="symbol-header">
 <span class="symbol-kind kind-func">func</span>
 <span class="symbol-name">addMethods</span>
 <span class="symbol-ret">→ static inline void</span>
-<span class="symbol-line">line 40</span>
+<span class="symbol-line">line 45</span>
 </div>
 <div class="symbol-body">
 
 
 <div class="refs"><span class="refs-label">cross-refs:</span><span class="badge badge-used" title="used">modules/windows.c:?</span> <span class="badge badge-used" title="used">types/angle.c:?</span> <span class="badge badge-used" title="used">types/color.c:?</span> <span class="badge badge-used" title="used">types/matrix.c:?</span> <span class="badge badge-used" title="used">types/quaternion.c:?</span> <span class="badge badge-used" title="used">types/texture.c:?</span> <span class="badge badge-used" title="used">types/vector.c:?</span></div>
 </div></div>
+<div class="symbol-card" id="types_common_h__func__degToRad__60" data-kind="func" data-file="types_common_h" data-filepath="types/common.h" data-symbol="types_common_h__func__degToRad__60" data-search="degtorad static inline float types/common.h deg to rad static inline float types common h">
+<div class="symbol-header">
+<span class="symbol-kind kind-func">func</span>
+<span class="symbol-name">degToRad</span>
+<span class="symbol-ret">→ static inline float</span>
+<span class="symbol-line">line 60</span>
+</div>
+<div class="symbol-body">
+
+
+<div class="refs"><span class="refs-label">cross-refs:</span><span class="badge badge-used" title="used">types/angle.c:?</span> <span class="badge badge-used" title="used">types/matrix.c:?</span></div>
+</div></div>
+<div class="symbol-card" id="types_common_h__func__radToDeg__64" data-kind="func" data-file="types_common_h" data-filepath="types/common.h" data-symbol="types_common_h__func__radToDeg__64" data-search="radtodeg static inline float types/common.h rad to deg static inline float types common h">
+<div class="symbol-header">
+<span class="symbol-kind kind-func">func</span>
+<span class="symbol-name">radToDeg</span>
+<span class="symbol-ret">→ static inline float</span>
+<span class="symbol-line">line 64</span>
+</div>
+<div class="symbol-body">
+
+
+<div class="refs"><span class="refs-label">cross-refs:</span><span class="badge badge-used" title="used">types/angle.c:?</span> <span class="badge badge-used" title="used">types/matrix.c:?</span></div>
+</div></div>
+<div class="section-label">Macros</div>
+<div class="symbol-card" onclick="toggle(this)">
+<div class="symbol-header">
+<span class="symbol-kind kind-macro">#define</span>
+<span class="symbol-name">COMMON</span>
+<span class="symbol-ret">_H</span>
+<span class="symbol-line">line 2</span>
+</div>
+</div>
+<div class="symbol-card" onclick="toggle(this)">
+<div class="symbol-header">
+<span class="symbol-kind kind-macro">#define</span>
+<span class="symbol-name">M</span>
+<span class="symbol-ret">_PI 3.14159265358979323846</span>
+<span class="symbol-line">line 13</span>
+</div>
+</div>
 </div>
 <div class="file-block" id="types_file_c" data-file-path="types/file.c">
 <h3 class="file-heading">types/file.c</h3>
@@ -5870,83 +6319,276 @@ static int</span>
 
 
 </div></div>
-<div class="symbol-card lua-card" id="types_matrix_c__lua__matMul__95" data-kind="lua" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__lua__matMul__95" data-search="matmul ↓ __mul: matrix * matrix  or  matrix * vector ↓ (table arg2) static int types/matrix.c mat mul ↓ mul: matrix * matrix or matrix * vector ↓ (table arg2) static int types matrix c">
+<div class="symbol-card lua-card" id="types_matrix_c__lua__matMul__139" data-kind="lua" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__lua__matMul__139" data-search="matmul ↓ __mul: matrix * matrix  or  matrix * vector ↓ (table arg2) static int types/matrix.c mat mul ↓ mul: matrix * matrix or matrix * vector ↓ (table arg2) static int types matrix c">
 <div class="symbol-header">
 <span class="symbol-kind kind-lua">lua</span>
 <span class="symbol-name">matMul</span>
 <span class="symbol-lua-sig">(<span class="lsig"><span class="lsig-type">table</span> <span class="lsig-name">arg2</span></span>)</span>
-<span class="symbol-line">line 95</span>
+<span class="symbol-line">line 139</span>
 </div>
 <div class="symbol-body">
 <div class="symbol-comment">// ↓ __mul: Matrix * Matrix  or  Matrix * Vector ↓</div>
 <div class="lua-args-block"><div class="lua-args-label">Lua stack args</div><div class="lua-arg"><span class="lua-arg-idx">2</span><span class="lua-arg-type">table</span><span class="lua-arg-name">arg2</span></div></div>
-<div class="inner-comments"><div class="inner-snippet"><div class="inner-snippet-header">↓ Matrix * Vector ↓</div><pre class="inner-snippet-code">    if (lua_istable(L, 2)) {
-        lua_getfield(L, 2, &quot;x&quot;);
-        lua_getfield(L, 2, &quot;y&quot;);</pre></div><div class="inner-snippet"><div class="inner-snippet-header">↓ Matrix * Matrix → new matrix ↓</div><pre class="inner-snippet-code">    float b[9], out[9];
-    matGet(L, 2, b);
-    mat3Mul(a, b, out);
-    matPush(L, out);</pre></div></div>
+
 </div></div>
-<div class="symbol-card lua-card" id="types_matrix_c__lua__matTranslate__150" data-kind="lua" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__lua__matTranslate__150" data-search="mattranslate ↓ :translate(dx, dy)                                                         ↓ | ↓ mutates self in-place, returns self so chaining works                      ↓ (number arg2, number? arg3) static int types/matrix.c mat translate ↓ :translate(dx, dy) ↓ | ↓ mutates self in place, returns self so chaining works ↓ (number arg2, number? arg3) static int types matrix c">
+<div class="symbol-card lua-card" id="types_matrix_c__lua__matGetAngles__183" data-kind="lua" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__lua__matGetAngles__183" data-search="matgetangles read methods ↓↓↓ read methods | ↓ :getangles() → angle (pitch/yaw/roll extracted from rotation columns) ↓ static int types/matrix.c mat get angles read methods ↓↓↓ read methods | ↓ :get angles() → angle (pitch yaw roll extracted from rotation columns) ↓ static int types matrix c">
+<div class="symbol-header">
+<span class="symbol-kind kind-lua">lua</span>
+<span class="symbol-name">matGetAngles</span>
+<span class="symbol-ret">→ static int</span>
+<span class="symbol-line">line 183</span>
+</div>
+<div class="symbol-body">
+<div class="symbol-comment">// read methods ↓↓↓ read methods | ↓ :getAngles() → Angle (pitch/yaw/roll extracted from rotation columns) ↓</div>
+
+<div class="inner-comments"><div class="inner-snippet"><div class="inner-snippet-header">↓ forward column = col 2 ↓</div><pre class="inner-snippet-code">    float fx = m[2], fy = m[5], fz = m[8];</pre></div><div class="inner-snippet"><div class="inner-snippet-header">↓ right column = col 0 ↓</div><pre class="inner-snippet-code">    float fx = m[2], fy = m[5], fz = m[8];
+    float rx = m[0], ry = m[3], rz = m[6];</pre></div></div>
+</div></div>
+<div class="symbol-card lua-card" id="types_matrix_c__lua__matGetScale__213" data-kind="lua" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__lua__matGetScale__213" data-search="matgetscale ↓ :getscale() → vector of column norms ↓ static int types/matrix.c mat get scale ↓ :get scale() → vector of column norms ↓ static int types matrix c">
+<div class="symbol-header">
+<span class="symbol-kind kind-lua">lua</span>
+<span class="symbol-name">matGetScale</span>
+<span class="symbol-ret">→ static int</span>
+<span class="symbol-line">line 213</span>
+</div>
+<div class="symbol-body">
+<div class="symbol-comment">// ↓ :getScale() → Vector of column norms ↓</div>
+
+
+</div></div>
+<div class="symbol-card lua-card" id="types_matrix_c__lua__matGetTranslation__238" data-kind="lua" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__lua__matGetTranslation__238" data-search="matgettranslation ↓ :gettranslation() → vector(m[2], m[5], 0) ↓ static int types/matrix.c mat get translation ↓ :get translation() → vector(m[2], m[5], 0) ↓ static int types matrix c">
+<div class="symbol-header">
+<span class="symbol-kind kind-lua">lua</span>
+<span class="symbol-name">matGetTranslation</span>
+<span class="symbol-ret">→ static int</span>
+<span class="symbol-line">line 238</span>
+</div>
+<div class="symbol-body">
+<div class="symbol-comment">// ↓ :getTranslation() → Vector(m[2], m[5], 0) ↓</div>
+
+
+</div></div>
+<div class="symbol-card lua-card" id="types_matrix_c__lua__matGetField__259" data-kind="lua" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__lua__matGetField__259" data-search="matgetfield ↓ :getfield(row, col) → number (1-indexed) ↓ (integer arg2, integer arg3) static int types/matrix.c mat get field ↓ :get field(row, col) → number (1 indexed) ↓ (integer arg2, integer arg3) static int types matrix c">
+<div class="symbol-header">
+<span class="symbol-kind kind-lua">lua</span>
+<span class="symbol-name">matGetField</span>
+<span class="symbol-lua-sig">(<span class="lsig"><span class="lsig-type">integer</span> <span class="lsig-name">arg2</span><span class="lsig-sep">, </span><span class="lsig-type">integer</span> <span class="lsig-name">arg3</span></span>)</span>
+<span class="symbol-line">line 259</span>
+</div>
+<div class="symbol-body">
+<div class="symbol-comment">// ↓ :getField(row, col) → number (1-indexed) ↓</div>
+<div class="lua-args-block"><div class="lua-args-label">Lua stack args</div><div class="lua-arg"><span class="lua-arg-idx">2</span><span class="lua-arg-type">integer</span><span class="lua-arg-name">arg2</span></div><div class="lua-arg"><span class="lua-arg-idx">3</span><span class="lua-arg-type">integer</span><span class="lua-arg-name">arg3</span></div></div>
+
+</div></div>
+<div class="symbol-card lua-card" id="types_matrix_c__lua__matGetForward__276" data-kind="lua" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__lua__matGetForward__276" data-search="matgetforward ↓ :getforward() → vector (column 2) ↓ static int types/matrix.c mat get forward ↓ :get forward() → vector (column 2) ↓ static int types matrix c">
+<div class="symbol-header">
+<span class="symbol-kind kind-lua">lua</span>
+<span class="symbol-name">matGetForward</span>
+<span class="symbol-ret">→ static int</span>
+<span class="symbol-line">line 276</span>
+</div>
+<div class="symbol-body">
+<div class="symbol-comment">// ↓ :getForward() → Vector (column 2) ↓</div>
+
+
+</div></div>
+<div class="symbol-card lua-card" id="types_matrix_c__lua__matGetRight__297" data-kind="lua" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__lua__matGetRight__297" data-search="matgetright ↓ :getright() → vector (column 0) ↓ static int types/matrix.c mat get right ↓ :get right() → vector (column 0) ↓ static int types matrix c">
+<div class="symbol-header">
+<span class="symbol-kind kind-lua">lua</span>
+<span class="symbol-name">matGetRight</span>
+<span class="symbol-ret">→ static int</span>
+<span class="symbol-line">line 297</span>
+</div>
+<div class="symbol-body">
+<div class="symbol-comment">// ↓ :getRight() → Vector (column 0) ↓</div>
+
+
+</div></div>
+<div class="symbol-card lua-card" id="types_matrix_c__lua__matGetUp__318" data-kind="lua" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__lua__matGetUp__318" data-search="matgetup ↓ :getup() → vector (column 1) ↓ static int types/matrix.c mat get up ↓ :get up() → vector (column 1) ↓ static int types matrix c">
+<div class="symbol-header">
+<span class="symbol-kind kind-lua">lua</span>
+<span class="symbol-name">matGetUp</span>
+<span class="symbol-ret">→ static int</span>
+<span class="symbol-line">line 318</span>
+</div>
+<div class="symbol-body">
+<div class="symbol-comment">// ↓ :getUp() → Vector (column 1) ↓</div>
+
+
+</div></div>
+<div class="symbol-card lua-card" id="types_matrix_c__lua__matGetRotatedAroundAxis__397" data-kind="lua" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__lua__matGetRotatedAroundAxis__397" data-search="matgetrotatedaroundaxis ↓ :getrotatedaroundaxis(axis_vec, degrees) → new matrix ↓ (number arg3) static int types/matrix.c mat get rotated around axis ↓ :get rotated around axis(axis vec, degrees) → new matrix ↓ (number arg3) static int types matrix c">
+<div class="symbol-header">
+<span class="symbol-kind kind-lua">lua</span>
+<span class="symbol-name">matGetRotatedAroundAxis</span>
+<span class="symbol-lua-sig">(<span class="lsig"><span class="lsig-type">number</span> <span class="lsig-name">arg3</span></span>)</span>
+<span class="symbol-line">line 397</span>
+</div>
+<div class="symbol-body">
+<div class="symbol-comment">// ↓ :getRotatedAroundAxis(axis_vec, degrees) → new Matrix ↓</div>
+<div class="lua-args-block"><div class="lua-args-label">Lua stack args</div><div class="lua-arg"><span class="lua-arg-idx">3</span><span class="lua-arg-type">number</span><span class="lua-arg-name">arg3</span></div></div>
+
+</div></div>
+<div class="symbol-card lua-card" id="types_matrix_c__lua__matGetAxisAngle__466" data-kind="lua" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__lua__matGetAxisAngle__466" data-search="matgetaxisangle ↓ :getaxisangle() → axis_vec, angle_degrees ↓ static int types/matrix.c mat get axis angle ↓ :get axis angle() → axis vec, angle degrees ↓ static int types matrix c">
+<div class="symbol-header">
+<span class="symbol-kind kind-lua">lua</span>
+<span class="symbol-name">matGetAxisAngle</span>
+<span class="symbol-ret">→ static int</span>
+<span class="symbol-line">line 466</span>
+</div>
+<div class="symbol-body">
+<div class="symbol-comment">// ↓ :getAxisAngle() → axis_vec, angle_degrees ↓</div>
+
+
+</div></div>
+<div class="symbol-card lua-card" id="types_matrix_c__lua__matTranslate__541" data-kind="lua" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__lua__matTranslate__541" data-search="mattranslate read methods ↑↑↑ read methods | mutating methods ↓↓↓ mutating methods | ↓ :translate(dx, dy [, dz]) — mutates in-place, returns self ↓ (number arg2, number? arg3) static int types/matrix.c mat translate read methods ↑↑↑ read methods | mutating methods ↓↓↓ mutating methods | ↓ :translate(dx, dy [, dz]) — mutates in place, returns self ↓ (number arg2, number? arg3) static int types matrix c">
 <div class="symbol-header">
 <span class="symbol-kind kind-lua">lua</span>
 <span class="symbol-name">matTranslate</span>
 <span class="symbol-lua-sig">(<span class="lsig"><span class="lsig-type">number</span> <span class="lsig-name">arg2</span><span class="lsig-sep">, </span><span class="lsig-type">number?</span> <span class="lsig-name">arg3</span></span>)</span>
-<span class="symbol-line">line 150</span>
+<span class="symbol-line">line 541</span>
 </div>
 <div class="symbol-body">
-<div class="symbol-comment">// ↓ :translate(dx, dy)                                                         ↓ | ↓ mutates self in-place, returns self so chaining works                      ↓</div>
+<div class="symbol-comment">// read methods ↑↑↑ read methods | mutating methods ↓↓↓ mutating methods | ↓ :translate(dx, dy [, dz]) — mutates in-place, returns self ↓</div>
 <div class="lua-args-block"><div class="lua-args-label">Lua stack args</div><div class="lua-arg"><span class="lua-arg-idx">2</span><span class="lua-arg-type">number</span><span class="lua-arg-name">arg2</span></div><div class="lua-arg"><span class="lua-arg-idx">3</span><span class="lua-arg-type">number?</span><span class="lua-arg-name">arg3</span></div></div>
-<div class="inner-comments"><div class="inner-snippet"><div class="inner-snippet-header">↓ return self ↓</div><pre class="inner-snippet-code">    lua_pushvalue(L, 1);
-    return 1;</pre></div></div>
+
 </div></div>
-<div class="symbol-card lua-card" id="types_matrix_c__lua__matRotate__170" data-kind="lua" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__lua__matRotate__170" data-search="matrotate ↓ :rotate(degrees_or_angle)                                                  ↓ | ↓ mutates self in-place, returns self                                        ↓ (number arg2) static int types/matrix.c mat rotate ↓ :rotate(degrees or angle) ↓ | ↓ mutates self in place, returns self ↓ (number arg2) static int types matrix c">
+<div class="symbol-card lua-card" id="types_matrix_c__lua__matRotate__561" data-kind="lua" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__lua__matRotate__561" data-search="matrotate ↓ :rotate(degrees_or_angle) — mutates in-place, returns self ↓ (number arg2) static int types/matrix.c mat rotate ↓ :rotate(degrees or angle) — mutates in place, returns self ↓ (number arg2) static int types matrix c">
 <div class="symbol-header">
 <span class="symbol-kind kind-lua">lua</span>
 <span class="symbol-name">matRotate</span>
 <span class="symbol-lua-sig">(<span class="lsig"><span class="lsig-type">number</span> <span class="lsig-name">arg2</span></span>)</span>
-<span class="symbol-line">line 170</span>
+<span class="symbol-line">line 561</span>
 </div>
 <div class="symbol-body">
-<div class="symbol-comment">// ↓ :rotate(degrees_or_Angle)                                                  ↓ | ↓ mutates self in-place, returns self                                        ↓</div>
+<div class="symbol-comment">// ↓ :rotate(degrees_or_Angle) — mutates in-place, returns self ↓</div>
 <div class="lua-args-block"><div class="lua-args-label">Lua stack args</div><div class="lua-arg"><span class="lua-arg-idx">2</span><span class="lua-arg-type">number</span><span class="lua-arg-name">arg2</span></div></div>
-<div class="inner-comments"><div class="inner-snippet"><div class="inner-snippet-header">↓ return self ↓</div><pre class="inner-snippet-code">    lua_pushvalue(L, 1);
-    return 1;</pre></div></div>
+
 </div></div>
-<div class="symbol-card lua-card" id="types_matrix_c__lua__matScale__201" data-kind="lua" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__lua__matScale__201" data-search="matscale ↓ :scale(sx [, sy])                                                          ↓ | ↓ mutates self in-place, returns self                                        ↓ (number arg2, number? arg3) static int types/matrix.c mat scale ↓ :scale(sx [, sy]) ↓ | ↓ mutates self in place, returns self ↓ (number arg2, number? arg3) static int types matrix c">
+<div class="symbol-card lua-card" id="types_matrix_c__lua__matScale__593" data-kind="lua" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__lua__matScale__593" data-search="matscale ↓ :scale(sx [, sy]) — mutates in-place, returns self ↓ (number arg2, number? arg3) static int types/matrix.c mat scale ↓ :scale(sx [, sy]) — mutates in place, returns self ↓ (number arg2, number? arg3) static int types matrix c">
 <div class="symbol-header">
 <span class="symbol-kind kind-lua">lua</span>
 <span class="symbol-name">matScale</span>
 <span class="symbol-lua-sig">(<span class="lsig"><span class="lsig-type">number</span> <span class="lsig-name">arg2</span><span class="lsig-sep">, </span><span class="lsig-type">number?</span> <span class="lsig-name">arg3</span></span>)</span>
-<span class="symbol-line">line 201</span>
+<span class="symbol-line">line 593</span>
 </div>
 <div class="symbol-body">
-<div class="symbol-comment">// ↓ :scale(sx [, sy])                                                          ↓ | ↓ mutates self in-place, returns self                                        ↓</div>
+<div class="symbol-comment">// ↓ :scale(sx [, sy]) — mutates in-place, returns self ↓</div>
 <div class="lua-args-block"><div class="lua-args-label">Lua stack args</div><div class="lua-arg"><span class="lua-arg-idx">2</span><span class="lua-arg-type">number</span><span class="lua-arg-name">arg2</span></div><div class="lua-arg"><span class="lua-arg-idx">3</span><span class="lua-arg-type">number?</span><span class="lua-arg-name">arg3</span></div></div>
-<div class="inner-comments"><div class="inner-snippet"><div class="inner-snippet-header">↓ return self ↓</div><pre class="inner-snippet-code">    lua_pushvalue(L, 1);
-    return 1;</pre></div></div>
+
 </div></div>
-<div class="symbol-card lua-card" id="types_matrix_c__lua__matTransformPoint__220" data-kind="lua" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__lua__matTransformPoint__220" data-search="mattransformpoint ↓ :transformpoint(x, y) → rx, ry — read-only, returns two numbers ↓ (number arg2, number arg3) static int types/matrix.c mat transform point ↓ :transform point(x, y) → rx, ry — read only, returns two numbers ↓ (number arg2, number arg3) static int types matrix c">
+<div class="symbol-card lua-card" id="types_matrix_c__lua__matSetScale__613" data-kind="lua" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__lua__matSetScale__613" data-search="matsetscale ↓ :setscale(sx, sy [, sz]) — sets column norms, mutates in-place ↓ (number arg2, number? arg3, number? arg4) static int types/matrix.c mat set scale ↓ :set scale(sx, sy [, sz]) — sets column norms, mutates in place ↓ (number arg2, number? arg3, number? arg4) static int types matrix c">
+<div class="symbol-header">
+<span class="symbol-kind kind-lua">lua</span>
+<span class="symbol-name">matSetScale</span>
+<span class="symbol-lua-sig">(<span class="lsig"><span class="lsig-type">number</span> <span class="lsig-name">arg2</span><span class="lsig-sep">, </span><span class="lsig-type">number?</span> <span class="lsig-name">arg3</span><span class="lsig-sep">, </span><span class="lsig-type">number?</span> <span class="lsig-name">arg4</span></span>)</span>
+<span class="symbol-line">line 613</span>
+</div>
+<div class="symbol-body">
+<div class="symbol-comment">// ↓ :setScale(sx, sy [, sz]) — sets column norms, mutates in-place ↓</div>
+<div class="lua-args-block"><div class="lua-args-label">Lua stack args</div><div class="lua-arg"><span class="lua-arg-idx">2</span><span class="lua-arg-type">number</span><span class="lua-arg-name">arg2</span></div><div class="lua-arg"><span class="lua-arg-idx">3</span><span class="lua-arg-type">number?</span><span class="lua-arg-name">arg3</span></div><div class="lua-arg"><span class="lua-arg-idx">4</span><span class="lua-arg-type">number?</span><span class="lua-arg-name">arg4</span></div></div>
+<div class="inner-comments"><div class="inner-snippet"><div class="inner-snippet-header">↓ normalise each column then rescale ↓</div><pre class="inner-snippet-code">    float c0len = sqrtf(m[0]*m[0] + m[3]*m[3] + m[6]*m[6]);
+    float c1len = sqrtf(m[1]*m[1] + m[4]*m[4] + m[7]*m[7]);
+    float c2len = sqrtf(m[2]*m[2] + m[5]*m[5] + m[8]*m[8]);</pre></div></div>
+</div></div>
+<div class="symbol-card lua-card" id="types_matrix_c__lua__matScaleTranslation__639" data-kind="lua" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__lua__matScaleTranslation__639" data-search="matscaletranslation ↓ :scaletranslation(scalar) — scales translation component only ↓ (number arg2) static int types/matrix.c mat scale translation ↓ :scale translation(scalar) — scales translation component only ↓ (number arg2) static int types matrix c">
+<div class="symbol-header">
+<span class="symbol-kind kind-lua">lua</span>
+<span class="symbol-name">matScaleTranslation</span>
+<span class="symbol-lua-sig">(<span class="lsig"><span class="lsig-type">number</span> <span class="lsig-name">arg2</span></span>)</span>
+<span class="symbol-line">line 639</span>
+</div>
+<div class="symbol-body">
+<div class="symbol-comment">// ↓ :scaleTranslation(scalar) — scales translation component only ↓</div>
+<div class="lua-args-block"><div class="lua-args-label">Lua stack args</div><div class="lua-arg"><span class="lua-arg-idx">2</span><span class="lua-arg-type">number</span><span class="lua-arg-name">arg2</span></div></div>
+
+</div></div>
+<div class="symbol-card lua-card" id="types_matrix_c__lua__matSetAngles__657" data-kind="lua" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__lua__matSetAngles__657" data-search="matsetangles ↓ :setangles(p, y, r)  or  :setangles(angle) — sets rotation columns ↓ (number arg2, number? arg3, number? arg4) static int types/matrix.c mat set angles ↓ :set angles(p, y, r) or :set angles(angle) — sets rotation columns ↓ (number arg2, number? arg3, number? arg4) static int types matrix c">
+<div class="symbol-header">
+<span class="symbol-kind kind-lua">lua</span>
+<span class="symbol-name">matSetAngles</span>
+<span class="symbol-lua-sig">(<span class="lsig"><span class="lsig-type">number</span> <span class="lsig-name">arg2</span><span class="lsig-sep">, </span><span class="lsig-type">number?</span> <span class="lsig-name">arg3</span><span class="lsig-sep">, </span><span class="lsig-type">number?</span> <span class="lsig-name">arg4</span></span>)</span>
+<span class="symbol-line">line 657</span>
+</div>
+<div class="symbol-body">
+<div class="symbol-comment">// ↓ :setAngles(p, y, r)  or  :setAngles(Angle) — sets rotation columns ↓</div>
+<div class="lua-args-block"><div class="lua-args-label">Lua stack args</div><div class="lua-arg"><span class="lua-arg-idx">2</span><span class="lua-arg-type">number</span><span class="lua-arg-name">arg2</span></div><div class="lua-arg"><span class="lua-arg-idx">3</span><span class="lua-arg-type">number?</span><span class="lua-arg-name">arg3</span></div><div class="lua-arg"><span class="lua-arg-idx">4</span><span class="lua-arg-type">number?</span><span class="lua-arg-name">arg4</span></div></div>
+<div class="inner-comments"><div class="inner-snippet"><div class="inner-snippet-header">↓ right column (col 0) ↓</div><pre class="inner-snippet-code">    m[0] =  cr*cy + sr*sp*sy;
+    m[3] =  cr*sy - sr*sp*cy;
+    m[6] = -sr*cp;</pre></div><div class="inner-snippet"><div class="inner-snippet-header">↓ up column (col 1) ↓</div><pre class="inner-snippet-code">    m[1] = -sr*cy + cr*sp*sy;
+    m[4] = -sr*sy - cr*sp*cy;
+    m[7] =  cr*cp;</pre></div><div class="inner-snippet"><div class="inner-snippet-header">↓ forward column (col 2) ↓</div><pre class="inner-snippet-code">    m[2] = cp*cy;
+    m[5] = cp*sy;
+    m[8] = -sp;</pre></div></div>
+</div></div>
+<div class="symbol-card lua-card" id="types_matrix_c__lua__matSetTranslation__701" data-kind="lua" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__lua__matSetTranslation__701" data-search="matsettranslation ↓ :settranslation(x, y [, z])  or  vector ↓ (number arg2, number? arg3, number? arg4) static int types/matrix.c mat set translation ↓ :set translation(x, y [, z]) or vector ↓ (number arg2, number? arg3, number? arg4) static int types matrix c">
+<div class="symbol-header">
+<span class="symbol-kind kind-lua">lua</span>
+<span class="symbol-name">matSetTranslation</span>
+<span class="symbol-lua-sig">(<span class="lsig"><span class="lsig-type">number</span> <span class="lsig-name">arg2</span><span class="lsig-sep">, </span><span class="lsig-type">number?</span> <span class="lsig-name">arg3</span><span class="lsig-sep">, </span><span class="lsig-type">number?</span> <span class="lsig-name">arg4</span></span>)</span>
+<span class="symbol-line">line 701</span>
+</div>
+<div class="symbol-body">
+<div class="symbol-comment">// ↓ :setTranslation(x, y [, z])  or  Vector ↓</div>
+<div class="lua-args-block"><div class="lua-args-label">Lua stack args</div><div class="lua-arg"><span class="lua-arg-idx">2</span><span class="lua-arg-type">number</span><span class="lua-arg-name">arg2</span></div><div class="lua-arg"><span class="lua-arg-idx">3</span><span class="lua-arg-type">number?</span><span class="lua-arg-name">arg3</span></div><div class="lua-arg"><span class="lua-arg-idx">4</span><span class="lua-arg-type">number?</span><span class="lua-arg-name">arg4</span></div></div>
+
+</div></div>
+<div class="symbol-card lua-card" id="types_matrix_c__lua__matSetField__781" data-kind="lua" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__lua__matSetField__781" data-search="matsetfield ↓ :setfield(row, col, value) — 1-indexed ↓ (integer arg2, integer arg3, number arg4) static int types/matrix.c mat set field ↓ :set field(row, col, value) — 1 indexed ↓ (integer arg2, integer arg3, number arg4) static int types matrix c">
+<div class="symbol-header">
+<span class="symbol-kind kind-lua">lua</span>
+<span class="symbol-name">matSetField</span>
+<span class="symbol-lua-sig">(<span class="lsig"><span class="lsig-type">integer</span> <span class="lsig-name">arg2</span><span class="lsig-sep">, </span><span class="lsig-type">integer</span> <span class="lsig-name">arg3</span><span class="lsig-sep">, </span><span class="lsig-type">number</span> <span class="lsig-name">arg4</span></span>)</span>
+<span class="symbol-line">line 781</span>
+</div>
+<div class="symbol-body">
+<div class="symbol-comment">// ↓ :setField(row, col, value) — 1-indexed ↓</div>
+<div class="lua-args-block"><div class="lua-args-label">Lua stack args</div><div class="lua-arg"><span class="lua-arg-idx">2</span><span class="lua-arg-type">integer</span><span class="lua-arg-name">arg2</span></div><div class="lua-arg"><span class="lua-arg-idx">3</span><span class="lua-arg-type">integer</span><span class="lua-arg-name">arg3</span></div><div class="lua-arg"><span class="lua-arg-idx">4</span><span class="lua-arg-type">number</span><span class="lua-arg-name">arg4</span></div></div>
+
+</div></div>
+<div class="symbol-card lua-card" id="types_matrix_c__lua__matSetUnpacked__814" data-kind="lua" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__lua__matSetUnpacked__814" data-search="matsetunpacked ↓ :setunpacked(m1..m9) — set all 9 elements from 9 numbers ↓ static int types/matrix.c mat set unpacked ↓ :set unpacked(m1 m9) — set all 9 elements from 9 numbers ↓ static int types matrix c">
+<div class="symbol-header">
+<span class="symbol-kind kind-lua">lua</span>
+<span class="symbol-name">matSetUnpacked</span>
+<span class="symbol-ret">→ static int</span>
+<span class="symbol-line">line 814</span>
+</div>
+<div class="symbol-body">
+<div class="symbol-comment">// ↓ :setUnpacked(m1..m9) — set all 9 elements from 9 numbers ↓</div>
+
+
+</div></div>
+<div class="symbol-card lua-card" id="types_matrix_c__lua__matSetAxisAngle__895" data-kind="lua" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__lua__matSetAxisAngle__895" data-search="matsetaxisangle ↓ :setaxisangle(axis_vec, degrees) — builds rotation matrix ↓ (number arg3) static int types/matrix.c mat set axis angle ↓ :set axis angle(axis vec, degrees) — builds rotation matrix ↓ (number arg3) static int types matrix c">
+<div class="symbol-header">
+<span class="symbol-kind kind-lua">lua</span>
+<span class="symbol-name">matSetAxisAngle</span>
+<span class="symbol-lua-sig">(<span class="lsig"><span class="lsig-type">number</span> <span class="lsig-name">arg3</span></span>)</span>
+<span class="symbol-line">line 895</span>
+</div>
+<div class="symbol-body">
+<div class="symbol-comment">// ↓ :setAxisAngle(axis_vec, degrees) — builds rotation matrix ↓</div>
+<div class="lua-args-block"><div class="lua-args-label">Lua stack args</div><div class="lua-arg"><span class="lua-arg-idx">3</span><span class="lua-arg-type">number</span><span class="lua-arg-name">arg3</span></div></div>
+
+</div></div>
+<div class="symbol-card lua-card" id="types_matrix_c__lua__matTransformPoint__917" data-kind="lua" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__lua__matTransformPoint__917" data-search="mattransformpoint ↓ :transformpoint(x, y) → rx, ry — kept for backwards compat ↓ (number arg2, number arg3) static int types/matrix.c mat transform point ↓ :transform point(x, y) → rx, ry — kept for backwards compat ↓ (number arg2, number arg3) static int types matrix c">
 <div class="symbol-header">
 <span class="symbol-kind kind-lua">lua</span>
 <span class="symbol-name">matTransformPoint</span>
 <span class="symbol-lua-sig">(<span class="lsig"><span class="lsig-type">number</span> <span class="lsig-name">arg2</span><span class="lsig-sep">, </span><span class="lsig-type">number</span> <span class="lsig-name">arg3</span></span>)</span>
-<span class="symbol-line">line 220</span>
+<span class="symbol-line">line 917</span>
 </div>
 <div class="symbol-body">
-<div class="symbol-comment">// ↓ :transformPoint(x, y) → rx, ry — read-only, returns two numbers ↓</div>
+<div class="symbol-comment">// ↓ :transformPoint(x, y) → rx, ry — kept for backwards compat ↓</div>
 <div class="lua-args-block"><div class="lua-args-label">Lua stack args</div><div class="lua-arg"><span class="lua-arg-idx">2</span><span class="lua-arg-type">number</span><span class="lua-arg-name">arg2</span></div><div class="lua-arg"><span class="lua-arg-idx">3</span><span class="lua-arg-type">number</span><span class="lua-arg-name">arg3</span></div></div>
 
 </div></div>
-<div class="symbol-card lua-card" id="types_matrix_c__lua__Matrix__292" data-kind="lua" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__lua__Matrix__292" data-search="matrix ↓ matrix(angle_or_nil, vector_or_nil)                                        ↓ | ↓ no args → identity                                                         ↓ | ↓ first arg = number → rotation by that many degrees                         ↓ | ↓ first arg = angle  → rotation by .yaw                                      ↓ | ↓ second arg = vector → translation by .x/.y                                 ↓ (nil? arg1, nil? arg2) int types/matrix.c matrix ↓ matrix(angle or nil, vector or nil) ↓ | ↓ no args → identity ↓ | ↓ first arg = number → rotation by that many degrees ↓ | ↓ first arg = angle → rotation by yaw ↓ | ↓ second arg = vector → translation by x y ↓ (nil? arg1, nil? arg2) int types matrix c">
+<div class="symbol-card lua-card" id="types_matrix_c__lua__Matrix__995" data-kind="lua" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__lua__Matrix__995" data-search="matrix ↓ matrix(angle_or_nil, vector_or_nil)                                    ↓ | ↓ no args → identity                                                     ↓ | ↓ first arg = number → rotation by degrees                               ↓ | ↓ first arg = angle  → rotation by .y (yaw)                              ↓ | ↓ second arg = vector → translation by .x/.y                             ↓ (nil? arg1, nil? arg2) int types/matrix.c matrix ↓ matrix(angle or nil, vector or nil) ↓ | ↓ no args → identity ↓ | ↓ first arg = number → rotation by degrees ↓ | ↓ first arg = angle → rotation by y (yaw) ↓ | ↓ second arg = vector → translation by x y ↓ (nil? arg1, nil? arg2) int types matrix c">
 <div class="symbol-header">
 <span class="symbol-kind kind-lua">lua</span>
 <span class="symbol-name">Matrix</span>
 <span class="symbol-lua-sig">(<span class="lsig"><span class="lsig-type">nil?</span> <span class="lsig-name">arg1</span><span class="lsig-sep">, </span><span class="lsig-type">nil?</span> <span class="lsig-name">arg2</span></span>)</span>
-<span class="symbol-line">line 292</span>
+<span class="symbol-line">line 995</span>
 </div>
 <div class="symbol-body">
-<div class="symbol-comment">// ↓ Matrix(angle_or_nil, vector_or_nil)                                        ↓ | ↓ no args → identity                                                         ↓ | ↓ first arg = number → rotation by that many degrees                         ↓ | ↓ first arg = Angle  → rotation by .yaw                                      ↓ | ↓ second arg = Vector → translation by .x/.y                                 ↓</div>
+<div class="symbol-comment">// ↓ Matrix(angle_or_nil, vector_or_nil)                                    ↓ | ↓ no args → identity                                                     ↓ | ↓ first arg = number → rotation by degrees                               ↓ | ↓ first arg = Angle  → rotation by .y (yaw)                              ↓ | ↓ second arg = Vector → translation by .x/.y                             ↓</div>
 <div class="lua-args-block"><div class="lua-args-label">Lua stack args</div><div class="lua-arg"><span class="lua-arg-idx">1</span><span class="lua-arg-type">nil?</span><span class="lua-arg-name">arg1</span></div><div class="lua-arg"><span class="lua-arg-idx">2</span><span class="lua-arg-type">nil?</span><span class="lua-arg-name">arg2</span></div></div>
 
 <div class="refs"><span class="refs-label">cross-refs:</span><span class="badge badge-used" title="used">vanir.c:?</span> <span class="badge badge-used" title="used">modules/render.c:?</span> <span class="badge badge-used" title="used">types/common.h:?</span></div>
@@ -5955,158 +6597,333 @@ static int</span>
 <span class="func-divider-lbl fd-c">C Internal</span>
 <span class="func-divider-line"></span>
 </div>
-<div class="symbol-card" id="types_matrix_c__func__matSet__32" data-kind="func" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__func__matSet__32" data-search="matset ↓ write 9 elements back into the table at stack index idx (must already exist) ↓ static void types/matrix.c mat set ↓ write 9 elements back into the table at stack index idx (must already exist) ↓ static void types matrix c">
+<div class="symbol-card" id="types_matrix_c__func__matSet__34" data-kind="func" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__func__matSet__34" data-search="matset ↓ write 9 elements back into the table at stack index idx ↓ static void types/matrix.c mat set ↓ write 9 elements back into the table at stack index idx ↓ static void types matrix c">
 <div class="symbol-header">
 <span class="symbol-kind kind-func">func</span>
 <span class="symbol-name">matSet</span>
 <span class="symbol-ret">→ static void</span>
-<span class="symbol-line">line 32</span>
+<span class="symbol-line">line 34</span>
 </div>
 <div class="symbol-body">
-<div class="symbol-comment">// ↓ write 9 elements back into the table at stack index idx (must already exist) ↓</div>
+<div class="symbol-comment">// ↓ write 9 elements back into the table at stack index idx ↓</div>
 
-<div class="inner-comments"><div class="inner-snippet"><div class="inner-snippet-header">↓ normalise negative indices before pushing ↓</div><pre class="inner-snippet-code">    if (idx &lt; 0) idx = lua_gettop(L) + idx + 1;</pre></div></div>
+
 </div></div>
-<div class="symbol-card" id="types_matrix_c__func__matPush__43" data-kind="func" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__func__matPush__43" data-search="matpush ↓ push a brand-new matrix table; used by the matrix() constructor and read-only ops ↓ static void types/matrix.c mat push ↓ push a brand new matrix table; used by the matrix() constructor and read only ops ↓ static void types matrix c">
+<div class="symbol-card" id="types_matrix_c__func__matPush__45" data-kind="func" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__func__matPush__45" data-search="matpush ↓ push a brand-new matrix table with metatable ↓ static void types/matrix.c mat push ↓ push a brand new matrix table with metatable ↓ static void types matrix c">
 <div class="symbol-header">
 <span class="symbol-kind kind-func">func</span>
 <span class="symbol-name">matPush</span>
 <span class="symbol-ret">→ static void</span>
-<span class="symbol-line">line 43</span>
+<span class="symbol-line">line 45</span>
 </div>
 <div class="symbol-body">
-<div class="symbol-comment">// ↓ push a brand-new matrix table; used by the Matrix() constructor and read-only ops ↓</div>
+<div class="symbol-comment">// ↓ push a brand-new matrix table with metatable ↓</div>
 
 
 </div></div>
-<div class="symbol-card" id="types_matrix_c__func__mat3Mul__55" data-kind="func" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__func__mat3Mul__55" data-search="mat3mul ↓ multiply two 3×3 matrices: out = a * b ↓ static void types/matrix.c mat3mul ↓ multiply two 3×3 matrices: out = a * b ↓ static void types matrix c">
+<div class="symbol-card" id="types_matrix_c__func__mat3Mul__57" data-kind="func" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__func__mat3Mul__57" data-search="mat3mul ↓ multiply two 3×3 matrices: out = a * b ↓ static void types/matrix.c mat3mul ↓ multiply two 3×3 matrices: out = a * b ↓ static void types matrix c">
 <div class="symbol-header">
 <span class="symbol-kind kind-func">func</span>
 <span class="symbol-name">mat3Mul</span>
 <span class="symbol-ret">→ static void</span>
-<span class="symbol-line">line 55</span>
+<span class="symbol-line">line 57</span>
 </div>
 <div class="symbol-body">
 <div class="symbol-comment">// ↓ multiply two 3×3 matrices: out = a * b ↓</div>
 
 
 </div></div>
-<div class="symbol-card" id="types_matrix_c__func__mat3Identity__68" data-kind="func" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__func__mat3Identity__68" data-search="mat3identity static void types/matrix.c mat3identity static void types matrix c">
+<div class="symbol-card" id="types_matrix_c__func__mat3Identity__70" data-kind="func" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__func__mat3Identity__70" data-search="mat3identity static void types/matrix.c mat3identity static void types matrix c">
 <div class="symbol-header">
 <span class="symbol-kind kind-func">func</span>
 <span class="symbol-name">mat3Identity</span>
 <span class="symbol-ret">→ static void</span>
-<span class="symbol-line">line 68</span>
+<span class="symbol-line">line 70</span>
 </div>
 <div class="symbol-body">
 
 
 </div></div>
-<div class="symbol-card" id="types_matrix_c__func__matToString__76" data-kind="func" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__func__matToString__76" data-search="mattostring ↓ __tostring ↓ static int types/matrix.c mat to string ↓ tostring ↓ static int types matrix c">
+<div class="symbol-card" id="types_matrix_c__func__matGetCol__78" data-kind="func" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__func__matGetCol__78" data-search="matgetcol ↓ column-vector helpers: columns 0/1/2 → right/up/forward ↓ static void types/matrix.c mat get col ↓ column vector helpers: columns 0 1 2 → right up forward ↓ static void types matrix c">
+<div class="symbol-header">
+<span class="symbol-kind kind-func">func</span>
+<span class="symbol-name">matGetCol</span>
+<span class="symbol-ret">→ static void</span>
+<span class="symbol-line">line 78</span>
+</div>
+<div class="symbol-body">
+<div class="symbol-comment">// ↓ column-vector helpers: columns 0/1/2 → right/up/forward ↓</div>
+
+
+</div></div>
+<div class="symbol-card" id="types_matrix_c__func__matSetCol__83" data-kind="func" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__func__matSetCol__83" data-search="matsetcol static void types/matrix.c mat set col static void types matrix c">
+<div class="symbol-header">
+<span class="symbol-kind kind-func">func</span>
+<span class="symbol-name">matSetCol</span>
+<span class="symbol-ret">→ static void</span>
+<span class="symbol-line">line 83</span>
+</div>
+<div class="symbol-body">
+
+
+</div></div>
+<div class="symbol-card" id="types_matrix_c__func__matToString__91" data-kind="func" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__func__matToString__91" data-search="mattostring ↓ __tostring ↓ static int types/matrix.c mat to string ↓ tostring ↓ static int types matrix c">
 <div class="symbol-header">
 <span class="symbol-kind kind-func">func</span>
 <span class="symbol-name">matToString</span>
 <span class="symbol-ret">→ static int</span>
-<span class="symbol-line">line 76</span>
+<span class="symbol-line">line 91</span>
 </div>
 <div class="symbol-body">
 <div class="symbol-comment">// ↓ __tostring ↓</div>
 
 
 </div></div>
-<div class="symbol-card" id="types_matrix_c__func__matEq__134" data-kind="func" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__func__matEq__134" data-search="mateq static int types/matrix.c mat eq static int types matrix c">
+<div class="symbol-card" id="types_matrix_c__func__matAdd__109" data-kind="func" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__func__matAdd__109" data-search="matadd ↓ __add: element-wise addition ↓ static int types/matrix.c mat add ↓ add: element wise addition ↓ static int types matrix c">
 <div class="symbol-header">
 <span class="symbol-kind kind-func">func</span>
-<span class="symbol-name">matEq</span>
+<span class="symbol-name">matAdd</span>
 <span class="symbol-ret">→ static int</span>
-<span class="symbol-line">line 134</span>
+<span class="symbol-line">line 109</span>
 </div>
 <div class="symbol-body">
+<div class="symbol-comment">// ↓ __add: element-wise addition ↓</div>
 
 
 </div></div>
-<div class="symbol-card" id="types_matrix_c__func__matInverse__234" data-kind="func" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__func__matInverse__234" data-search="matinverse ↓ :inverse() — returns a new matrix, does not mutate ↓ static int types/matrix.c mat inverse ↓ :inverse() — returns a new matrix, does not mutate ↓ static int types matrix c">
+<div class="symbol-card" id="types_matrix_c__func__matSub__124" data-kind="func" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__func__matSub__124" data-search="matsub ↓ __sub: element-wise subtraction ↓ static int types/matrix.c mat sub ↓ sub: element wise subtraction ↓ static int types matrix c">
 <div class="symbol-header">
 <span class="symbol-kind kind-func">func</span>
-<span class="symbol-name">matInverse</span>
+<span class="symbol-name">matSub</span>
 <span class="symbol-ret">→ static int</span>
-<span class="symbol-line">line 234</span>
+<span class="symbol-line">line 124</span>
 </div>
 <div class="symbol-body">
-<div class="symbol-comment">// ↓ :inverse() — returns a new matrix, does not mutate ↓</div>
+<div class="symbol-comment">// ↓ __sub: element-wise subtraction ↓</div>
 
 
 </div></div>
-<div class="symbol-card" id="types_matrix_c__func__matCopy__261" data-kind="func" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__func__matCopy__261" data-search="matcopy ↓ :copy() — returns a new matrix ↓ static int types/matrix.c mat copy ↓ :copy() — returns a new matrix ↓ static int types matrix c">
+<div class="symbol-card" id="types_matrix_c__func__matGetInverse__339" data-kind="func" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__func__matGetInverse__339" data-search="matgetinverse ↓ :getinverse() — returns new matrix, general 3×3 inverse ↓ static int types/matrix.c mat get inverse ↓ :get inverse() — returns new matrix, general 3×3 inverse ↓ static int types matrix c">
 <div class="symbol-header">
 <span class="symbol-kind kind-func">func</span>
-<span class="symbol-name">matCopy</span>
+<span class="symbol-name">matGetInverse</span>
 <span class="symbol-ret">→ static int</span>
-<span class="symbol-line">line 261</span>
+<span class="symbol-line">line 339</span>
 </div>
 <div class="symbol-body">
-<div class="symbol-comment">// ↓ :copy() — returns a new matrix ↓</div>
+<div class="symbol-comment">// ↓ :getInverse() — returns new matrix, general 3×3 inverse ↓</div>
 
 
 </div></div>
-<div class="symbol-card" id="types_matrix_c__func__matrixGet__332" data-kind="func" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__func__matrixGet__332" data-search="matrixget ── public helpers used by render.c ─────────────────────────────────────── void types/matrix.c matrix get ── public helpers used by render c ─────────────────────────────────────── void types matrix c">
+<div class="symbol-card" id="types_matrix_c__func__matGetInverseTR__376" data-kind="func" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__func__matGetInverseTR__376" data-search="matgetinversetr ↓ :getinversetr() — fast inverse for orthogonal rotation + translation matrix ↓ | ↓ inv(r|t) = r^t | -r^t*t                                                    ↓ static int types/matrix.c mat get inverse tr ↓ :get inverse tr() — fast inverse for orthogonal rotation + translation matrix ↓ | ↓ inv(r|t) = r^t | r^t*t ↓ static int types matrix c">
+<div class="symbol-header">
+<span class="symbol-kind kind-func">func</span>
+<span class="symbol-name">matGetInverseTR</span>
+<span class="symbol-ret">→ static int</span>
+<span class="symbol-line">line 376</span>
+</div>
+<div class="symbol-body">
+<div class="symbol-comment">// ↓ :getInverseTR() — fast inverse for orthogonal rotation + translation matrix ↓ | ↓ inv(R|t) = R^T | -R^T*t                                                    ↓</div>
+
+<div class="inner-comments"><div class="inner-snippet"><div class="inner-snippet-header">↓ transpose the 2×2 rotation part ↓</div><pre class="inner-snippet-code">    inv[0] = m[0]; inv[1] = m[3]; inv[3] = m[1]; inv[4] = m[4];
+    inv[6] = 0.0f; inv[7] = 0.0f; inv[8] = 1.0f;</pre></div><div class="inner-snippet"><div class="inner-snippet-header">↓ -R^T * t ↓</div><pre class="inner-snippet-code">    inv[2] = -(inv[0]*m[2] + inv[1]*m[5]);
+    inv[5] = -(inv[3]*m[2] + inv[4]*m[5]);</pre></div></div>
+</div></div>
+<div class="symbol-card" id="types_matrix_c__func__matIsIdentity__424" data-kind="func" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__func__matIsIdentity__424" data-search="matisidentity ↓ :isidentity() ↓ static int types/matrix.c mat is identity ↓ :is identity() ↓ static int types matrix c">
+<div class="symbol-header">
+<span class="symbol-kind kind-func">func</span>
+<span class="symbol-name">matIsIdentity</span>
+<span class="symbol-ret">→ static int</span>
+<span class="symbol-line">line 424</span>
+</div>
+<div class="symbol-body">
+<div class="symbol-comment">// ↓ :isIdentity() ↓</div>
+
+
+</div></div>
+<div class="symbol-card" id="types_matrix_c__func__matIsRotationMatrix__439" data-kind="func" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__func__matIsRotationMatrix__439" data-search="matisrotationmatrix ↓ :isrotationmatrix() — checks columns are orthonormal ↓ static int types/matrix.c mat is rotation matrix ↓ :is rotation matrix() — checks columns are orthonormal ↓ static int types matrix c">
+<div class="symbol-header">
+<span class="symbol-kind kind-func">func</span>
+<span class="symbol-name">matIsRotationMatrix</span>
+<span class="symbol-ret">→ static int</span>
+<span class="symbol-line">line 439</span>
+</div>
+<div class="symbol-body">
+<div class="symbol-comment">// ↓ :isRotationMatrix() — checks columns are orthonormal ↓</div>
+
+<div class="inner-comments"><div class="inner-snippet"><div class="inner-snippet-header">↓ check column norms are ~1 and columns are mutually orthogonal ↓</div><pre class="inner-snippet-code">    float c0x = m[0], c0y = m[3], c0z = m[6];
+    float c1x = m[1], c1y = m[4], c1z = m[7];
+    float c2x = m[2], c2y = m[5], c2z = m[8];</pre></div></div>
+</div></div>
+<div class="symbol-card" id="types_matrix_c__func__matClone__501" data-kind="func" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__func__matClone__501" data-search="matclone ↓ :clone() ↓ static int types/matrix.c mat clone ↓ :clone() ↓ static int types matrix c">
+<div class="symbol-header">
+<span class="symbol-kind kind-func">func</span>
+<span class="symbol-name">matClone</span>
+<span class="symbol-ret">→ static int</span>
+<span class="symbol-line">line 501</span>
+</div>
+<div class="symbol-body">
+<div class="symbol-comment">// ↓ :clone() ↓</div>
+
+
+</div></div>
+<div class="symbol-card" id="types_matrix_c__func__matUnpack__511" data-kind="func" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__func__matUnpack__511" data-search="matunpack ↓ :unpack() → 9 numbers ↓ static int types/matrix.c mat unpack ↓ :unpack() → 9 numbers ↓ static int types matrix c">
+<div class="symbol-header">
+<span class="symbol-kind kind-func">func</span>
+<span class="symbol-name">matUnpack</span>
+<span class="symbol-ret">→ static int</span>
+<span class="symbol-line">line 511</span>
+</div>
+<div class="symbol-body">
+<div class="symbol-comment">// ↓ :unpack() → 9 numbers ↓</div>
+
+
+</div></div>
+<div class="symbol-card" id="types_matrix_c__func__matToTable__523" data-kind="func" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__func__matToTable__523" data-search="mattotable ↓ :totable() → plain table {[1]...[9]} without metatable ↓ static int types/matrix.c mat to table ↓ :to table() → plain table {[1] [9]} without metatable ↓ static int types matrix c">
+<div class="symbol-header">
+<span class="symbol-kind kind-func">func</span>
+<span class="symbol-name">matToTable</span>
+<span class="symbol-ret">→ static int</span>
+<span class="symbol-line">line 523</span>
+</div>
+<div class="symbol-body">
+<div class="symbol-comment">// ↓ :toTable() → plain table {[1]...[9]} without metatable ↓</div>
+
+
+</div></div>
+<div class="symbol-card" id="types_matrix_c__func__matSetForward__724" data-kind="func" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__func__matSetForward__724" data-search="matsetforward ↓ :setforward(vec) — sets column 2 ↓ static int types/matrix.c mat set forward ↓ :set forward(vec) — sets column 2 ↓ static int types matrix c">
+<div class="symbol-header">
+<span class="symbol-kind kind-func">func</span>
+<span class="symbol-name">matSetForward</span>
+<span class="symbol-ret">→ static int</span>
+<span class="symbol-line">line 724</span>
+</div>
+<div class="symbol-body">
+<div class="symbol-comment">// ↓ :setForward(vec) — sets column 2 ↓</div>
+
+
+</div></div>
+<div class="symbol-card" id="types_matrix_c__func__matSetRight__743" data-kind="func" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__func__matSetRight__743" data-search="matsetright ↓ :setright(vec) — sets column 0 ↓ static int types/matrix.c mat set right ↓ :set right(vec) — sets column 0 ↓ static int types matrix c">
+<div class="symbol-header">
+<span class="symbol-kind kind-func">func</span>
+<span class="symbol-name">matSetRight</span>
+<span class="symbol-ret">→ static int</span>
+<span class="symbol-line">line 743</span>
+</div>
+<div class="symbol-body">
+<div class="symbol-comment">// ↓ :setRight(vec) — sets column 0 ↓</div>
+
+
+</div></div>
+<div class="symbol-card" id="types_matrix_c__func__matSetUp__762" data-kind="func" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__func__matSetUp__762" data-search="matsetup ↓ :setup(vec) — sets column 1 ↓ static int types/matrix.c mat set up ↓ :set up(vec) — sets column 1 ↓ static int types matrix c">
+<div class="symbol-header">
+<span class="symbol-kind kind-func">func</span>
+<span class="symbol-name">matSetUp</span>
+<span class="symbol-ret">→ static int</span>
+<span class="symbol-line">line 762</span>
+</div>
+<div class="symbol-body">
+<div class="symbol-comment">// ↓ :setUp(vec) — sets column 1 ↓</div>
+
+
+</div></div>
+<div class="symbol-card" id="types_matrix_c__func__matSetFrom__802" data-kind="func" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__func__matSetFrom__802" data-search="matsetfrom ↓ :set(other) — copies another matrix into self, mutates in-place ↓ static int types/matrix.c mat set from ↓ :set(other) — copies another matrix into self, mutates in place ↓ static int types matrix c">
+<div class="symbol-header">
+<span class="symbol-kind kind-func">func</span>
+<span class="symbol-name">matSetFrom</span>
+<span class="symbol-ret">→ static int</span>
+<span class="symbol-line">line 802</span>
+</div>
+<div class="symbol-body">
+<div class="symbol-comment">// ↓ :set(other) — copies another matrix into self, mutates in-place ↓</div>
+
+
+</div></div>
+<div class="symbol-card" id="types_matrix_c__func__matSetIdentity__828" data-kind="func" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__func__matSetIdentity__828" data-search="matsetidentity ↓ :setidentity() — mutates in-place, returns self ↓ static int types/matrix.c mat set identity ↓ :set identity() — mutates in place, returns self ↓ static int types matrix c">
+<div class="symbol-header">
+<span class="symbol-kind kind-func">func</span>
+<span class="symbol-name">matSetIdentity</span>
+<span class="symbol-ret">→ static int</span>
+<span class="symbol-line">line 828</span>
+</div>
+<div class="symbol-body">
+<div class="symbol-comment">// ↓ :setIdentity() — mutates in-place, returns self ↓</div>
+
+
+</div></div>
+<div class="symbol-card" id="types_matrix_c__func__matInvert__840" data-kind="func" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__func__matInvert__840" data-search="matinvert ↓ :invert() — mutates in-place using general inverse, returns self ↓ static int types/matrix.c mat invert ↓ :invert() — mutates in place using general inverse, returns self ↓ static int types matrix c">
+<div class="symbol-header">
+<span class="symbol-kind kind-func">func</span>
+<span class="symbol-name">matInvert</span>
+<span class="symbol-ret">→ static int</span>
+<span class="symbol-line">line 840</span>
+</div>
+<div class="symbol-body">
+<div class="symbol-comment">// ↓ :invert() — mutates in-place using general inverse, returns self ↓</div>
+
+
+</div></div>
+<div class="symbol-card" id="types_matrix_c__func__matInvertTR__876" data-kind="func" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__func__matInvertTR__876" data-search="matinverttr ↓ :inverttr() — fast transpose inverse for rotation+translation ↓ static int types/matrix.c mat invert tr ↓ :invert tr() — fast transpose inverse for rotation+translation ↓ static int types matrix c">
+<div class="symbol-header">
+<span class="symbol-kind kind-func">func</span>
+<span class="symbol-name">matInvertTR</span>
+<span class="symbol-ret">→ static int</span>
+<span class="symbol-line">line 876</span>
+</div>
+<div class="symbol-body">
+<div class="symbol-comment">// ↓ :invertTR() — fast transpose inverse for rotation+translation ↓</div>
+
+
+</div></div>
+<div class="symbol-card" id="types_matrix_c__func__matrixGet__1037" data-kind="func" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__func__matrixGet__1037" data-search="matrixget ↓  public helpers used by render.c ↓ void types/matrix.c matrix get ↓ public helpers used by render c ↓ void types matrix c">
 <div class="symbol-header">
 <span class="symbol-kind kind-func">func</span>
 <span class="symbol-name">matrixGet</span>
 <span class="symbol-ret">→ void</span>
-<span class="symbol-line">line 332</span>
+<span class="symbol-line">line 1037</span>
 </div>
 <div class="symbol-body">
-<div class="symbol-comment">// ── public helpers used by render.c ───────────────────────────────────────</div>
+<div class="symbol-comment">// ↓  public helpers used by render.c ↓</div>
 
 
 <div class="refs"><span class="refs-label">cross-refs:</span><span class="badge badge-used" title="used">modules/render.c:?</span> <span class="badge badge-used" title="used">types/common.h:?</span></div>
 </div></div>
-<div class="symbol-card" id="types_matrix_c__func__matrixPush__336" data-kind="func" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__func__matrixPush__336" data-search="matrixpush void types/matrix.c matrix push void types matrix c">
+<div class="symbol-card" id="types_matrix_c__func__matrixPush__1041" data-kind="func" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__func__matrixPush__1041" data-search="matrixpush void types/matrix.c matrix push void types matrix c">
 <div class="symbol-header">
 <span class="symbol-kind kind-func">func</span>
 <span class="symbol-name">matrixPush</span>
 <span class="symbol-ret">→ void</span>
-<span class="symbol-line">line 336</span>
+<span class="symbol-line">line 1041</span>
 </div>
 <div class="symbol-body">
 
 
 <div class="refs"><span class="refs-label">cross-refs:</span><span class="badge badge-used" title="used">modules/render.c:?</span> <span class="badge badge-used" title="used">types/common.h:?</span></div>
 </div></div>
-<div class="symbol-card" id="types_matrix_c__func__matrixIdentity__340" data-kind="func" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__func__matrixIdentity__340" data-search="matrixidentity void types/matrix.c matrix identity void types matrix c">
+<div class="symbol-card" id="types_matrix_c__func__matrixIdentity__1045" data-kind="func" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__func__matrixIdentity__1045" data-search="matrixidentity void types/matrix.c matrix identity void types matrix c">
 <div class="symbol-header">
 <span class="symbol-kind kind-func">func</span>
 <span class="symbol-name">matrixIdentity</span>
 <span class="symbol-ret">→ void</span>
-<span class="symbol-line">line 340</span>
+<span class="symbol-line">line 1045</span>
 </div>
 <div class="symbol-body">
 
 
 <div class="refs"><span class="refs-label">cross-refs:</span><span class="badge badge-used" title="used">modules/render.c:?</span> <span class="badge badge-used" title="used">types/common.h:?</span></div>
 </div></div>
-<div class="symbol-card" id="types_matrix_c__func__matrixTransformPoint__344" data-kind="func" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__func__matrixTransformPoint__344" data-search="matrixtransformpoint void types/matrix.c matrix transform point void types matrix c">
+<div class="symbol-card" id="types_matrix_c__func__matrixTransformPoint__1049" data-kind="func" data-file="types_matrix_c" data-filepath="types/matrix.c" data-symbol="types_matrix_c__func__matrixTransformPoint__1049" data-search="matrixtransformpoint void types/matrix.c matrix transform point void types matrix c">
 <div class="symbol-header">
 <span class="symbol-kind kind-func">func</span>
 <span class="symbol-name">matrixTransformPoint</span>
 <span class="symbol-ret">→ void</span>
-<span class="symbol-line">line 344</span>
+<span class="symbol-line">line 1049</span>
 </div>
 <div class="symbol-body">
 
 
 <div class="refs"><span class="refs-label">cross-refs:</span><span class="badge badge-used" title="used">modules/render.c:?</span> <span class="badge badge-used" title="used">types/common.h:?</span></div>
 </div></div>
-<div class="section-label">Macros</div>
-<div class="symbol-card" onclick="toggle(this)">
-<div class="symbol-header">
-<span class="symbol-kind kind-macro">#define</span>
-<span class="symbol-name">M</span>
-<span class="symbol-ret">_PI 3.14159265358979323846</span>
-<span class="symbol-line">line 19</span>
-</div>
-</div>
 </div>
 <div class="file-block" id="types_quaternion_c" data-file-path="types/quaternion.c">
 <h3 class="file-heading">types/quaternion.c</h3>
@@ -6407,7 +7224,7 @@ static int</span>
 <div class="symbol-body">
 <div class="lua-args-block"><div class="lua-args-label">Lua stack args</div><div class="lua-arg"><span class="lua-arg-idx">1</span><span class="lua-arg-type">number?</span><span class="lua-arg-name">arg1</span></div><div class="lua-arg"><span class="lua-arg-idx">2</span><span class="lua-arg-type">number?</span><span class="lua-arg-name">arg2</span></div><div class="lua-arg"><span class="lua-arg-idx">3</span><span class="lua-arg-type">number?</span><span class="lua-arg-name">arg3</span></div></div>
 
-<div class="refs"><span class="refs-label">cross-refs:</span><span class="badge badge-used" title="used">vanir.c:?</span> <span class="badge badge-used" title="used">modules/render.c:?</span> <span class="badge badge-used" title="used">types/common.h:?</span> <span class="badge badge-used" title="used">types/matrix.c:?</span></div>
+<div class="refs"><span class="refs-label">cross-refs:</span><span class="badge badge-used" title="used">vanir.c:?</span> <span class="badge badge-used" title="used">modules/render.c:?</span> <span class="badge badge-used" title="used">types/angle.c:?</span> <span class="badge badge-used" title="used">types/common.h:?</span> <span class="badge badge-used" title="used">types/matrix.c:?</span></div>
 </div></div>
 <div class="func-divider">
 <span class="func-divider-lbl fd-c">C Internal</span>

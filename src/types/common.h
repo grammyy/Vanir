@@ -1,4 +1,5 @@
-#pragma once
+#ifndef COMMON_H
+#define COMMON_H
 
 #include "../lua_config.h"
 #include "../vanir.h"
@@ -7,6 +8,10 @@
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
+
+#ifndef M_PI
+    #define M_PI 3.14159265358979323846
+#endif
 
 struct Texture;
 
@@ -53,6 +58,14 @@ static inline void addMethods(lua_State *L, const char *name, const luaL_Reg *me
     lua_setmetatable(L, -2);
 }
 
+static inline float degToRad(float d) {
+    return d * (float)(M_PI / 180.0);
+}
+
+static inline float radToDeg(float r) {
+    return r * (float)(180.0 / M_PI);
+}
+
 /* ↓ public API declarations ↓ */
 int Vector(lua_State *L);
 int Angle(lua_State *L);
@@ -71,3 +84,5 @@ struct Texture *getTexture(lua_State *L, int idx);
 
 void pushFile(lua_State *L, FILE *handle, const char *path);
 struct File *getFile(lua_State *L, int idx);
+
+#endif
