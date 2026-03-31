@@ -23,41 +23,12 @@ static int toStringColor(lua_State *L) {
     return 1;
 }
 
-/* ↓ __index: numeric 1/2/3/4 → r/g/b/a, then method table ↓ */
-/* ↓ do i really need this ↓ */
-static int colorIndex(lua_State *L) {
-    if (lua_isnumber(L, 2)) {
-        int k = (int)lua_tointeger(L, 2);
-        const char *field = (k == 1) ? "r" : (k == 2) ? "g" : (k == 3) ? "b" : (k == 4) ? "a" : NULL;
-        
-        if (field) { 
-            lua_getfield(L, 1, field); 
-            
-            return 1; 
-        }
-    }
-
-    luaL_getmetatable(L, "vanir.Color");
-    lua_getfield(L, -1, "__index");
-
-    if (lua_istable(L, -1)) {
-        lua_pushvalue(L, 2);
-        lua_rawget(L, -2);
-
-        return 1;
-    }
-
-    lua_pushnil(L);
-
-    return 1;
-}
-
 /* ↓ __concat: Color .. Color  or  Color .. string ↓ */
 static int colorConcat(lua_State *L) {
-    /* ↓ convert both operands to string, concatenate ↓ */
     lua_getglobal(L, "tostring");
     lua_pushvalue(L, 1);
     lua_call(L, 1, 1);
+    /* ↑ convert both operands to string, concatenate ↑ */
 
     const char *s1 = lua_tostring(L, -1);
 
@@ -70,7 +41,6 @@ static int colorConcat(lua_State *L) {
     const char *s2 = lua_tostring(L, -1);
 
     lua_pop(L, 1);
-
     lua_pushfstring(L, "%s%s", s1 ? s1 : "", s2 ? s2 : "");
 
     return 1;
@@ -364,7 +334,6 @@ static const luaL_Reg colorMethods[] = {
 
 static const luaL_Reg colorMeta[] = {
     {"__tostring", toStringColor},
-    {"__index",    colorIndex},
     {"__concat",   colorConcat},
     {"__eq",       colorEq},
     {"__add",      colorAdd},

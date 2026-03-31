@@ -24,35 +24,6 @@ static int toStringAngle(lua_State *L) {
     return 1;
 }
 
-/* ↓ __index: numeric 1/2/3 → p/y/r, then method table ↓ */
-static int angleIndex(lua_State *L) {
-    if (lua_isnumber(L, 2)) {
-        int k = (int)lua_tointeger(L, 2);
-        
-        const char *field = (k == 1) ? "p" : (k == 2) ? "y" : (k == 3) ? "r" : NULL;
-        
-        if (field) { 
-            lua_getfield(L, 1, field); 
-            
-            return 1; 
-        }
-    }
-
-    luaL_getmetatable(L, "vanir.Angle");
-    lua_getfield(L, -1, "__index");
-
-    if (lua_istable(L, -1)) {
-        lua_pushvalue(L, 2);
-        lua_rawget(L, -2);
-
-        return 1;
-    }
-
-    lua_pushnil(L);
-
-    return 1;
-}
-
 /* ↓ __mul: Angle * scalar  or  scalar * Angle ↓ */
 static int angleMul(lua_State *L) {
     float p, y, r, s;
@@ -330,7 +301,6 @@ static const luaL_Reg angleMethods[] = {
 
 static const luaL_Reg angleMeta[] = {
     {"__tostring", toStringAngle},
-    {"__index",    angleIndex},
     {"__mul",      angleMul},
     {"__div",      angleDiv},
     {"__unm",      angleUnm},
