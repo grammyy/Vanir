@@ -2,6 +2,18 @@
 #include <stdint.h>
 #include <string.h>
 #include <stdlib.h>
+#include <sys/stat.h>
+#include <errno.h>
+
+#ifdef _WIN32
+    #include <windows.h>
+    #include <direct.h>
+    
+    #define mkdir(p, m) _mkdir(p)
+#else
+    #include <dirent.h>
+    #include <unistd.h>
+#endif
 
 #include "../vanir.h"
 #include "../types/common.h"
@@ -440,6 +452,217 @@ static int filesOpen(lua_State *L) {
     return 1;
 }
 
+/* ↓ files.read(path) → string | nil; reads entire file as a string ↓ */
+static int filesRead(lua_State *L) {
+    const char *path = luaL_checkstring(L, 1);
+    FILE *f = fopen(path, "rb");
+
+    if (!f) {
+        throw("file.read", path, "Could not open file");
+        lua_pushnil(L);
+
+        return 1;
+    }
+
+    fseek(f, 0, SEEK_END);
+    long size = ftell(f);
+    fseek(f, 0, SEEK_SET);
+
+    char *buf = (char *)malloc((size_t)size);
+
+    if (!buf) {
+        fclose(f);
+        throw("file.read", path, "Memory allocation error");
+        lua_pushnil(L);
+
+        return 1;
+    }
+
+    size_t got = fread(buf, 1, (size_t)size, f);
+    fclose(f);
+
+    lua_pushlstring(L, buf, got);
+    free(buf);
+
+    return 1;
+}
+
+/* ↓ files.readInGame(path) → string | nil; alias of files.read, provided for GMod API parity ↓ */
+static int filesReadInGame(lua_State *L) {
+    return filesRead(L);
+}
+
+/* ↓ files.asyncRead(path, callback) → nil; reads file asynchronously via a deferred callback ↓ */
+/* ↓ in Vanir there is no thread pool yet, so the read happens synchronously on the next call ↓ */
+static int filesAsyncRead(lua_State *L) {
+    const char *path = luaL_checkstring(L, 1);
+    luaL_checktype(L, 2, LUA_TFUNCTION);
+
+    /* ↓ read the file now and call the callback immediately ↓ */
+    FILE *f = fopen(path, "rb");
+
+    lua_pushvalue(L, 2);    /* ↓ push callback ↓ */
+
+    if (!f) {
+        lua_pushnil(L);
+        lua_pushstring(L, "Could not open file");
+        lua_call(L, 2, 0);
+
+        return 0;
+    }
+
+    fseek(f, 0, SEEK_END);
+    long size = ftell(f);
+    fseek(f, 0, SEEK_SET);
+
+    char *buf = (char *)malloc((size_t)size);
+
+    if (!buf) {
+        fclose(f);
+        lua_pushnil(L);
+        lua_pushstring(L, "Memory allocation error");
+        lua_call(L, 2, 0);
+
+        return 0;
+    }
+
+    size_t got = fread(buf, 1, (size_t)size, f);
+    fclose(f);
+
+    lua_pushlstring(L, buf, got);
+    free(buf);
+    lua_pushnil(L);
+
+    lua_call(L, 2, 0);  /* ↓ callback(content, err) ↓ */
+
+    return 0;
+}
+
+/* ↓ files.write(path, content) → boolean ↓ */
+static int filesWrite(lua_State *L) {
+    const char *path = luaL_checkstring(L, 1);
+    size_t len;
+    const char *content = luaL_checklstring(L, 2, &len);
+
+    FILE *f = fopen(path, "wb");
+
+    if (!f) {
+        lua_pushboolean(L, 0);
+
+        return 1;
+    }
+
+    fwrite(content, 1, len, f);
+    fclose(f);
+
+    lua_pushboolean(L, 1);
+
+    return 1;
+}
+
+/* ↓ files.append(path, content) → boolean; appends to a file, creating it if needed ↓ */
+static int filesAppend(lua_State *L) {
+    const char *path = luaL_checkstring(L, 1);
+    size_t len;
+    const char *content = luaL_checklstring(L, 2, &len);
+
+    FILE *f = fopen(path, "ab");
+
+    if (!f) {
+        lua_pushboolean(L, 0);
+
+        return 1;
+    }
+
+    fwrite(content, 1, len, f);
+    fclose(f);
+
+    lua_pushboolean(L, 1);
+
+    return 1;
+}
+
+/* ↓ helper: build a temp path; Vanir temp files live next to the binary ↓ */
+static void buildTempPath(char *out, size_t outSize, const char *name) {
+    snprintf(out, outSize, "temp/%s", name);
+}
+
+/* ↓ files.readTemp(name) → string | nil ↓ */
+static int filesReadTemp(lua_State *L) {
+    const char *name = luaL_checkstring(L, 1);
+    char path[4096];
+
+    buildTempPath(path, sizeof(path), name);
+
+    lua_pushstring(L, path);
+    lua_replace(L, 1);
+
+    return filesRead(L);
+}
+
+/* ↓ files.writeTemp(name, content) → boolean ↓ */
+static int filesWriteTemp(lua_State *L) {
+    const char *name = luaL_checkstring(L, 1);
+    size_t len;
+    const char *content = luaL_checklstring(L, 2, &len);
+
+    char path[4096];
+    buildTempPath(path, sizeof(path), name);
+
+    /* ↓ ensure temp/ directory exists ↓ */
+    #ifdef _WIN32
+        _mkdir("temp");
+    #else
+        mkdir("temp", 0755);
+    #endif
+
+    FILE *f = fopen(path, "wb");
+
+    if (!f) {
+        lua_pushboolean(L, 0);
+
+        return 1;
+    }
+
+    fwrite(content, 1, len, f);
+    fclose(f);
+
+    lua_pushboolean(L, 1);
+
+    return 1;
+}
+
+/* ↓ files.existsTemp(name) → boolean ↓ */
+static int filesExistsTemp(lua_State *L) {
+    const char *name = luaL_checkstring(L, 1);
+    char path[4096];
+
+    buildTempPath(path, sizeof(path), name);
+
+    FILE *f = fopen(path, "rb");
+
+    if (f) {
+        fclose(f);
+        lua_pushboolean(L, 1);
+    } else {
+        lua_pushboolean(L, 0);
+    }
+
+    return 1;
+}
+
+/* ↓ files.deleteTemp(name) → boolean ↓ */
+static int filesDeleteTemp(lua_State *L) {
+    const char *name = luaL_checkstring(L, 1);
+    char path[4096];
+
+    buildTempPath(path, sizeof(path), name);
+
+    lua_pushboolean(L, remove(path) == 0);
+
+    return 1;
+}
+
 /* ↓ files.exists(path) → boolean ↓ */
 static int filesExists(lua_State *L) {
     const char *path = luaL_checkstring(L, 1);
@@ -455,11 +678,44 @@ static int filesExists(lua_State *L) {
     return 1;
 }
 
+/* ↓ files.existsInGame(path) → boolean; alias of files.exists ↓ */
+static int filesExistsInGame(lua_State *L) {
+    return filesExists(L);
+}
+
+/* ↓ files.isDir(path) → boolean ↓ */
+static int filesIsDir(lua_State *L) {
+    const char *path = luaL_checkstring(L, 1);
+
+    #ifdef _WIN32
+        DWORD attr = GetFileAttributesA(path);
+        lua_pushboolean(L, attr != INVALID_FILE_ATTRIBUTES && (attr & FILE_ATTRIBUTE_DIRECTORY));
+    #else
+        struct stat st;
+        lua_pushboolean(L, stat(path, &st) == 0 && S_ISDIR(st.st_mode));
+    #endif
+
+    return 1;
+}
+
 /* ↓ files.delete(path) → boolean ↓ */
 static int filesDelete(lua_State *L) {
     const char *path = luaL_checkstring(L, 1);
 
     lua_pushboolean(L, remove(path) == 0);
+
+    return 1;
+}
+
+/* ↓ files.createDir(path) → boolean ↓ */
+static int filesCreateDir(lua_State *L) {
+    const char *path = luaL_checkstring(L, 1);
+
+    #ifdef _WIN32
+        lua_pushboolean(L, _mkdir(path) == 0 || errno == EEXIST);
+    #else
+        lua_pushboolean(L, mkdir(path, 0755) == 0 || errno == EEXIST);
+    #endif
 
     return 1;
 }
@@ -474,11 +730,124 @@ static int filesRename(lua_State *L) {
     return 1;
 }
 
+/* ↓ files.find(path [, filter]) → table of filenames; non-recursive directory listing ↓ */
+/* ↓ filter is a simple suffix string, e.g. ".lua"; nil/empty returns all entries ↓ */
+static int filesFind(lua_State *L) {
+    const char *path   = luaL_checkstring(L, 1);
+    const char *filter = luaL_optstring(L, 2, NULL);
+
+    lua_newtable(L);
+
+    int idx = 1;
+
+    #ifdef _WIN32
+        char search[4096];
+        snprintf(search, sizeof(search), "%s\\*", path);
+
+        WIN32_FIND_DATAA data;
+        HANDLE h = FindFirstFileA(search, &data);
+
+        if (h == INVALID_HANDLE_VALUE)
+            return 1;
+
+        do {
+            const char *name = data.cFileName;
+
+            if (strcmp(name, ".") == 0 || strcmp(name, "..") == 0)
+                continue;
+
+            if (filter) {
+                size_t nlen = strlen(name);
+                size_t flen = strlen(filter);
+
+                if (nlen < flen || strcmp(name + nlen - flen, filter) != 0)
+                    continue;
+            }
+
+            lua_pushstring(L, name);
+            lua_rawseti(L, -2, idx++);
+        } while (FindNextFileA(h, &data));
+
+        FindClose(h);
+    #else
+        DIR *dir = opendir(path);
+
+        if (!dir)
+            return 1;
+
+        struct dirent *ent;
+
+        while ((ent = readdir(dir)) != NULL) {
+            const char *name = ent->d_name;
+
+            if (strcmp(name, ".") == 0 || strcmp(name, "..") == 0)
+                continue;
+
+            if (filter) {
+                size_t nlen = strlen(name);
+                size_t flen = strlen(filter);
+
+                if (nlen < flen || strcmp(name + nlen - flen, filter) != 0)
+                    continue;
+            }
+
+            lua_pushstring(L, name);
+            lua_rawseti(L, -2, idx++);
+        }
+
+        closedir(dir);
+    #endif
+
+    return 1;
+}
+
+/* ↓ files.findInGame(path [, filter]) → table; alias of files.find ↓ */
+static int filesFindInGame(lua_State *L) {
+    return filesFind(L);
+}
+
+/* ↓ files.time(path) → number; modification time as a Unix timestamp, 0 on error ↓ */
+static int filesTime(lua_State *L) {
+    const char *path = luaL_checkstring(L, 1);
+
+    struct stat st;
+
+    if (stat(path, &st) == 0) {
+        lua_pushinteger(L, (lua_Integer)st.st_mtime);
+    } else {
+        lua_pushinteger(L, 0);
+    }
+
+    return 1;
+}
+
 static const luaL_Reg luaFiles[] = {
-    {"open",   filesOpen},
-    {"exists", filesExists},
-    {"delete", filesDelete},
-    {"rename", filesRename},
+    /* ↓ file handle factory ↓ */
+    {"open",        filesOpen},
+
+    /* ↓ whole-file helpers ↓ */
+    {"read",        filesRead},
+    {"readInGame",  filesReadInGame},
+    {"asyncRead",   filesAsyncRead},
+    {"write",       filesWrite},
+    {"append",      filesAppend},
+
+    /* ↓ temp-directory variants ↓ */
+    {"readTemp",    filesReadTemp},
+    {"writeTemp",   filesWriteTemp},
+    {"existsTemp",  filesExistsTemp},
+    {"deleteTemp",  filesDeleteTemp},
+
+    /* ↓ filesystem queries ↓ */
+    {"exists",      filesExists},
+    {"existsInGame", filesExistsInGame},
+    {"isDir",       filesIsDir},
+    {"delete",      filesDelete},
+    {"createDir",   filesCreateDir},
+    {"rename",      filesRename},
+    {"find",        filesFind},
+    {"findInGame",  filesFindInGame},
+    {"time",        filesTime},
 
     {NULL, NULL}
 };

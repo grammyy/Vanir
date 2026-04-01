@@ -316,9 +316,19 @@ static int vecGetAngleEx(lua_State *L) {
 
 /* ↓ :add(other) — mutates in-place, returns self ↓ */
 static int vecAddInPlace(lua_State *L) {
-    setFieldNumber(L, "x", getfieldf(L, 1, "x") + getfieldf(L, 2, "x"));
-    setFieldNumber(L, "y", getfieldf(L, 1, "y") + getfieldf(L, 2, "y"));
-    setFieldNumber(L, "z", getfieldf(L, 1, "z") + getfieldf(L, 2, "z"));
+    float x = getfieldf(L, 1, "x") + getfieldf(L, 2, "x");
+    float y = getfieldf(L, 1, "y") + getfieldf(L, 2, "y");
+    float z = getfieldf(L, 1, "z") + getfieldf(L, 2, "z");
+
+    lua_pushnumber(L, x);
+    lua_setfield(L, 1, "x");
+
+    lua_pushnumber(L, y);
+    lua_setfield(L, 1, "y");
+
+    lua_pushnumber(L, z);
+    lua_setfield(L, 1, "z");
+
     lua_pushvalue(L, 1);
 
     return 1;
@@ -326,9 +336,19 @@ static int vecAddInPlace(lua_State *L) {
 
 /* ↓ :sub(other) — mutates in-place, returns self ↓ */
 static int vecSubInPlace(lua_State *L) {
-    setFieldNumber(L, "x", getfieldf(L, 1, "x") - getfieldf(L, 2, "x"));
-    setFieldNumber(L, "y", getfieldf(L, 1, "y") - getfieldf(L, 2, "y"));
-    setFieldNumber(L, "z", getfieldf(L, 1, "z") - getfieldf(L, 2, "z"));
+    float x = getfieldf(L, 1, "x") - getfieldf(L, 2, "x");
+    float y = getfieldf(L, 1, "y") - getfieldf(L, 2, "y");
+    float z = getfieldf(L, 1, "z") - getfieldf(L, 2, "z");
+
+    lua_pushnumber(L, x);
+    lua_setfield(L, 1, "x");
+
+    lua_pushnumber(L, y);
+    lua_setfield(L, 1, "y");
+
+    lua_pushnumber(L, z);
+    lua_setfield(L, 1, "z");
+
     lua_pushvalue(L, 1);
 
     return 1;
@@ -338,9 +358,19 @@ static int vecSubInPlace(lua_State *L) {
 static int vecMulInPlace(lua_State *L) {
     float s = (float)luaL_checknumber(L, 2);
 
-    setFieldNumber(L, "x", getfieldf(L, 1, "x") * s);
-    setFieldNumber(L, "y", getfieldf(L, 1, "y") * s);
-    setFieldNumber(L, "z", getfieldf(L, 1, "z") * s);
+    float x = getfieldf(L, 1, "x") * s;
+    float y = getfieldf(L, 1, "y") * s;
+    float z = getfieldf(L, 1, "z") * s;
+
+    lua_pushnumber(L, x);
+    lua_setfield(L, 1, "x");
+
+    lua_pushnumber(L, y);
+    lua_setfield(L, 1, "y");
+
+    lua_pushnumber(L, z);
+    lua_setfield(L, 1, "z");
+
     lua_pushvalue(L, 1);
 
     return 1;
@@ -350,9 +380,19 @@ static int vecMulInPlace(lua_State *L) {
 static int vecDivInPlace(lua_State *L) {
     float s = (float)luaL_checknumber(L, 2);
 
-    setFieldNumber(L, "x", getfieldf(L, 1, "x") / s);
-    setFieldNumber(L, "y", getfieldf(L, 1, "y") / s);
-    setFieldNumber(L, "z", getfieldf(L, 1, "z") / s);
+    float x = getfieldf(L, 1, "x") / s;
+    float y = getfieldf(L, 1, "y") / s;
+    float z = getfieldf(L, 1, "z") / s;
+
+    lua_pushnumber(L, x);
+    lua_setfield(L, 1, "x");
+
+    lua_pushnumber(L, y);
+    lua_setfield(L, 1, "y");
+
+    lua_pushnumber(L, z);
+    lua_setfield(L, 1, "z");
+
     lua_pushvalue(L, 1);
 
     return 1;
@@ -392,7 +432,11 @@ static int vecSetZero(lua_State *L) {
 
 /* ↓ :setX(v) ↓ */
 static int vecSetX(lua_State *L) {
-    setFieldNumber(L, "x", (float)luaL_checknumber(L, 2));
+    float x = (float)luaL_checknumber(L, 2);
+
+    lua_pushnumber(L, x);
+    lua_setfield(L, 1, "x");
+
     lua_pushvalue(L, 1);
 
     return 1;
@@ -400,7 +444,11 @@ static int vecSetX(lua_State *L) {
 
 /* ↓ :setY(v) ↓ */
 static int vecSetY(lua_State *L) {
-    setFieldNumber(L, "y", (float)luaL_checknumber(L, 2));
+    float y = (float)luaL_checknumber(L, 2);
+
+    lua_pushnumber(L, y);
+    lua_setfield(L, 1, "y");
+
     lua_pushvalue(L, 1);
 
     return 1;
@@ -408,7 +456,11 @@ static int vecSetY(lua_State *L) {
 
 /* ↓ :setZ(v) ↓ */
 static int vecSetZ(lua_State *L) {
-    setFieldNumber(L, "z", (float)luaL_checknumber(L, 2));
+    float z = (float)luaL_checknumber(L, 2);
+
+    lua_pushnumber(L, z);
+    lua_setfield(L, 1, "z");
+
     lua_pushvalue(L, 1);
 
     return 1;
@@ -416,17 +468,31 @@ static int vecSetZ(lua_State *L) {
 
 /* ↓ :set(x, y, z) — mutates in-place, returns self ↓ */
 static int vecSet(lua_State *L) {
-    setFieldNumber(L, "x", (float)luaL_checknumber(L, 2));
-    setFieldNumber(L, "y", (float)luaL_checknumber(L, 3));
-    setFieldNumber(L, "z", (float)luaL_checknumber(L, 4));
-    lua_pushvalue(L, 1);
+    float x = (float)luaL_checknumber(L, 2);
+    float y = (float)luaL_checknumber(L, 3);
+    float z = (float)luaL_checknumber(L, 4);
 
+    lua_pushnumber(L, x);
+    lua_setfield(L, 1, "x");
+
+    lua_pushnumber(L, y);
+    lua_setfield(L, 1, "y");
+
+    lua_pushnumber(L, z);
+    lua_setfield(L, 1, "z");
+
+    lua_pushvalue(L, 1);
+    
     return 1;
 }
 
 /* ↓ :clone() ↓ */
 static int vecClone(lua_State *L) {
-    pushVec(L, getfieldf(L, 1, "x"), getfieldf(L, 1, "y"), getfieldf(L, 1, "z"));
+    pushVec(L, 
+        getfieldf(L, 1, "x"), 
+        getfieldf(L, 1, "y"), 
+        getfieldf(L, 1, "z")
+    );
 
     return 1;
 }
@@ -468,9 +534,14 @@ static int vecRotate(lua_State *L) {
     float ry = (sy*cp)*x + (sy*sp*sr + cy*cr)*y + (sy*sp*cr - cy*sr)*z;
     float rz = (-sp)*x   + (cp*sr)*y            + (cp*cr)*z;
 
-    setFieldNumber(L, "x", rx);
-    setFieldNumber(L, "y", ry);
-    setFieldNumber(L, "z", rz);
+    lua_pushnumber(L, rx);
+    lua_setfield(L, 1, "x");
+
+    lua_pushnumber(L, ry);
+    lua_setfield(L, 1, "y");
+
+    lua_pushnumber(L, rz);
+    lua_setfield(L, 1, "z");
 
     lua_pushvalue(L, 1);
 

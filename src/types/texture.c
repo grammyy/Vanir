@@ -2,6 +2,7 @@
 #include "common.h"
 #include "../graphics/textures.h"
 #include "../modules/render.h"
+#include "../modules/windows.h"
 
 static const luaL_Reg textureMethods[];
 static const luaL_Reg textureMeta[];
@@ -129,6 +130,222 @@ static int textureMetaGetColor(lua_State *L) {
     return 1;
 }
 
+/* ↓ tex:getName() → string ↓ */
+static int textureGetName(lua_State *L) {
+    struct Texture *tex = getTexture(L, 1);
+
+    lua_pushstring(L, tex->name ? tex->name : "");
+
+    return 1;
+}
+
+/* ↓ tex:getShader() → string; returns the effective pipeline/shader name for this texture ↓ */
+/* ↓ Vanir uses a single built-in textured pipeline, so this always returns "Textured" ↓ */
+static int textureGetShader(lua_State *L) {
+    (void)getTexture(L, 1);
+
+    lua_pushstring(L, "Textured");
+
+    return 1;
+}
+
+/* ↓ tex:getKeyValues() → table; returns a table of texture metadata as key-value pairs ↓ */
+static int textureGetKeyValues(lua_State *L) {
+    struct Texture *tex = getTexture(L, 1);
+
+    lua_newtable(L);
+
+    lua_pushstring(L, tex->name ? tex->name : "");
+    lua_setfield(L, -2, "$basetexture");
+
+    lua_pushinteger(L, (lua_Integer)tex->width);
+    lua_setfield(L, -2, "width");
+
+    lua_pushinteger(L, (lua_Integer)tex->height);
+    lua_setfield(L, -2, "height");
+
+    lua_pushinteger(L, (lua_Integer)tex->channels);
+    lua_setfield(L, -2, "channels");
+
+    return 1;
+}
+
+/* ↓ tex:getFloat(key) → number; stub — no float parameter store yet, always returns 0 ↓ */
+static int textureGetFloat(lua_State *L) {
+    (void)getTexture(L, 1);
+    (void)luaL_checkstring(L, 2);
+
+    lua_pushnumber(L, 0);
+
+    return 1;
+}
+
+/* ↓ tex:getInt(key) → number; stub — always returns 0 ↓ */
+static int textureGetInt(lua_State *L) {
+    (void)getTexture(L, 1);
+    (void)luaL_checkstring(L, 2);
+
+    lua_pushinteger(L, 0);
+
+    return 1;
+}
+
+/* ↓ tex:getMatrix(key) → nil; stub — no matrix parameter store ↓ */
+static int textureGetMatrix(lua_State *L) {
+    (void)getTexture(L, 1);
+    (void)luaL_checkstring(L, 2);
+
+    lua_pushnil(L);
+
+    return 1;
+}
+
+/* ↓ tex:getString(key) → string; returns name for "$basetexture", nil for others ↓ */
+static int textureGetString(lua_State *L) {
+    struct Texture *tex = getTexture(L, 1);
+    const char *key     = luaL_checkstring(L, 2);
+
+    if (strcmp(key, "$basetexture") == 0) {
+        lua_pushstring(L, tex->name ? tex->name : "");
+    } else if (strcmp(key, "path") == 0) {
+        lua_pushstring(L, tex->path ? tex->path : "");
+    } else {
+        lua_pushnil(L);
+    }
+
+    return 1;
+}
+
+/* ↓ tex:getTexture(key) → tex; returns self for "$basetexture" ↓ */
+static int textureGetTextureParm(lua_State *L) {
+    (void)luaL_checkstring(L, 2);
+
+    /* ↓ just return self — the caller already has the texture object ↓ */
+    lua_pushvalue(L, 1);
+
+    return 1;
+}
+
+/* ↓ tex:getVector(key) → Vector | nil; stub ↓ */
+static int textureGetVector(lua_State *L) {
+    (void)getTexture(L, 1);
+    (void)luaL_checkstring(L, 2);
+
+    lua_pushnil(L);
+
+    return 1;
+}
+
+/* ↓ tex:getVectorLinear(key) → Vector | nil; stub ↓ */
+static int textureGetVectorLinear(lua_State *L) {
+    return textureGetVector(L);
+}
+
+/* ↓ tex:setFloat(key, value) → nil; stub ↓ */
+static int textureSetFloat(lua_State *L) {
+    (void)getTexture(L, 1);
+    (void)luaL_checkstring(L, 2);
+    (void)luaL_checknumber(L, 3);
+
+    return 0;
+}
+
+/* ↓ tex:setInt(key, value) → nil; stub ↓ */
+static int textureSetInt(lua_State *L) {
+    (void)getTexture(L, 1);
+    (void)luaL_checkstring(L, 2);
+    (void)luaL_checkinteger(L, 3);
+
+    return 0;
+}
+
+/* ↓ tex:setMatrix(key, matrix) → nil; stub ↓ */
+static int textureSetMatrix(lua_State *L) {
+    (void)getTexture(L, 1);
+    (void)luaL_checkstring(L, 2);
+
+    return 0;
+}
+
+/* ↓ tex:setString(key, value) → nil; stub ↓ */
+static int textureSetString(lua_State *L) {
+    (void)getTexture(L, 1);
+    (void)luaL_checkstring(L, 2);
+    (void)luaL_checkstring(L, 3);
+
+    return 0;
+}
+
+/* ↓ tex:setTexture(key, tex2) → nil; swaps the underlying GPU data from another texture object ↓ */
+/* ↓ currently a stub — in-place GPU data swapping is non-trivial ↓ */
+static int textureSetTexture(lua_State *L) {
+    (void)getTexture(L, 1);
+    (void)luaL_checkstring(L, 2);
+
+    return 0;
+}
+
+/* ↓ tex:setTextureURL(key, url) → nil; stub — no HTTP fetching in Vanir ↓ */
+static int textureSetTextureURL(lua_State *L) {
+    (void)getTexture(L, 1);
+    (void)luaL_checkstring(L, 2);
+    (void)luaL_checkstring(L, 3);
+
+    return 0;
+}
+
+/* ↓ tex:setTextureRenderTarget(key, rt) → nil; stub ↓ */
+static int textureSetTextureRenderTarget(lua_State *L) {
+    (void)getTexture(L, 1);
+    (void)luaL_checkstring(L, 2);
+
+    return 0;
+}
+
+/* ↓ tex:setUndefined(key) → nil; clears a parameter; stub ↓ */
+static int textureSetUndefined(lua_State *L) {
+    (void)getTexture(L, 1);
+    (void)luaL_checkstring(L, 2);
+
+    return 0;
+}
+
+/* ↓ tex:setVector(key, vec) → nil; stub ↓ */
+static int textureSetVector(lua_State *L) {
+    (void)getTexture(L, 1);
+    (void)luaL_checkstring(L, 2);
+
+    return 0;
+}
+
+/* ↓ tex:recompute() → nil; rebuilds GPU bind group from current pixel data ↓ */
+static int textureRecompute(lua_State *L) {
+    struct Texture *tex = getTexture(L, 1);
+
+    if (!tex->pixels || !tex->texture)
+        return 0;
+
+    /* ↓ re-upload cpu pixels to the existing gpu texture ↓ */
+    extern struct VanirGPU gpu;
+
+    WGPUTexelCopyTextureInfo dst_info = {0};
+    dst_info.texture  = tex->texture;
+    dst_info.mipLevel = 0;
+    dst_info.origin   = (WGPUOrigin3D){ 0, 0, 0 };
+    dst_info.aspect   = WGPUTextureAspect_All;
+
+    WGPUTexelCopyBufferLayout layout = {0};
+    layout.offset       = 0;
+    layout.bytesPerRow  = 4 * tex->width;
+    layout.rowsPerImage = tex->height;
+
+    WGPUExtent3D extent = { tex->width, tex->height, 1 };
+
+    wgpuQueueWriteTexture(gpu.queue, &dst_info, tex->pixels, (size_t)(4 * tex->width * tex->height), &layout, &extent);
+
+    return 0;
+}
+
 /* ↓ tex:draw(sx, sy, sw, sh, dx, dy [, dw, dh]) ↓ */
 /* ↓ temporarily sets this texture as active so drawTexturedRect can find it, then restores the previous one ↓ */
 static int textureDraw(lua_State *L) {
@@ -157,6 +374,11 @@ static int textureReleaseMeta(lua_State *L) {
     lua_setfield(L, 1, "__ptr");
 
     return 0;
+}
+
+/* ↓ tex:destroy() — alias of release ↓ */
+static int textureDestroyMeta(lua_State *L) {
+    return textureReleaseMeta(L);
 }
 
 /* ↓ tex:setImage(path) — loads a new image into this texture from a file ↓ */
@@ -194,13 +416,43 @@ static int textureSetImageMeta(lua_State *L) {
 }
 
 static const luaL_Reg textureMethods[] = {
-    {"getWidth",  textureGetWidth},
-    {"getHeight", textureGetHeight},
-    {"getSize",   textureGetSize},
-    {"getColor",  textureMetaGetColor},
-    {"draw",      textureDraw},
-    {"release",   textureReleaseMeta},
-    {"setImage",  textureSetImageMeta},
+    /* ↓ size queries ↓ */
+    {"getWidth",               textureGetWidth},
+    {"getHeight",              textureGetHeight},
+    {"getSize",                textureGetSize},
+
+    /* ↓ pixel data ↓ */
+    {"getColor",               textureMetaGetColor},
+
+    /* ↓ material-style getters ↓ */
+    {"getName",                textureGetName},
+    {"getShader",              textureGetShader},
+    {"getKeyValues",           textureGetKeyValues},
+    {"getFloat",               textureGetFloat},
+    {"getInt",                 textureGetInt},
+    {"getMatrix",              textureGetMatrix},
+    {"getString",              textureGetString},
+    {"getTexture",             textureGetTextureParm},
+    {"getVector",              textureGetVector},
+    {"getVectorLinear",        textureGetVectorLinear},
+
+    /* ↓ material-style setters (mutable) ↓ */
+    {"setFloat",               textureSetFloat},
+    {"setInt",                 textureSetInt},
+    {"setMatrix",              textureSetMatrix},
+    {"setString",              textureSetString},
+    {"setTexture",             textureSetTexture},
+    {"setTextureURL",          textureSetTextureURL},
+    {"setTextureRenderTarget", textureSetTextureRenderTarget},
+    {"setUndefined",           textureSetUndefined},
+    {"setVector",              textureSetVector},
+    {"recompute",              textureRecompute},
+
+    /* ↓ lifecycle ↓ */
+    {"draw",                   textureDraw},
+    {"setImage",               textureSetImageMeta},
+    {"release",                textureReleaseMeta},
+    {"destroy",                textureDestroyMeta},
 
     {NULL, NULL}
 };

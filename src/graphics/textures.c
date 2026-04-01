@@ -584,11 +584,179 @@ void destroyAllTextures(void) {
     texturePool.count    = 0;
 }
 
+/* ↓ textures.createFromImage(path [, name]) → texture | nil; alias of load ↓ */
+int luaTextureCreateFromImage(lua_State *L) {
+    return luaTextureLoad(L);
+}
+
+/* ↓ textures.getTexture(tex) → tex; identity — tex is already a texture object ↓ */
+static int luaTextureGetTexture(lua_State *L) {
+    /* ↓ validates the argument then returns it unchanged ↓ */
+    getTexture(L, 1);
+
+    lua_pushvalue(L, 1);
+
+    return 1;
+}
+
+/* ↓ textures.getName(tex) → string ↓ */
+static int luaTextureGetName(lua_State *L) {
+    struct Texture *tex = getTexture(L, 1);
+
+    lua_pushstring(L, tex->name ? tex->name : "");
+
+    return 1;
+}
+
+/* ↓ textures.getShader(tex) → string; always "Textured" in Vanir ↓ */
+static int luaTextureGetShader(lua_State *L) {
+    (void)getTexture(L, 1);
+
+    lua_pushstring(L, "Textured");
+
+    return 1;
+}
+
+/* ↓ textures.getKeyValues(tex) → table ↓ */
+static int luaTextureGetKeyValues(lua_State *L) {
+    struct Texture *tex = getTexture(L, 1);
+
+    lua_newtable(L);
+
+    lua_pushstring(L, tex->name ? tex->name : "");
+    lua_setfield(L, -2, "$basetexture");
+
+    lua_pushinteger(L, (lua_Integer)tex->width);
+    lua_setfield(L, -2, "width");
+
+    lua_pushinteger(L, (lua_Integer)tex->height);
+    lua_setfield(L, -2, "height");
+
+    return 1;
+}
+
+/* ↓ textures.getWidth(tex) → number ↓ */
+static int luaTextureGetWidth(lua_State *L) {
+    struct Texture *tex = getTexture(L, 1);
+
+    lua_pushinteger(L, (lua_Integer)tex->width);
+
+    return 1;
+}
+
+/* ↓ textures.getHeight(tex) → number ↓ */
+static int luaTextureGetHeight(lua_State *L) {
+    struct Texture *tex = getTexture(L, 1);
+
+    lua_pushinteger(L, (lua_Integer)tex->height);
+
+    return 1;
+}
+
+/* ↓ textures.getColor(tex, x, y) → Color ↓ */
+static int luaTextureGetColor(lua_State *L) {
+    struct Texture *tex = getTexture(L, 1);
+    uint32_t x = (uint32_t)luaL_checkinteger(L, 2);
+    uint32_t y = (uint32_t)luaL_checkinteger(L, 3);
+
+    float r, g, b, a;
+
+    if (!tex->pixels || !textureGetColor(tex, x, y, &r, &g, &b, &a)) {
+        lua_pushnil(L);
+
+        return 1;
+    }
+
+    pushColorValue(L, r, g, b, a);
+
+    return 1;
+}
+
+/* ↓ textures.getFloat(tex, key) → number; stub — always 0 ↓ */
+static int luaTextureGetFloat(lua_State *L) {
+    (void)getTexture(L, 1);
+    (void)luaL_checkstring(L, 2);
+
+    lua_pushnumber(L, 0);
+
+    return 1;
+}
+
+/* ↓ textures.getInt(tex, key) → number; stub — always 0 ↓ */
+static int luaTextureGetInt(lua_State *L) {
+    (void)getTexture(L, 1);
+    (void)luaL_checkstring(L, 2);
+
+    lua_pushinteger(L, 0);
+
+    return 1;
+}
+
+/* ↓ textures.getMatrix(tex, key) → nil; stub ↓ */
+static int luaTextureGetMatrix(lua_State *L) {
+    (void)getTexture(L, 1);
+    (void)luaL_checkstring(L, 2);
+
+    lua_pushnil(L);
+
+    return 1;
+}
+
+/* ↓ textures.getString(tex, key) → string | nil ↓ */
+static int luaTextureGetString(lua_State *L) {
+    struct Texture *tex = getTexture(L, 1);
+    const char *key     = luaL_checkstring(L, 2);
+
+    if (strcmp(key, "$basetexture") == 0) {
+        lua_pushstring(L, tex->name ? tex->name : "");
+    } else if (strcmp(key, "path") == 0) {
+        lua_pushstring(L, tex->path ? tex->path : "");
+    } else {
+        lua_pushnil(L);
+    }
+
+    return 1;
+}
+
+/* ↓ textures.getVector(tex, key) → nil; stub ↓ */
+static int luaTextureGetVector(lua_State *L) {
+    (void)getTexture(L, 1);
+    (void)luaL_checkstring(L, 2);
+
+    lua_pushnil(L);
+
+    return 1;
+}
+
+/* ↓ textures.getVectorLinear(tex, key) → nil; stub ↓ */
+static int luaTextureGetVectorLinear(lua_State *L) {
+    return luaTextureGetVector(L);
+}
+
 static const luaL_Reg luaTextures[] = {
-    {"create", luaTextureLoad},
-    {"load", luaTextureLoad},
-    {"loadFromPixels", luaTextureLoadFromPixels},
-    {"getSize", luaTextureGetSize},
+    /* ↓ constructors ↓ */
+    {"create",           luaTextureLoad},
+    {"load",             luaTextureLoad},
+    {"loadFromPixels",   luaTextureLoadFromPixels},
+    {"createFromImage",  luaTextureCreateFromImage},
+
+    /* ↓ size / identity ↓ */
+    {"getSize",          luaTextureGetSize},
+    {"getWidth",         luaTextureGetWidth},
+    {"getHeight",        luaTextureGetHeight},
+    {"getTexture",       luaTextureGetTexture},
+
+    /* ↓ metadata getters ↓ */
+    {"getName",          luaTextureGetName},
+    {"getShader",        luaTextureGetShader},
+    {"getKeyValues",     luaTextureGetKeyValues},
+    {"getColor",         luaTextureGetColor},
+    {"getFloat",         luaTextureGetFloat},
+    {"getInt",           luaTextureGetInt},
+    {"getMatrix",        luaTextureGetMatrix},
+    {"getString",        luaTextureGetString},
+    {"getVector",        luaTextureGetVector},
+    {"getVectorLinear",  luaTextureGetVectorLinear},
 
     {NULL, NULL}
 };

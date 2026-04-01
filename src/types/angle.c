@@ -240,11 +240,21 @@ static int angleClone(lua_State *L) {
 
 /* ↓ :set(p, y, r) — mutates in-place, returns self ↓ */
 static int angleSet(lua_State *L) {
-    setFieldNumber(L, "p", (float)luaL_checknumber(L, 2));
-    setFieldNumber(L, "y", (float)luaL_checknumber(L, 3));
-    setFieldNumber(L, "r", (float)luaL_checknumber(L, 4));
-    lua_pushvalue(L, 1);
+    float p = (float)luaL_checknumber(L, 2);
+    float y = (float)luaL_checknumber(L, 3);
+    float r = (float)luaL_checknumber(L, 4);
 
+    lua_pushnumber(L, p);
+    lua_setfield(L, 1, "p");
+
+    lua_pushnumber(L, y);
+    lua_setfield(L, 1, "y");
+
+    lua_pushnumber(L, r);
+    lua_setfield(L, 1, "r");
+
+    lua_pushvalue(L, 1);
+    
     return 1;
 }
 
@@ -260,15 +270,23 @@ static int angleSetZero(lua_State *L) {
 
 /* ↓ :setP(v) ↓ */
 static int angleSetP(lua_State *L) {
-    setFieldNumber(L, "p", (float)luaL_checknumber(L, 2));
-    lua_pushvalue(L, 1);
+    float p = (float)luaL_checknumber(L, 2);
 
+    lua_pushnumber(L, p);
+    lua_setfield(L, 1, "p");
+
+    lua_pushvalue(L, 1);
+    
     return 1;
 }
 
 /* ↓ :setY(v) ↓ */
 static int angleSetY(lua_State *L) {
-    setFieldNumber(L, "y", (float)luaL_checknumber(L, 2));
+    float y = (float)luaL_checknumber(L, 2);
+
+    lua_pushnumber(L, y);
+    lua_setfield(L, 1, "y");
+
     lua_pushvalue(L, 1);
 
     return 1;
@@ -276,7 +294,11 @@ static int angleSetY(lua_State *L) {
 
 /* ↓ :setR(v) ↓ */
 static int angleSetR(lua_State *L) {
-    setFieldNumber(L, "r", (float)luaL_checknumber(L, 2));
+    float r = (float)luaL_checknumber(L, 2);
+
+    lua_pushnumber(L, r);
+    lua_setfield(L, 1, "r");
+
     lua_pushvalue(L, 1);
 
     return 1;

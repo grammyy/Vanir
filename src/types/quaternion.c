@@ -578,9 +578,9 @@ static int quatLerp(lua_State *L) {
     float len = sqrtf(rx*rx + ry*ry + rz*rz + rw*rw);
 
     if (len > 0.0f) 
-        ushQuat(L, rx/len, ry/len, rz/len, rw/len);
+        pushQuat(L, rx/len, ry/len, rz/len, rw/len);
     else            
-        ushQuat(L, 0.0f, 0.0f, 0.0f, 1.0f);
+        pushQuat(L, 0.0f, 0.0f, 0.0f, 1.0f);
 
     return 1;
 }
