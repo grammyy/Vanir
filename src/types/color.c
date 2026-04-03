@@ -5,20 +5,23 @@
 static const luaL_Reg colorMethods[];
 static const luaL_Reg colorMeta[];
 
-static void pushColor(lua_State *L, float r, float g, float b, float a) {
-    lua_newtable(L);
-    setFieldNumber(L, "r", r);
-    setFieldNumber(L, "g", g);
-    setFieldNumber(L, "b", b);
-    setFieldNumber(L, "a", a);
-    addMethods(L, "vanir.Color", colorMethods, colorMeta);
+struct VanirCol *pushColor(lua_State *L, float r, float g, float b, float a) {
+    struct VanirCol *c = (struct VanirCol *)lua_newuserdata(L, sizeof(struct VanirCol));
+    
+    c->r = r;
+    c->g = g;
+    c->b = b;
+    c->a = a;
+
+    addMethodsUD(L, "vanir.Color", colorMethods, colorMeta);
+
+    return c;
 }
 
 static int toStringColor(lua_State *L) {
-    float r = getfieldf(L, 1, "r"), g = getfieldf(L, 1, "g");
-    float b = getfieldf(L, 1, "b"), a = getfieldf(L, 1, "a");
+    struct VanirCol *c = checkCol(L, 1);
 
-    lua_pushfstring(L, "(%f, %f, %f, %f)", r, g, b, a);
+    lua_pushfstring(L, "(%f, %f, %f, %f)", c->r, c->g, c->b, c->a);
 
     return 1;
 }
@@ -48,36 +51,30 @@ static int colorConcat(lua_State *L) {
 
 /* ↓ __eq ↓ */
 static int colorEq(lua_State *L) {
-    lua_pushboolean(L,
-        getfieldf(L, 1, "r") == getfieldf(L, 2, "r") &&
-        getfieldf(L, 1, "g") == getfieldf(L, 2, "g") &&
-        getfieldf(L, 1, "b") == getfieldf(L, 2, "b") &&
-        getfieldf(L, 1, "a") == getfieldf(L, 2, "a")
-    );
+    struct VanirCol *a = checkCol(L, 1);
+    struct VanirCol *b = checkCol(L, 2);
+
+    lua_pushboolean(L, a->r == b->r && a->g == b->g && a->b == b->b && a->a == b->a);
 
     return 1;
 }
 
 /* ↓ __add: component-wise ↓ */
 static int colorAdd(lua_State *L) {
-    pushColor(L,
-        getfieldf(L, 1, "r") + getfieldf(L, 2, "r"),
-        getfieldf(L, 1, "g") + getfieldf(L, 2, "g"),
-        getfieldf(L, 1, "b") + getfieldf(L, 2, "b"),
-        getfieldf(L, 1, "a") + getfieldf(L, 2, "a")
-    );
+    struct VanirCol *a = checkCol(L, 1);
+    struct VanirCol *b = checkCol(L, 2);
+
+    pushColor(L, a->r + b->r, a->g + b->g, a->b + b->b, a->a + b->a);
 
     return 1;
 }
 
 /* ↓ __sub: component-wise ↓ */
 static int colorSub(lua_State *L) {
-    pushColor(L,
-        getfieldf(L, 1, "r") - getfieldf(L, 2, "r"),
-        getfieldf(L, 1, "g") - getfieldf(L, 2, "g"),
-        getfieldf(L, 1, "b") - getfieldf(L, 2, "b"),
-        getfieldf(L, 1, "a") - getfieldf(L, 2, "a")
-    );
+    struct VanirCol *a = checkCol(L, 1);
+    struct VanirCol *b = checkCol(L, 2);
+
+    pushColor(L, a->r - b->r, a->g - b->g, a->b - b->b, a->a - b->a);
 
     return 1;
 }
@@ -88,11 +85,11 @@ static int colorMul(lua_State *L) {
 
     if (lua_isnumber(L, 1)) {
         s = (float)lua_tonumber(L, 1);
-        r = getfieldf(L, 2, "r"); g = getfieldf(L, 2, "g");
-        b = getfieldf(L, 2, "b"); a = getfieldf(L, 2, "a");
+        struct VanirCol *c = checkCol(L, 2);
+        r = c->r; g = c->g; b = c->b; a = c->a;
     } else {
-        r = getfieldf(L, 1, "r"); g = getfieldf(L, 1, "g");
-        b = getfieldf(L, 1, "b"); a = getfieldf(L, 1, "a");
+        struct VanirCol *c = checkCol(L, 1);
+        r = c->r; g = c->g; b = c->b; a = c->a;
         s = (float)luaL_checknumber(L, 2);
     }
 
@@ -103,22 +100,18 @@ static int colorMul(lua_State *L) {
 
 /* ↓ __div: Color / scalar ↓ */
 static int colorDiv(lua_State *L) {
-    float r = getfieldf(L, 1, "r"), g = getfieldf(L, 1, "g");
-    float b = getfieldf(L, 1, "b"), a = getfieldf(L, 1, "a");
+    struct VanirCol *c = checkCol(L, 1);
     float s = (float)luaL_checknumber(L, 2);
 
-    pushColor(L, r / s, g / s, b / s, a / s);
+    pushColor(L, c->r / s, c->g / s, c->b / s, c->a / s);
 
     return 1;
 }
 
 /* ↓ :toHex() → string "#RRGGBB" or "#RRGGBBAA" ↓ */
 static int colorToHex(lua_State *L) {
-    int r = (int)getfieldf(L, 1, "r");
-    int g = (int)getfieldf(L, 1, "g");
-    int b = (int)getfieldf(L, 1, "b");
-    int a = (int)getfieldf(L, 1, "a");
-
+    struct VanirCol *c = checkCol(L, 1);
+    int r = (int)c->r, g = (int)c->g, b = (int)c->b, a = (int)c->a;
     char buf[12];
 
     if (a == 255) {
@@ -134,22 +127,21 @@ static int colorToHex(lua_State *L) {
 
 /* ↓ :round([decimals]) → new Color ↓ */
 static int colorRound(lua_State *L) {
-    float r = getfieldf(L, 1, "r"), g = getfieldf(L, 1, "g");
-    float b = getfieldf(L, 1, "b"), a = getfieldf(L, 1, "a");
+    struct VanirCol *c = checkCol(L, 1);
     float mul = 1.0f;
 
     if (!lua_isnoneornil(L, 2)) {
         int dec = (int)lua_tointeger(L, 2);
 
-        for (int i = 0; i < dec; i++) 
+        for (int i = 0; i < dec; i++)
             mul *= 10.0f;
     }
 
     pushColor(L,
-        roundf(r * mul) / mul,
-        roundf(g * mul) / mul,
-        roundf(b * mul) / mul,
-        roundf(a * mul) / mul
+        roundf(c->r * mul) / mul,
+        roundf(c->g * mul) / mul,
+        roundf(c->b * mul) / mul,
+        roundf(c->a * mul) / mul
     );
 
     return 1;
@@ -157,24 +149,23 @@ static int colorRound(lua_State *L) {
 
 /* ↓ :clone() ↓ */
 static int colorClone(lua_State *L) {
-    pushColor(L,
-        getfieldf(L, 1, "r"),
-        getfieldf(L, 1, "g"),
-        getfieldf(L, 1, "b"),
-        getfieldf(L, 1, "a")
-    );
+    struct VanirCol *c = checkCol(L, 1);
+
+    pushColor(L, c->r, c->g, c->b, c->a);
 
     return 1;
 }
 
 /* ↓ :set(r, g, b [, a]) — mutates in-place, returns self ↓ */
 static int colorSet(lua_State *L) {
-    setFieldNumber(L, "r", (float)luaL_checknumber(L, 2));
-    setFieldNumber(L, "g", (float)luaL_checknumber(L, 3));
-    setFieldNumber(L, "b", (float)luaL_checknumber(L, 4));
+    struct VanirCol *c = checkCol(L, 1);
+
+    c->r = (float)luaL_checknumber(L, 2);
+    c->g = (float)luaL_checknumber(L, 3);
+    c->b = (float)luaL_checknumber(L, 4);
 
     if (!lua_isnoneornil(L, 5))
-        setFieldNumber(L, "a", (float)lua_tonumber(L, 5));
+        c->a = (float)lua_tonumber(L, 5);
 
     lua_pushvalue(L, 1);
 
@@ -183,7 +174,8 @@ static int colorSet(lua_State *L) {
 
 /* ↓ :setR(v) ↓ */
 static int colorSetR(lua_State *L) {
-    setFieldNumber(L, "r", (float)luaL_checknumber(L, 2));
+    checkCol(L, 1)->r = (float)luaL_checknumber(L, 2);
+
     lua_pushvalue(L, 1);
 
     return 1;
@@ -191,7 +183,8 @@ static int colorSetR(lua_State *L) {
 
 /* ↓ :setG(v) ↓ */
 static int colorSetG(lua_State *L) {
-    setFieldNumber(L, "g", (float)luaL_checknumber(L, 2));
+    checkCol(L, 1)->g = (float)luaL_checknumber(L, 2);
+
     lua_pushvalue(L, 1);
 
     return 1;
@@ -199,7 +192,8 @@ static int colorSetG(lua_State *L) {
 
 /* ↓ :setB(v) ↓ */
 static int colorSetB(lua_State *L) {
-    setFieldNumber(L, "b", (float)luaL_checknumber(L, 2));
+    checkCol(L, 1)->b = (float)luaL_checknumber(L, 2);
+
     lua_pushvalue(L, 1);
 
     return 1;
@@ -207,7 +201,8 @@ static int colorSetB(lua_State *L) {
 
 /* ↓ :setA(v) ↓ */
 static int colorSetA(lua_State *L) {
-    setFieldNumber(L, "a", (float)luaL_checknumber(L, 2));
+    checkCol(L, 1)->a = (float)luaL_checknumber(L, 2);
+    
     lua_pushvalue(L, 1);
 
     return 1;
@@ -215,17 +210,15 @@ static int colorSetA(lua_State *L) {
 
 /* ↓ color:lerp(other, t) linear interpolate between two colors ↓ */
 static int colorLerp(lua_State *L) {
-    float r1 = getfieldf(L, 1, "r"), g1 = getfieldf(L, 1, "g");
-    float b1 = getfieldf(L, 1, "b"), a1 = getfieldf(L, 1, "a");
-    float r2 = getfieldf(L, 2, "r"), g2 = getfieldf(L, 2, "g");
-    float b2 = getfieldf(L, 2, "b"), a2 = getfieldf(L, 2, "a");
-    float t  = (float)luaL_checknumber(L, 3);
+    struct VanirCol *a = checkCol(L, 1);
+    struct VanirCol *b = checkCol(L, 2);
+    float t = (float)luaL_checknumber(L, 3);
 
     pushColor(L,
-        r1 + (r2 - r1) * t,
-        g1 + (g2 - g1) * t,
-        b1 + (b2 - b1) * t,
-        a1 + (a2 - a1) * t
+        a->r + (b->r - a->r) * t,
+        a->g + (b->g - a->g) * t,
+        a->b + (b->b - a->b) * t,
+        a->a + (b->a - a->a) * t
     );
 
     return 1;
@@ -233,33 +226,36 @@ static int colorLerp(lua_State *L) {
 
 /* ↓ :unpack() → r, g, b, a ↓ */
 static int colorUnpack(lua_State *L) {
-    lua_pushnumber(L, getfieldf(L, 1, "r"));
-    lua_pushnumber(L, getfieldf(L, 1, "g"));
-    lua_pushnumber(L, getfieldf(L, 1, "b"));
-    lua_pushnumber(L, getfieldf(L, 1, "a"));
+    struct VanirCol *c = checkCol(L, 1);
+
+    lua_pushnumber(L, c->r);
+    lua_pushnumber(L, c->g);
+    lua_pushnumber(L, c->b);
+    lua_pushnumber(L, c->a);
 
     return 4;
 }
 
 /* ↓ color:toHSV() metafunction, another alias being :rgbToHSV() ↓ */
 static int colorToHSV(lua_State *L) {
-    float r = getfieldf(L, 1, "r") / 255.0f;
-    float g = getfieldf(L, 1, "g") / 255.0f;
-    float b = getfieldf(L, 1, "b") / 255.0f;
-    float a = getfieldf(L, 1, "a");
+    struct VanirCol *c = checkCol(L, 1);
+    float r = c->r / 255.0f;
+    float g = c->g / 255.0f;
+    float b = c->b / 255.0f;
+    float a = c->a;
 
-    float min   = fminf(r, fminf(g, b));
-    float max   = fmaxf(r, fmaxf(g, b));
-    float delta = max - min;
+    float mn   = fminf(r, fminf(g, b));
+    float mx   = fmaxf(r, fmaxf(g, b));
+    float delta = mx - mn;
 
     float h = 0.0f;
-    float s = (max > 0.0f) ? (delta / max) : 0.0f;
-    float v = max;
+    float s = (mx > 0.0f) ? (delta / mx) : 0.0f;
+    float v = mx;
 
     if (delta > 0.0f) {
-        if (r == max) {
+        if (r == mx) {
             h = (g - b) / delta;
-        } else if (g == max) {
+        } else if (g == mx) {
             h = 2.0f + (b - r) / delta;
         } else {
             h = 4.0f + (r - g) / delta;
@@ -278,10 +274,11 @@ static int colorToHSV(lua_State *L) {
 
 /* ↓ color:toRGB() metafunction, another alias being :hsvToRGB() ↓ */
 static int colorToRGB(lua_State *L) {
-    double h = getfieldf(L, 1, "r");
-    double s = getfieldf(L, 1, "g") / 100.0;
-    double v = getfieldf(L, 1, "b") / 100.0;
-    float  a = getfieldf(L, 1, "a");
+    struct VanirCol *c = checkCol(L, 1);
+    double h = c->r;
+    double s = c->g / 100.0;
+    double v = c->b / 100.0;
+    float  a = c->a;
     double r, g, b;
 
     if (s == 0.0) {
@@ -313,6 +310,40 @@ static int colorToRGB(lua_State *L) {
     return 1;
 }
 
+/* ↓ __index — expose r/g/b/a fields from userdata to Lua ↓ */
+static int colorIndex(lua_State *L) {
+    struct VanirCol *c = checkCol(L, 1);
+    const char *key = luaL_checkstring(L, 2);
+
+    if (key[1] == '\0') {
+        if (key[0] == 'r') { lua_pushnumber(L, c->r); return 1; }
+        if (key[0] == 'g') { lua_pushnumber(L, c->g); return 1; }
+        if (key[0] == 'b') { lua_pushnumber(L, c->b); return 1; }
+        if (key[0] == 'a') { lua_pushnumber(L, c->a); return 1; }
+    }
+
+    /* ↓ fall through to method table ↓ */
+    vanirUD_indexFallback(L, "vanir.Color", key);
+
+    return 1;
+}
+
+/* ↓ __newindex — allow c.r = n style assignment ↓ */
+static int colorNewIndex(lua_State *L) {
+    struct VanirCol *c = checkCol(L, 1);
+    const char *key = luaL_checkstring(L, 2);
+    float val = (float)luaL_checknumber(L, 3);
+
+    if (key[1] == '\0') {
+        if (key[0] == 'r') { c->r = val; return 0; }
+        if (key[0] == 'g') { c->g = val; return 0; }
+        if (key[0] == 'b') { c->b = val; return 0; }
+        if (key[0] == 'a') { c->a = val; return 0; }
+    }
+
+    return luaL_error(L, "Color has no field '%s'", key);
+}
+
 static const luaL_Reg colorMethods[] = {
     {"rgbToHSV", colorToHSV},
     {"hsvToRGB", colorToRGB},
@@ -340,6 +371,8 @@ static const luaL_Reg colorMeta[] = {
     {"__sub",      colorSub},
     {"__mul",      colorMul},
     {"__div",      colorDiv},
+    {"__index",    colorIndex},
+    {"__newindex", colorNewIndex},
 
     {NULL, NULL}
 };

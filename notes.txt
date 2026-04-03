@@ -11,7 +11,6 @@ do:
     - more window customization like borders n stuff
     http.c/websocket.c, very important that i do this somewhat soon
     make sure works with other stuff like joystick libraries
-    - fix up run_tests.bat/.sh and build.sh
 
     the rest of this file lol
 

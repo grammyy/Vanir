@@ -59,11 +59,15 @@ if [ "$PLATFORM" = "linux" ]; then
   GLFW_LIB="/mnt/c/Users/Elias/Documents/languages/glfw/linux/lib/libglfw.so"
   WEBGPU_INC="/mnt/c/Users/Elias/Documents/languages/webgpu/linux/include"
   WEBGPU_LIB="/mnt/c/Users/Elias/Documents/languages/webgpu/linux/lib/libwgpu_native.so"
+  FREETYPE_INC="/usr/include/freetype2"
+  FREETYPE_LIB="/usr/lib/x86_64-linux-gnu/libfreetype.so"
 else
   GLFW_INC="/mnt/c/Users/Elias/Documents/languages/glfw/windows/include"
   GLFW_LIB="/mnt/c/Users/Elias/Documents/languages/glfw/windows/lib-mingw-w64/libglfw3.a"
   WEBGPU_INC="/mnt/c/Users/Elias/Documents/languages/webgpu/windows/include"
   WEBGPU_LIB="/mnt/c/Users/Elias/Documents/languages/webgpu/windows/lib/wgpu_native.dll"
+  FREETYPE_INC="/usr/include/freetype2"
+  FREETYPE_LIB="/usr/lib/x86_64-linux-gnu/libfreetype.a"
 fi
 
 GLFW3WEBGPU_DIR="/mnt/c/Users/Elias/Documents/languages/glfw3webgpu"
@@ -120,6 +124,8 @@ cmake "../.." \
   "-DGLFW_LIBRARIES=$GLFW_LIB" \
   "-DWEBGPU_INCLUDE_DIR=$WEBGPU_INC" \
   "-DWEBGPU_LIBRARIES=$WEBGPU_LIB" \
+  "-DFREETYPE_INCLUDE_DIR=$FREETYPE_INC" \
+  "-DFREETYPE_LIBRARIES=$FREETYPE_LIB" \
   $COMPAT53_ARGS
 
 cmake --build .

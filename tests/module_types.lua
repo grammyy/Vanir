@@ -128,7 +128,7 @@ approx("slerp t=0.5 length", sm:length(), 1.0, 1e-4)
 
 -- identity quaternion should produce near-zero roll/pitch/yaw
 local ang = qi:toAngle()
-check("toAngle type",       type(ang), "table")
+check("toAngle type",       type(ang), "userdata")
 check("toAngle has roll",   type(ang.roll),  "number")
 check("toAngle has pitch",  type(ang.pitch), "number")
 check("toAngle has yaw",    type(ang.yaw),  "number")

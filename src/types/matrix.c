@@ -141,34 +141,23 @@ static int matMul(lua_State *L) {
     
     matGet(L, 1, a);
 
-    if (lua_istable(L, 2)) {
-        lua_getfield(L, 2, "x");
-        lua_getfield(L, 2, "y");
+    struct VanirVec *v = checkVec(L, 2);
 
-        if (!lua_isnil(L, -2) && !lua_isnil(L, -1)) {
-            float vx = (float)lua_tonumber(L, -2);
-            float vy = (float)lua_tonumber(L, -1);
+    if (v) {
+        float vx = v->x;
+        float vy = v->y;
 
-            lua_pop(L, 2);
+        struct VanirVec *out = (struct VanirVec *)lua_newuserdata(L, sizeof(struct VanirVec));
+        
+        out->x = a[0]*vx + a[1]*vy + a[2];
+        out->y = a[3]*vx + a[4]*vy + a[5];
+        out->z = 0.0f;
 
-            lua_newtable(L);
-            setFieldNumber(L, "x", a[0]*vx + a[1]*vy + a[2]);
-            setFieldNumber(L, "y", a[3]*vx + a[4]*vy + a[5]);
-            setFieldNumber(L, "z", 0.0f);
+        luaL_setmetatable(L, "vanir.Vector");
 
-            luaL_getmetatable(L, "vanir.Vector");
-            
-            if (!lua_isnil(L, -1)) 
-                lua_setmetatable(L, -2);
-            else 
-                lua_pop(L, 1);
-
-            return 1;
-        }
-
-        lua_pop(L, 2);
+        return 1;
     }
-
+    
     float b[9], out[9];
 
     matGet(L, 2, b);

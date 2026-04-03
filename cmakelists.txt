@@ -82,6 +82,23 @@ endif()
 message(STATUS "WebGPU include: ${WEBGPU_INCLUDE_DIR}")
 message(STATUS "WebGPU library: ${WEBGPU_LIBRARIES}")
 
+# ── FreeType 2 ────────────────────────────────────────────────────────────
+find_path(FREETYPE_INCLUDE_DIR ft2build.h
+    HINTS "${FREETYPE_INCLUDE_DIR}"
+    PATH_SUFFIXES freetype2)
+
+find_library(FREETYPE_LIBRARIES
+    NAMES freetype freetype2
+    HINTS "${FREETYPE_LIBRARY}" "${FREETYPE_LIBRARIES}")
+
+if(NOT FREETYPE_INCLUDE_DIR OR NOT FREETYPE_LIBRARIES)
+    message(FATAL_ERROR
+        "FreeType 2 not found. Pass "
+        "-DFREETYPE_INCLUDE_DIR=<path> -DFREETYPE_LIBRARIES=<path>")
+endif()
+message(STATUS "FreeType include: ${FREETYPE_INCLUDE_DIR}")
+message(STATUS "FreeType library: ${FREETYPE_LIBRARIES}")
+
 # ── glfw3webgpu ───────────────────────────────────────────────────────────
 add_library(glfw STATIC IMPORTED)
 set_target_properties(glfw PROPERTIES
@@ -96,7 +113,7 @@ set_target_properties(webgpu PROPERTIES
 add_subdirectory(${GLFW3WEBGPU_DIR} glfw3webgpu)
 target_include_directories(glfw3webgpu PRIVATE "${WEBGPU_INCLUDE_DIR}" "${GLFW_INCLUDE_DIR}")
 
-# ── Sources ───────────────────────────────────────────────────────────────file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/src/*.c")
+# ── Sources ───────────────────────────────────────────────────────────────
 file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/src/*.c")
 if(NOT SOURCES)
     message(FATAL_ERROR "No .c files found under '${CMAKE_CURRENT_SOURCE_DIR}/src/'")
@@ -111,12 +128,14 @@ target_include_directories(Vanir PRIVATE
     "${CMAKE_CURRENT_SOURCE_DIR}/src/graphics"
     "${LUA_INCLUDE_DIR}"
     "${WEBGPU_INCLUDE_DIR}"
+    "${FREETYPE_INCLUDE_DIR}"
     $<$<BOOL:${USE_LUAJIT}>:${COMPAT53_INCLUDE_DIR}>)
 
 target_link_libraries(Vanir PRIVATE
     "${LUA_LIBRARIES}"
     "${GLFW_LIBRARIES}"
     "${WEBGPU_LIBRARIES}"
+    "${FREETYPE_LIBRARIES}"
     glfw3webgpu
     m)
 
