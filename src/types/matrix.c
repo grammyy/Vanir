@@ -388,9 +388,9 @@ static int matGetRotatedAroundAxis(lua_State *L) {
 
     matGet(L, 1, m);
 
-    float ax = getfieldf(L, 2, "x");
-    float ay = getfieldf(L, 2, "y");
-    float az = getfieldf(L, 2, "z");
+    float ax = getField(L, 2, "x");
+    float ay = getField(L, 2, "y");
+    float az = getField(L, 2, "z");
     float rad = degToRad((float)luaL_checknumber(L, 3));
 
     float c = cosf(rad), s = sinf(rad), t = 1.0f - c;
@@ -651,9 +651,9 @@ static int matSetAngles(lua_State *L) {
     float pitch, yaw, roll;
 
     if (lua_istable(L, 2)) {
-        pitch = getfieldf(L, 2, "p");
-        yaw = getfieldf(L, 2, "y");
-        roll = getfieldf(L, 2, "r");
+        pitch = getField(L, 2, "p");
+        yaw = getField(L, 2, "y");
+        roll = getField(L, 2, "r");
     } else {
         pitch = (float)luaL_checknumber(L, 2);
         yaw = (float)luaL_optnumber(L, 3, 0.0);
@@ -693,9 +693,9 @@ static int matSetTranslation(lua_State *L) {
     matGet(L, 1, m);
 
     if (lua_istable(L, 2)) {
-        m[2] = getfieldf(L, 2, "x");
-        m[5] = getfieldf(L, 2, "y");
-        m[8] = getfieldf(L, 2, "z");
+        m[2] = getField(L, 2, "x");
+        m[5] = getField(L, 2, "y");
+        m[8] = getField(L, 2, "z");
     } else {
         m[2] = (float)luaL_checknumber(L, 2);
         m[5] = (float)luaL_optnumber(L, 3, 0.0);
@@ -716,9 +716,9 @@ static int matSetForward(lua_State *L) {
     matGet(L, 1, m);
 
     matSetCol(m, 2, 
-        getfieldf(L, 2, "x"), 
-        getfieldf(L, 2, "y"), 
-        getfieldf(L, 2, "z")
+        getField(L, 2, "x"), 
+        getField(L, 2, "y"), 
+        getField(L, 2, "z")
     );
 
     matSet(L, 1, m);
@@ -735,9 +735,9 @@ static int matSetRight(lua_State *L) {
     matGet(L, 1, m);
 
     matSetCol(m, 0, 
-        getfieldf(L, 2, "x"), 
-        getfieldf(L, 2, "y"), 
-        getfieldf(L, 2, "z")
+        getField(L, 2, "x"), 
+        getField(L, 2, "y"), 
+        getField(L, 2, "z")
     );
 
     matSet(L, 1, m);
@@ -754,9 +754,9 @@ static int matSetUp(lua_State *L) {
     matGet(L, 1, m);
 
     matSetCol(m, 1, 
-        getfieldf(L, 2, "x"), 
-        getfieldf(L, 2, "y"), 
-        getfieldf(L, 2, "z")
+        getField(L, 2, "x"), 
+        getField(L, 2, "y"), 
+        getField(L, 2, "z")
     );
 
     matSet(L, 1, m);
@@ -882,9 +882,9 @@ static int matInvertTR(lua_State *L) {
 
 /* ↓ :setAxisAngle(axis_vec, degrees) — builds rotation matrix ↓ */
 static int matSetAxisAngle(lua_State *L) {
-    float ax = getfieldf(L, 2, "x");
-    float ay = getfieldf(L, 2, "y");
-    float az = getfieldf(L, 2, "z");
+    float ax = getField(L, 2, "x");
+    float ay = getField(L, 2, "y");
+    float az = getField(L, 2, "z");
     float rad = degToRad((float)luaL_checknumber(L, 3));
 
     float c   = cosf(rad), s = sinf(rad), t = 1.0f - c;

@@ -309,11 +309,9 @@ static int quatGetAxisAngle(lua_State *L) {
     }
 
     struct VanirVec *v = (struct VanirVec *)lua_newuserdata(L, sizeof(struct VanirVec));
-
     v->x = ax;
     v->y = ay;
     v->z = az;
-
     luaL_setmetatable(L, "vanir.Vector");
 
     lua_pushnumber(L, degrees);
@@ -519,11 +517,9 @@ static int quatRotateVector(lua_State *L) {
     float tz = 2.0f*(q->x*iv->y - q->y*iv->x);
 
     struct VanirVec *ov = (struct VanirVec *)lua_newuserdata(L, sizeof(struct VanirVec));
-
     ov->x = iv->x + q->w*tx + q->y*tz - q->z*ty;
     ov->y = iv->y + q->w*ty + q->z*tx - q->x*tz;
     ov->z = iv->z + q->w*tz + q->x*ty - q->y*tx;
-
     luaL_setmetatable(L, "vanir.Vector");
 
     return 1;
@@ -537,11 +533,9 @@ static int quatGetForward(lua_State *L) {
     float tx = 0.0f, ty = 2.0f*q->z, tz = -2.0f*q->y;
 
     struct VanirVec *v = (struct VanirVec *)lua_newuserdata(L, sizeof(struct VanirVec));
-
     v->x = 1.0f + q->w*tx + q->y*tz - q->z*ty;
     v->y =        q->w*ty + q->z*tx - q->x*tz;
     v->z =        q->w*tz + q->x*ty - q->y*tx;
-
     luaL_setmetatable(L, "vanir.Vector");
 
     return 1;
@@ -555,11 +549,9 @@ static int quatGetRight(lua_State *L) {
     float tx = -2.0f*q->z, ty = 0.0f, tz = 2.0f*q->x;
 
     struct VanirVec *v = (struct VanirVec *)lua_newuserdata(L, sizeof(struct VanirVec));
-
     v->x =        q->w*tx + q->y*tz - q->z*ty;
     v->y = 1.0f + q->w*ty + q->z*tx - q->x*tz;
     v->z =        q->w*tz + q->x*ty - q->y*tx;
-
     luaL_setmetatable(L, "vanir.Vector");
 
     return 1;
@@ -573,11 +565,9 @@ static int quatGetUp(lua_State *L) {
     float tx = 2.0f*q->y, ty = -2.0f*q->x, tz = 0.0f;
 
     struct VanirVec *v = (struct VanirVec *)lua_newuserdata(L, sizeof(struct VanirVec));
-
     v->x =        q->w*tx + q->y*tz - q->z*ty;
     v->y =        q->w*ty + q->z*tx - q->x*tz;
     v->z = 1.0f + q->w*tz + q->x*ty - q->y*tx;
-
     luaL_setmetatable(L, "vanir.Vector");
 
     return 1;
@@ -595,14 +585,7 @@ static int quatIsZero(lua_State *L) {
 /* ↓ :round([decimals]) → new Quaternion ↓ */
 static int quatRound(lua_State *L) {
     struct VanirQuat *q = checkQuat(L, 1);
-    float mul = 1.0f;
-
-    if (!lua_isnoneornil(L, 2)) {
-        int dec = (int)lua_tointeger(L, 2);
-
-        for (int i = 0; i < dec; i++)
-            mul *= 10.0f;
-    }
+    float mul = roundMultiplier(L, 2);
 
     pushQuat(L,
         roundf(q->x * mul) / mul,
@@ -627,7 +610,7 @@ static int quatIndex(lua_State *L) {
     }
 
     /* ↓ fall through to method table ↓ */
-    vanirUD_indexFallback(L, "vanir.Quaternion", key);
+    indexFallback(L, "vanir.Quaternion", key);
 
     return 1;
 }

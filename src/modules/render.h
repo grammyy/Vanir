@@ -31,9 +31,6 @@ int readPixel(lua_State *L);
 int renderTargetExists(lua_State *L);
 int destroyRenderTarget(lua_State *L);
 
-/* ↓ read the active draw color set by render.setColor; no lua overhead ↓ */
-void getGlobalColor(struct color *color);
-
 /* ↓ active color; written by render.setColor, read directly by draw calls ↓ */
 extern struct color activeColor;
 

@@ -11,6 +11,8 @@ do:
     - more window customization like borders n stuff
     http.c/websocket.c, very important that i do this somewhat soon
     make sure works with other stuff like joystick libraries
+    optimize types later
+    fix gpu resources being released when all windows closed, cuz dumb
 
     the rest of this file lol
 
@@ -21,5 +23,3 @@ maybe...
     meshes, joints, and all that junk
     class system perhaps
     runtime config before hooks.run perhaps, for use with the preload.lua
-
-forgot to add file moving to tools/build.bat/.sh, add laterrrr

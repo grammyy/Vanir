@@ -47,6 +47,7 @@ hook.add("render", "main", function()
     end
 
     test:stopRender()
+    test:update()
 end)
 
 while true do

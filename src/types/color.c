@@ -128,14 +128,7 @@ static int colorToHex(lua_State *L) {
 /* ↓ :round([decimals]) → new Color ↓ */
 static int colorRound(lua_State *L) {
     struct VanirCol *c = checkCol(L, 1);
-    float mul = 1.0f;
-
-    if (!lua_isnoneornil(L, 2)) {
-        int dec = (int)lua_tointeger(L, 2);
-
-        for (int i = 0; i < dec; i++)
-            mul *= 10.0f;
-    }
+    float mul = roundMultiplier(L, 2);
 
     pushColor(L,
         roundf(c->r * mul) / mul,
@@ -172,41 +165,11 @@ static int colorSet(lua_State *L) {
     return 1;
 }
 
-/* ↓ :setR(v) ↓ */
-static int colorSetR(lua_State *L) {
-    checkCol(L, 1)->r = (float)luaL_checknumber(L, 2);
-
-    lua_pushvalue(L, 1);
-
-    return 1;
-}
-
-/* ↓ :setG(v) ↓ */
-static int colorSetG(lua_State *L) {
-    checkCol(L, 1)->g = (float)luaL_checknumber(L, 2);
-
-    lua_pushvalue(L, 1);
-
-    return 1;
-}
-
-/* ↓ :setB(v) ↓ */
-static int colorSetB(lua_State *L) {
-    checkCol(L, 1)->b = (float)luaL_checknumber(L, 2);
-
-    lua_pushvalue(L, 1);
-
-    return 1;
-}
-
-/* ↓ :setA(v) ↓ */
-static int colorSetA(lua_State *L) {
-    checkCol(L, 1)->a = (float)luaL_checknumber(L, 2);
-    
-    lua_pushvalue(L, 1);
-
-    return 1;
-}
+/* ↓ :setR/G/B/A(v) ↓ */
+static int colorSetR(lua_State *L) { setField(checkCol, r); }
+static int colorSetG(lua_State *L) { setField(checkCol, g); }
+static int colorSetB(lua_State *L) { setField(checkCol, b); }
+static int colorSetA(lua_State *L) { setField(checkCol, a); }
 
 /* ↓ color:lerp(other, t) linear interpolate between two colors ↓ */
 static int colorLerp(lua_State *L) {
@@ -323,7 +286,7 @@ static int colorIndex(lua_State *L) {
     }
 
     /* ↓ fall through to method table ↓ */
-    vanirUD_indexFallback(L, "vanir.Color", key);
+    indexFallback(L, "vanir.Color", key);
 
     return 1;
 }

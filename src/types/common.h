@@ -46,7 +46,7 @@ static inline void pushRegList(lua_State *L, const luaL_Reg *reg) {
     }
 }
 
-static inline float getfieldf(lua_State *L, int idx, const char *key) {
+static inline float getField(lua_State *L, int idx, const char *key) {
     lua_getfield(L, idx, key);
     float v = (float)lua_tonumber(L, -1);
     
@@ -97,6 +97,43 @@ static inline float radToDeg(float r) {
     return r * (float)(180.0 / M_PI);
 }
 
+/* ↓ roundMultiplier: computes 10^dec for :round([decimals]) helpers ↓ */
+static inline float roundMultiplier(lua_State *L, int idx) {
+    float mul = 1.0f;
+
+    if (!lua_isnoneornil(L, idx)) {
+        int dec = (int)lua_tointeger(L, idx);
+
+        for (int i = 0; i < dec; i++)
+            mul *= 10.0f;
+    }
+
+    return mul;
+}
+
+/* ↓ angToQuat: build quaternion components from a VanirAng (ZYX: yaw, pitch, roll) ↓ */
+/* ↓ used by vecRotate / vecGetRotated to avoid duplicating the full derivation       ↓ */
+static inline void angToQuat(const struct VanirAng *a, float *qw, float *qx, float *qy, float *qz) {
+    float hp = degToRad(a->p) * 0.5f;
+    float hy = degToRad(a->y) * 0.5f;
+    float hr = degToRad(a->r) * 0.5f;
+
+    float cp = cosf(hp), sp = sinf(hp);
+    float cy = cosf(hy), sy = sinf(hy);
+    float cr = cosf(hr), sr = sinf(hr);
+
+    *qw = cr*cp*cy + sr*sp*sy;
+    *qx = sr*cp*cy - cr*sp*sy;
+    *qy = cr*sp*cy + sr*cp*sy;
+    *qz = cr*cp*sy - sr*sp*cy;
+}
+
+/* ↓ setField: expand a single-field setter that mutates in-place and returns self ↓ */
+#define setField(check, field) \
+    (check)(L, 1)->field = (float)luaL_checknumber(L, 2); \
+    lua_pushvalue(L, 1); \
+    return 1
+
 /* ↓ typed userdata getters — check metatable and return pointer ↓ */
 static inline struct VanirVec *checkVec(lua_State *L, int idx) {
     return (struct VanirVec *)luaL_checkudata(L, idx, "vanir.Vector");
@@ -133,11 +170,9 @@ struct Texture *getTexture(lua_State *L, int idx);
 void pushFile(lua_State *L, FILE *handle, const char *path);
 struct File *getFile(lua_State *L, int idx);
 
-/* ↓ shared field-access helper for userdata value types ↓ */
-
-/* ↓ vanirUD_indexFallback: look up key in the __methods sub-table of a named metatable ↓ */
-/* ↓ leaves one value on the stack (the method or nil)                                  ↓ */
-static inline void vanirUD_indexFallback(lua_State *L, const char *metatableName, const char *key) {
+/* ↓ indexFallback: look up key in the __methods sub-table of a named metatable ↓ */
+/* ↓ leaves one value on the stack (the method or nil) ↓ */
+static inline void indexFallback(lua_State *L, const char *metatableName, const char *key) {
     luaL_getmetatable(L, metatableName);
     lua_getfield(L, -1, "__methods");
 

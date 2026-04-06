@@ -113,11 +113,9 @@ static int angleGetForward(lua_State *L) {
     float cy = cosf(yaw),   sy = sinf(yaw);
 
     struct VanirVec *v = (struct VanirVec *)lua_newuserdata(L, sizeof(struct VanirVec));
-    
     v->x = cp * cy;
     v->y = cp * sy;
     v->z = -sp;
-
     luaL_setmetatable(L, "vanir.Vector");
 
     return 1;
@@ -135,11 +133,9 @@ static int angleGetRight(lua_State *L) {
     float cr = cosf(roll),  sr = sinf(roll);
 
     struct VanirVec *v = (struct VanirVec *)lua_newuserdata(L, sizeof(struct VanirVec));
-
     v->x = cr*sy - sr*sp*cy;
     v->y = -cr*cy - sr*sp*sy;
     v->z = -sr*cp;
-
     luaL_setmetatable(L, "vanir.Vector");
 
     return 1;
@@ -157,11 +153,9 @@ static int angleGetUp(lua_State *L) {
     float cr = cosf(roll),  sr = sinf(roll);
 
     struct VanirVec *v = (struct VanirVec *)lua_newuserdata(L, sizeof(struct VanirVec));
-
     v->x = -sr*sy + cr*sp*cy;
     v->y =  sr*cy + cr*sp*sy;
     v->z =  cr*cp;
-
     luaL_setmetatable(L, "vanir.Vector");
 
     return 1;
@@ -200,14 +194,7 @@ static int angleRotateAroundAxis(lua_State *L) {
 /* ↓ :round([decimals]) → new Angle ↓ */
 static int angleRound(lua_State *L) {
     struct VanirAng *a = checkAng(L, 1);
-    float mul = 1.0f;
-
-    if (!lua_isnoneornil(L, 2)) {
-        int dec = (int)lua_tointeger(L, 2);
-
-        for (int i = 0; i < dec; i++)
-            mul *= 10.0f;
-    }
+    float mul = roundMultiplier(L, 2);
 
     pushAngle(L,
         roundf(a->p * mul) / mul,
@@ -253,32 +240,10 @@ static int angleSetZero(lua_State *L) {
     return 1;
 }
 
-/* ↓ :setP(v) ↓ */
-static int angleSetP(lua_State *L) {
-    checkAng(L, 1)->p = (float)luaL_checknumber(L, 2);
-
-    lua_pushvalue(L, 1);
-
-    return 1;
-}
-
-/* ↓ :setY(v) ↓ */
-static int angleSetY(lua_State *L) {
-    checkAng(L, 1)->y = (float)luaL_checknumber(L, 2);
-
-    lua_pushvalue(L, 1);
-
-    return 1;
-}
-
-/* ↓ :setR(v) ↓ */
-static int angleSetR(lua_State *L) {
-    checkAng(L, 1)->r = (float)luaL_checknumber(L, 2);
-
-    lua_pushvalue(L, 1);
-
-    return 1;
-}
+/* ↓ :setP/Y/R(v) ↓ */
+static int angleSetP(lua_State *L) { setField(checkAng, p); }
+static int angleSetY(lua_State *L) { setField(checkAng, y); }
+static int angleSetR(lua_State *L) { setField(checkAng, r); }
 
 /* ↓ __index — expose p/y/r fields from userdata to Lua                    ↓ */
 /* ↓ also exposes pitch/yaw/roll aliases (used by Quaternion:toAngle etc.) ↓ */
@@ -298,7 +263,7 @@ static int angleIndex(lua_State *L) {
     if (strcmp(key, "roll") == 0) { lua_pushnumber(L, a->r); return 1; }
 
     /* ↓ fall through to method table ↓ */
-    vanirUD_indexFallback(L, "vanir.Angle", key);
+    indexFallback(L, "vanir.Angle", key);
 
     return 1;
 }

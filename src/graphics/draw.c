@@ -220,11 +220,8 @@ int drawLine(lua_State *L) {
     if (!vertReserve(p, 2)) 
         return 0;
     
-    struct color c; 
-    getGlobalColor(&c);
-    
-    pushVert(p, x1, y1, 0, c.r, c.g, c.b, c.a);
-    pushVert(p, x2, y2, 0, c.r, c.g, c.b, c.a);
+    pushVert(p, x1, y1, 0, activeColor.r, activeColor.g, activeColor.b, activeColor.a);
+    pushVert(p, x2, y2, 0, activeColor.r, activeColor.g, activeColor.b, activeColor.a);
     pushCmd(p, DRAW_LINES, 2);
     
     return 0;
@@ -247,15 +244,12 @@ int drawRect(lua_State *L) {
     if (!vertReserve(p, 6)) 
         return 0;
     
-    struct color c; 
-    getGlobalColor(&c);
-    
-    pushVert(p, x,      y,      0, c.r, c.g, c.b, c.a);
-    pushVert(p, x + bw, y,      0, c.r, c.g, c.b, c.a);
-    pushVert(p, x + bw, y + bh, 0, c.r, c.g, c.b, c.a);
-    pushVert(p, x,      y,      0, c.r, c.g, c.b, c.a);
-    pushVert(p, x + bw, y + bh, 0, c.r, c.g, c.b, c.a);
-    pushVert(p, x,      y + bh, 0, c.r, c.g, c.b, c.a);
+    pushVert(p, x,      y,      0, activeColor.r, activeColor.g, activeColor.b, activeColor.a);
+    pushVert(p, x + bw, y,      0, activeColor.r, activeColor.g, activeColor.b, activeColor.a);
+    pushVert(p, x + bw, y + bh, 0, activeColor.r, activeColor.g, activeColor.b, activeColor.a);
+    pushVert(p, x,      y,      0, activeColor.r, activeColor.g, activeColor.b, activeColor.a);
+    pushVert(p, x + bw, y + bh, 0, activeColor.r, activeColor.g, activeColor.b, activeColor.a);
+    pushVert(p, x,      y + bh, 0, activeColor.r, activeColor.g, activeColor.b, activeColor.a);
     pushCmd(p, DRAW_TRIS, 6);
     
     return 0;
@@ -286,20 +280,16 @@ int drawCircle(lua_State *L) {
     if (!vertReserve(p, (uint32_t)(segs * 2))) 
         return 0;
     
-    struct color c;
-    
     for (int i = 0; i < segs; ++i) {
         if (hasCb) 
             callColorCb(L, 5, i);
 
-        getGlobalColor(&c);
-        pushVert(p, px[i],   py[i],   0, c.r, c.g, c.b, c.a);
+        pushVert(p, px[i],   py[i],   0, activeColor.r, activeColor.g, activeColor.b, activeColor.a);
 
         if (hasCb) 
             callColorCb(L, 5, i + 1);
 
-        getGlobalColor(&c);
-        pushVert(p, px[i+1], py[i+1], 0, c.r, c.g, c.b, c.a);
+        pushVert(p, px[i+1], py[i+1], 0, activeColor.r, activeColor.g, activeColor.b, activeColor.a);
     }
     
     pushCmd(p, DRAW_LINES, (uint32_t)(segs * 2));
@@ -334,13 +324,10 @@ int drawFilledCircle(lua_State *L) {
         return 0;
 
     if (!hasCb) {
-        struct color c; 
-        getGlobalColor(&c);
-        
         for (int i = 0; i < segs; ++i) {
-            pushVert(p, x,       y,       0, c.r, c.g, c.b, c.a);
-            pushVert(p, px[i],   py[i],   0, c.r, c.g, c.b, c.a);
-            pushVert(p, px[i+1], py[i+1], 0, c.r, c.g, c.b, c.a);
+            pushVert(p, x,       y,       0, activeColor.r, activeColor.g, activeColor.b, activeColor.a);
+            pushVert(p, px[i],   py[i],   0, activeColor.r, activeColor.g, activeColor.b, activeColor.a);
+            pushVert(p, px[i+1], py[i+1], 0, activeColor.r, activeColor.g, activeColor.b, activeColor.a);
         }
     } else {
         // Pre-sample one color per edge vertex (0..segs-1), then assemble.
@@ -350,7 +337,7 @@ int drawFilledCircle(lua_State *L) {
         
         for (int i = 0; i < segs; ++i) {
             callColorCb(L, 5, i);
-            getGlobalColor(&ec[i]);
+            ec[i] = activeColor;
         }
         
         ec[segs] = ec[0]; // close the loop
@@ -409,13 +396,10 @@ int drawPoly(lua_State *L) {
         return 0;
 
     if (!hasCb) {
-        struct color c; 
-        getGlobalColor(&c);
-        
         for (int i = 1; i < n - 1; ++i) {
-            pushVert(p, vx[0],   vy[0],   vz[0],   c.r, c.g, c.b, c.a);
-            pushVert(p, vx[i],   vy[i],   vz[i],   c.r, c.g, c.b, c.a);
-            pushVert(p, vx[i+1], vy[i+1], vz[i+1], c.r, c.g, c.b, c.a);
+            pushVert(p, vx[0],   vy[0],   vz[0],   activeColor.r, activeColor.g, activeColor.b, activeColor.a);
+            pushVert(p, vx[i],   vy[i],   vz[i],   activeColor.r, activeColor.g, activeColor.b, activeColor.a);
+            pushVert(p, vx[i+1], vy[i+1], vz[i+1], activeColor.r, activeColor.g, activeColor.b, activeColor.a);
         }
     } else {
         /* ↓ pre-sampling happens here ↓ */
@@ -423,7 +407,7 @@ int drawPoly(lua_State *L) {
         
         for (int i = 0; i < n; ++i) {
             callColorCb(L, 2, i + 1); // Lua 1-indexed
-            getGlobalColor(&vc[i]);
+            vc[i] = activeColor;
         }
         
         for (int i = 1; i < n - 1; ++i) {
@@ -454,10 +438,7 @@ int drawVertex(lua_State *L) {
     if (!vertReserve(p, 1)) 
         return 0;
     
-    struct color c; 
-    getGlobalColor(&c);
-    
-    pushVert(p, x, y, z, c.r, c.g, c.b, c.a);
+    pushVert(p, x, y, z, activeColor.r, activeColor.g, activeColor.b, activeColor.a);
     pushCmd(p, DRAW_TRIS, 1);
     
     return 0;
@@ -479,21 +460,18 @@ int drawRectOutline(lua_State *L) {
     float bw = (float)lua_tonumber(L, 3), bh = (float)lua_tonumber(L, 4);
     float t = lua_isnoneornil(L, 5) ? 1.0f : (float)lua_tonumber(L, 5);
 
-    struct color c;
-    getGlobalColor(&c);
-
     if (t <= 1.0f) {
         if (!vertReserve(p, 8)) 
             return 0;
 
-        pushVert(p, x,      y,      0, c.r,c.g,c.b,c.a);
-        pushVert(p, x+bw,   y,      0, c.r,c.g,c.b,c.a);
-        pushVert(p, x+bw,   y,      0, c.r,c.g,c.b,c.a);
-        pushVert(p, x+bw,   y+bh,   0, c.r,c.g,c.b,c.a);
-        pushVert(p, x+bw,   y+bh,   0, c.r,c.g,c.b,c.a);
-        pushVert(p, x,      y+bh,   0, c.r,c.g,c.b,c.a);
-        pushVert(p, x,      y+bh,   0, c.r,c.g,c.b,c.a);
-        pushVert(p, x,      y,      0, c.r,c.g,c.b,c.a);
+        pushVert(p, x,      y,      0, activeColor.r,activeColor.g,activeColor.b,activeColor.a);
+        pushVert(p, x+bw,   y,      0, activeColor.r,activeColor.g,activeColor.b,activeColor.a);
+        pushVert(p, x+bw,   y,      0, activeColor.r,activeColor.g,activeColor.b,activeColor.a);
+        pushVert(p, x+bw,   y+bh,   0, activeColor.r,activeColor.g,activeColor.b,activeColor.a);
+        pushVert(p, x+bw,   y+bh,   0, activeColor.r,activeColor.g,activeColor.b,activeColor.a);
+        pushVert(p, x,      y+bh,   0, activeColor.r,activeColor.g,activeColor.b,activeColor.a);
+        pushVert(p, x,      y+bh,   0, activeColor.r,activeColor.g,activeColor.b,activeColor.a);
+        pushVert(p, x,      y,      0, activeColor.r,activeColor.g,activeColor.b,activeColor.a);
         pushCmd(p, DRAW_LINES, 8);
     } else {
         /* thick outline: four filled border rects */
@@ -501,20 +479,20 @@ int drawRectOutline(lua_State *L) {
             return 0;
 
         /* top */
-        pushVert(p, x,      y,      0, c.r,c.g,c.b,c.a); pushVert(p, x+bw,   y,      0, c.r,c.g,c.b,c.a); pushVert(p, x+bw,   y+t,    0, c.r,c.g,c.b,c.a);
-        pushVert(p, x,      y,      0, c.r,c.g,c.b,c.a); pushVert(p, x+bw,   y+t,    0, c.r,c.g,c.b,c.a); pushVert(p, x,      y+t,    0, c.r,c.g,c.b,c.a);
+        pushVert(p, x,      y,      0, activeColor.r,activeColor.g,activeColor.b,activeColor.a); pushVert(p, x+bw,   y,      0, activeColor.r,activeColor.g,activeColor.b,activeColor.a); pushVert(p, x+bw,   y+t,    0, activeColor.r,activeColor.g,activeColor.b,activeColor.a);
+        pushVert(p, x,      y,      0, activeColor.r,activeColor.g,activeColor.b,activeColor.a); pushVert(p, x+bw,   y+t,    0, activeColor.r,activeColor.g,activeColor.b,activeColor.a); pushVert(p, x,      y+t,    0, activeColor.r,activeColor.g,activeColor.b,activeColor.a);
         
         /* bottom */
-        pushVert(p, x,      y+bh-t, 0, c.r,c.g,c.b,c.a); pushVert(p, x+bw,   y+bh-t, 0, c.r,c.g,c.b,c.a); pushVert(p, x+bw,   y+bh,   0, c.r,c.g,c.b,c.a);
-        pushVert(p, x,      y+bh-t, 0, c.r,c.g,c.b,c.a); pushVert(p, x+bw,   y+bh,   0, c.r,c.g,c.b,c.a); pushVert(p, x,      y+bh,   0, c.r,c.g,c.b,c.a);
+        pushVert(p, x,      y+bh-t, 0, activeColor.r,activeColor.g,activeColor.b,activeColor.a); pushVert(p, x+bw,   y+bh-t, 0, activeColor.r,activeColor.g,activeColor.b,activeColor.a); pushVert(p, x+bw,   y+bh,   0, activeColor.r,activeColor.g,activeColor.b,activeColor.a);
+        pushVert(p, x,      y+bh-t, 0, activeColor.r,activeColor.g,activeColor.b,activeColor.a); pushVert(p, x+bw,   y+bh,   0, activeColor.r,activeColor.g,activeColor.b,activeColor.a); pushVert(p, x,      y+bh,   0, activeColor.r,activeColor.g,activeColor.b,activeColor.a);
         
         /* left */
-        pushVert(p, x,      y+t,    0, c.r,c.g,c.b,c.a); pushVert(p, x+t,    y+t,    0, c.r,c.g,c.b,c.a); pushVert(p, x+t,    y+bh-t, 0, c.r,c.g,c.b,c.a);
-        pushVert(p, x,      y+t,    0, c.r,c.g,c.b,c.a); pushVert(p, x+t,    y+bh-t, 0, c.r,c.g,c.b,c.a); pushVert(p, x,      y+bh-t, 0, c.r,c.g,c.b,c.a);
+        pushVert(p, x,      y+t,    0, activeColor.r,activeColor.g,activeColor.b,activeColor.a); pushVert(p, x+t,    y+t,    0, activeColor.r,activeColor.g,activeColor.b,activeColor.a); pushVert(p, x+t,    y+bh-t, 0, activeColor.r,activeColor.g,activeColor.b,activeColor.a);
+        pushVert(p, x,      y+t,    0, activeColor.r,activeColor.g,activeColor.b,activeColor.a); pushVert(p, x+t,    y+bh-t, 0, activeColor.r,activeColor.g,activeColor.b,activeColor.a); pushVert(p, x,      y+bh-t, 0, activeColor.r,activeColor.g,activeColor.b,activeColor.a);
         
         /* right */
-        pushVert(p, x+bw-t, y+t,    0, c.r,c.g,c.b,c.a); pushVert(p, x+bw,   y+t,    0, c.r,c.g,c.b,c.a); pushVert(p, x+bw,   y+bh-t, 0, c.r,c.g,c.b,c.a);
-        pushVert(p, x+bw-t, y+t,    0, c.r,c.g,c.b,c.a); pushVert(p, x+bw,   y+bh-t, 0, c.r,c.g,c.b,c.a); pushVert(p, x+bw-t, y+bh-t, 0, c.r,c.g,c.b,c.a);
+        pushVert(p, x+bw-t, y+t,    0, activeColor.r,activeColor.g,activeColor.b,activeColor.a); pushVert(p, x+bw,   y+t,    0, activeColor.r,activeColor.g,activeColor.b,activeColor.a); pushVert(p, x+bw,   y+bh-t, 0, activeColor.r,activeColor.g,activeColor.b,activeColor.a);
+        pushVert(p, x+bw-t, y+t,    0, activeColor.r,activeColor.g,activeColor.b,activeColor.a); pushVert(p, x+bw,   y+bh-t, 0, activeColor.r,activeColor.g,activeColor.b,activeColor.a); pushVert(p, x+bw-t, y+bh-t, 0, activeColor.r,activeColor.g,activeColor.b,activeColor.a);
         pushCmd(p, DRAW_TRIS, 24);
     }
 
@@ -540,12 +518,9 @@ int drawTriangle(lua_State *L) {
     if (!vertReserve(p, 3)) 
         return 0;
 
-    struct color c;
-    getGlobalColor(&c);
-
-    pushVert(p, x1, y1, 0, c.r,c.g,c.b,c.a);
-    pushVert(p, x2, y2, 0, c.r,c.g,c.b,c.a);
-    pushVert(p, x3, y3, 0, c.r,c.g,c.b,c.a);
+    pushVert(p, x1, y1, 0, activeColor.r,activeColor.g,activeColor.b,activeColor.a);
+    pushVert(p, x2, y2, 0, activeColor.r,activeColor.g,activeColor.b,activeColor.a);
+    pushVert(p, x3, y3, 0, activeColor.r,activeColor.g,activeColor.b,activeColor.a);
     pushCmd(p, DRAW_TRIS, 3);
 
     return 0;
@@ -577,12 +552,7 @@ static int drawRoundedBoxInternal(lua_State *L, float r, float x, float y, float
     if (!p) 
         return 0;
 
-    struct color c;
-    getGlobalColor(&c);
-
-    float cr = c.r, cg = c.g, cb = c.b, ca = c.a;
-
-    /* ↓ clamp radius so it never exceeds half the shorter side ↓ */
+    float cr = activeColor.r, cg = activeColor.g, cb = activeColor.b, ca = activeColor.a;
     float maxR = (bw < bh ? bw : bh) * 0.5f;
     
     if (r > maxR) 
@@ -745,12 +715,9 @@ int drawTexturedTriangleUV(lua_State *L) {
     if (!vertReserve(p, 3)) 
         return 0;
 
-    struct color c;
-    getGlobalColor(&c);
-
-    pushVert(p, vx[0], vy[0], 0, c.r,c.g,c.b,c.a);
-    pushVert(p, vx[1], vy[1], 0, c.r,c.g,c.b,c.a);
-    pushVert(p, vx[2], vy[2], 0, c.r,c.g,c.b,c.a);
+    pushVert(p, vx[0], vy[0], 0, activeColor.r,activeColor.g,activeColor.b,activeColor.a);
+    pushVert(p, vx[1], vy[1], 0, activeColor.r,activeColor.g,activeColor.b,activeColor.a);
+    pushVert(p, vx[2], vy[2], 0, activeColor.r,activeColor.g,activeColor.b,activeColor.a);
     pushCmd(p, DRAW_TRIS, 3);
 
     return 0;

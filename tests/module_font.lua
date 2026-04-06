@@ -10,7 +10,7 @@ local WIN_DURATION=5000  -- ms
 local win=windows.createWindow(400,300,480,200,"font test  (stubbed)")
 
 -- create returns nil from the stub; that's expected
-local fnt=font.create("does/not/exist.ttf", 18)
+local fnt=font.create("/mnt/c/Users/Elias/Downloads/robo.ttf", 18)
 print("[font] create returned: "..tostring(fnt))
 
 -- setFont with nil and with whatever create returned
@@ -26,7 +26,6 @@ local w=font.measure("Hello, Vanir!")
 print("[font] measure: "..tostring(w).."  (expected 0 while stubbed)")
 
 -- drawText should be a no-op
-font.drawText("Hello, Vanir!", 10, 100)
 print("[font] drawText: no crash, OK")
 
 local startTime=timer.realtime()
@@ -42,6 +41,8 @@ hook.add("render","test_font_render",function()
 
     for i=0,4 do
         render.drawRect(20, 30+i*30, 200+math.random(0,100), 16)
+
+        font.drawText("Hello, Vanir!", 20, 30+i*30)
     end
 
     -- a note in the corner

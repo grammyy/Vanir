@@ -81,6 +81,10 @@ int selectRender(lua_State *L) {
     struct glfwWindow **window = (struct glfwWindow **)luaL_checkudata(L, 1, "window");
     struct glfwWindow *w = *window;
 
+    /* ↓ window was already destroyed and freed; Lua userdata pointer was nulled ↓ */
+    if (!w) 
+        return 0;
+
     if (w->quit) {
         vanir_log_info("selectRender: window \"%s\" is closing, skipping frame", w->name);
         
@@ -180,6 +184,10 @@ int stopRender(lua_State *L) {
     struct glfwWindow **window = (struct glfwWindow **)luaL_checkudata(L, 1, "window");
     struct glfwWindow *w = *window;
 
+    /* ↓ window was already destroyed and freed; Lua userdata pointer was nulled ↓ */
+    if (!w) 
+        return 0;
+
     if (!w->frame.encoder) {
         if (!w->minimized && !w->quit)
             throw("stopRender", w->name, "no active encoder — was selectRender called?");
@@ -233,6 +241,9 @@ int stopRender(lua_State *L) {
 int update(lua_State *L) {
     struct glfwWindow **window = (struct glfwWindow **)luaL_checkudata(L, 1, "window");
     struct glfwWindow *w = *window;
+
+    /* ↓ window was already destroyed and freed; Lua userdata pointer was nulled ↓ */
+    if (!w) return 0;
 
     /* ↓ called without a pending frame — silent no-op (minimized window) ↓ */
     if (!w->frame.pending)
@@ -302,6 +313,9 @@ int destroy(lua_State *L) {
     struct glfwWindow **window = (struct glfwWindow **)luaL_checkudata(L, 1, "window");
     struct glfwWindow *w = *window;
 
+    if (!w) 
+        return 0;
+
     vanir_log_info("destroy: releasing pipeline for \"%s\"", w->name);
 
     releaseFrame(w);
@@ -326,11 +340,6 @@ static void colorFromTable(lua_State *L, int idx, struct color *out) {
     lua_getfield(L, idx, "g"); out->g = (float)lua_tonumber(L, -1) / 255.0f; lua_pop(L, 1);
     lua_getfield(L, idx, "b"); out->b = (float)lua_tonumber(L, -1) / 255.0f; lua_pop(L, 1);
     lua_getfield(L, idx, "a"); out->a = (float)lua_tonumber(L, -1) / 255.0f; lua_pop(L, 1);
-}
-
-/* ↓ draw calls call this; direct struct copy, zero lua overhead ↓ */
-void getGlobalColor(struct color *color) {
-    *color = activeColor;
 }
 
 int setColor(lua_State *L) {

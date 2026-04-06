@@ -274,9 +274,8 @@ static void destroyWindowResources(struct glfwWindow *w) {
     
     vanir_log_info("destroyWindowResources: [%s] released", w->name);
 
-    // ↓ tear down the shared GPU context when the last window is gone ↓
-    if (windowPool.count == 1)
-        vanirGPUDestroy();
+    /* ↓ do NOT destroy the shared GPU context here — the user may open new windows later ↓ */
+    /* ↓ call vanirGPUDestroy() explicitly if you want to fully shut down the GPU ↓ */
 }
 /* ↑ pipeline lifecycle ↑ */
 
@@ -289,6 +288,12 @@ void renderHandle(struct hook *instance, lua_State *L) {
         struct glfwWindow *w = windowPool.windows[i];
        
         if (w->quit) {
+            /* ↓ null out the Lua userdata pointer before freeing so any subsequent ↓ */
+            if (w->udata) {
+                *w->udata = NULL;
+                w->udata = NULL;
+            }
+
             destroyWindowResources(w);
             free(w);
             
@@ -312,6 +317,12 @@ struct hook render = {"render", NULL, 0, &render, renderHandle, hook_update};
 /* window metafunctions ↓↓↓ window metafunctions */
 int isHovering(lua_State *L) {
     struct glfwWindow **w = (struct glfwWindow **)luaL_checkudata(L, 1, "window");
+    
+    if (!*w) { 
+        lua_pushboolean(L, 0); 
+        
+        return 1; 
+    }
     
     lua_pushboolean(L, (*w)->hovering);
     
@@ -346,6 +357,8 @@ int getID(lua_State *L) {
 int getMouse(lua_State *L) {
     struct glfwWindow **window = (struct glfwWindow **)luaL_checkudata(L, 1, "window");
    
+    if (!*window) { lua_pushnil(L); lua_pushnil(L); return 2; }
+
     if (!(*window)->hovering) { 
         lua_pushnil(L);
         lua_pushnil(L);
@@ -366,6 +379,13 @@ int getMouse(lua_State *L) {
 /* ↓ when minimized, glfw reports 0x0 so we return the last known size instead ↓ */
 int getSize(lua_State *L) {
     struct glfwWindow **w = (struct glfwWindow **)luaL_checkudata(L, 1, "window");
+
+    if (!*w) { 
+        lua_pushinteger(L, 0); 
+        lua_pushinteger(L, 0); 
+        
+        return 2; 
+    }
   
     lua_pushinteger(L, (*w)->lastWidth  > 0 ? (*w)->lastWidth  : (*w)->width);
     lua_pushinteger(L, (*w)->lastHeight > 0 ? (*w)->lastHeight : (*w)->height);
@@ -1217,6 +1237,7 @@ int createWindow(lua_State *L) {
     /* ↓ push userdata before calling so window is reachable by gc ↓ */
     struct glfwWindow **udata = (struct glfwWindow **)lua_newuserdata(L, sizeof(struct glfwWindow *));
     *udata = window;
+    window->udata = udata;  /* ↓ back-pointer so we can null it on free ↓ */
     
     addMethods(L, "window", windowMethods, NULL);
 

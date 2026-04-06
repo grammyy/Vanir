@@ -71,6 +71,9 @@ struct glfwWindow {
     // ↓ what Lua sees via getSize() ↓
     int x, y, width, height, ref;
 
+    // ↓ pointer to the Lua userdata slot; nulled before free to prevent use-after-free ↓
+    struct glfwWindow **udata;
+
     // ↓ physical framebuffer size — used for gpu surface and viewport uniform ↓
     int fbWidth, fbHeight;
     const char *name;

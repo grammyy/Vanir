@@ -254,7 +254,6 @@ static int vecGetAngle(lua_State *L) {
     a->p = pitch;
     a->y = yaw;
     a->r = 0.0f;
-
     luaL_setmetatable(L, "vanir.Angle");
 
     return 1;
@@ -292,7 +291,6 @@ static int vecGetAngleEx(lua_State *L) {
     a->p = pitch;
     a->y = yaw;
     a->r = roll;
-
     luaL_setmetatable(L, "vanir.Angle");
 
     return 1;
@@ -387,32 +385,10 @@ static int vecSetZero(lua_State *L) {
     return 1;
 }
 
-/* ↓ :setX(v) ↓ */
-static int vecSetX(lua_State *L) {
-    checkVec(L, 1)->x = (float)luaL_checknumber(L, 2);
-
-    lua_pushvalue(L, 1);
-
-    return 1;
-}
-
-/* ↓ :setY(v) ↓ */
-static int vecSetY(lua_State *L) {
-    checkVec(L, 1)->y = (float)luaL_checknumber(L, 2);
-
-    lua_pushvalue(L, 1);
-
-    return 1;
-}
-
-/* ↓ :setZ(v) ↓ */
-static int vecSetZ(lua_State *L) {
-    checkVec(L, 1)->z = (float)luaL_checknumber(L, 2);
-
-    lua_pushvalue(L, 1);
-
-    return 1;
-}
+/* ↓ :setX/Y/Z(v) ↓ */
+static int vecSetX(lua_State *L) { setField(checkVec, x); }
+static int vecSetY(lua_State *L) { setField(checkVec, y); }
+static int vecSetZ(lua_State *L) { setField(checkVec, z); }
 
 /* ↓ :set(x, y, z) — mutates in-place, returns self ↓ */
 static int vecSet(lua_State *L) {
@@ -439,14 +415,7 @@ static int vecClone(lua_State *L) {
 /* ↓ :round([decimals]) → new Vector ↓ */
 static int vecRound(lua_State *L) {
     struct VanirVec *v = checkVec(L, 1);
-    float mul = 1.0f;
-
-    if (!lua_isnoneornil(L, 2)) {
-        int dec = (int)lua_tointeger(L, 2);
-
-        for (int i = 0; i < dec; i++)
-            mul *= 10.0f;
-    }
+    float mul = roundMultiplier(L, 2);
 
     pushVec(L,
         roundf(v->x * mul) / mul,
@@ -468,25 +437,15 @@ static int vecRotate(lua_State *L) {
         luaL_checktype(L, 2, LUA_TTABLE);
 
         static struct VanirAng temp;
-        temp.p = (float)getfieldf(L, 2, "p");
-        temp.y = (float)getfieldf(L, 2, "y");
-        temp.r = (float)getfieldf(L, 2, "r");
+        temp.p = (float)getField(L, 2, "p");
+        temp.y = (float)getField(L, 2, "y");
+        temp.r = (float)getField(L, 2, "r");
         a = &temp;
     }
 
     /* ↓ build quaternion from Angle (ZYX: yaw(Z), pitch(Y), roll(X)) ↓ */
-    float hp = degToRad(a->p) * 0.5f;
-    float hy = degToRad(a->y) * 0.5f;
-    float hr = degToRad(a->r) * 0.5f;
-
-    float cp = cosf(hp), sp = sinf(hp);
-    float cy = cosf(hy), sy = sinf(hy);
-    float cr = cosf(hr), sr = sinf(hr);
-
-    float qw = cr*cp*cy + sr*sp*sy;
-    float qx = sr*cp*cy - cr*sp*sy;
-    float qy = cr*sp*cy + sr*cp*sy;
-    float qz = cr*cp*sy - sr*sp*cy;
+    float qw, qx, qy, qz;
+    angToQuat(a, &qw, &qx, &qy, &qz);
 
     /* ↓ t = 2 * cross(q.xyz, v), result = v + q.w * t + cross(q.xyz, t) ↓ */
     float tx = 2.0f*(qy*v->z - qz*v->y);
@@ -513,25 +472,15 @@ static int vecGetRotated(lua_State *L) {
         luaL_checktype(L, 2, LUA_TTABLE);
 
         static struct VanirAng temp;
-        temp.p = (float)getfieldf(L, 2, "p");
-        temp.y = (float)getfieldf(L, 2, "y");
-        temp.r = (float)getfieldf(L, 2, "r");
+        temp.p = (float)getField(L, 2, "p");
+        temp.y = (float)getField(L, 2, "y");
+        temp.r = (float)getField(L, 2, "r");
         a = &temp;
     }
 
     /* ↓ build quaternion from Angle (ZYX: yaw(Z), pitch(Y), roll(X)) ↓ */
-    float hp = degToRad(a->p) * 0.5f;
-    float hy = degToRad(a->y) * 0.5f;
-    float hr = degToRad(a->r) * 0.5f;
-
-    float cp = cosf(hp), sp = sinf(hp);
-    float cy = cosf(hy), sy = sinf(hy);
-    float cr = cosf(hr), sr = sinf(hr);
-
-    float qw = cr*cp*cy + sr*sp*sy;
-    float qx = sr*cp*cy - cr*sp*sy;
-    float qy = cr*sp*cy + sr*cp*sy;
-    float qz = cr*cp*sy - sr*sp*cy;
+    float qw, qx, qy, qz;
+    angToQuat(a, &qw, &qx, &qy, &qz);
 
     float tx = 2.0f*(qy*v->z - qz*v->y);
     float ty = 2.0f*(qz*v->x - qx*v->z);
@@ -597,22 +546,6 @@ static int vecGetBasis(lua_State *L) {
     return 3;
 }
 
-/* ↓ :getColor() → Color(x,y,z,255) ↓ */
-static int vecGetColor(lua_State *L) {
-    struct VanirVec *v = checkVec(L, 1);
-
-    struct VanirCol *c = (struct VanirCol *)lua_newuserdata(L, sizeof(struct VanirCol));
-
-    c->r = v->x;
-    c->g = v->y;
-    c->b = v->z;
-    c->a = 255.0f;
-
-    luaL_setmetatable(L, "vanir.Color");
-
-    return 1;
-}
-
 /* ↓ :withinAABox(min_vec, max_vec) → bool ↓ */
 static int vecWithinAABox(lua_State *L) {
     struct VanirVec *v = checkVec(L, 1);
@@ -654,7 +587,7 @@ static int vecIndex(lua_State *L) {
     }
 
     /* ↓ fall through to method table ↓ */
-    vanirUD_indexFallback(L, "vanir.Vector", key);
+    indexFallback(L, "vanir.Vector", key);
 
     return 1;
 }
@@ -706,7 +639,6 @@ static const luaL_Reg vecMethods[] = {
     {"getBasis",         vecGetBasis},
     {"round",            vecRound},
     {"clone",            vecClone},
-    {"getColor",         vecGetColor},
     {"withinAABox",      vecWithinAABox},
     {"toScreen",         vecToScreen},
 
