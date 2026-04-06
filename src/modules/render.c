@@ -251,8 +251,7 @@ int update(lua_State *L) {
 
     /* ↓ stopRender never called, present would submit against texture and panic so we discard ↓ */
     if (w->frame.encoder) {
-        throw("update", w->name,
-              "stopRender was not called before update — frame discarded");
+        throw("update", w->name, "stopRender was not called before update — frame discarded");
         endPass(w);
         wgpuCommandEncoderRelease(w->frame.encoder);
         

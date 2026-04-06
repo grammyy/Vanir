@@ -1,7 +1,7 @@
 #ifndef VANIR_H
 #define VANIR_H
 
-#define VANIR_VERSION "v3.3.1"
+#define VANIR_VERSION "v3.3.2"
 
 #include "lua_config.h"
 #include "types/common.h"

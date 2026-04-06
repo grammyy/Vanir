@@ -10,7 +10,7 @@ keyHeld=false
 
 test[#test+1]=windows.createWindow(400,400,400,200,"nya")
 
-hook.add("inputPressed","test",function(key)
+hook.add("keyPress","test",function(key)
     if key==69 then
         print("pressed -> "..key)
 

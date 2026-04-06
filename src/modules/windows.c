@@ -274,8 +274,9 @@ static void destroyWindowResources(struct glfwWindow *w) {
     
     vanir_log_info("destroyWindowResources: [%s] released", w->name);
 
-    /* ↓ do NOT destroy the shared GPU context here — the user may open new windows later ↓ */
-    /* ↓ call vanirGPUDestroy() explicitly if you want to fully shut down the GPU ↓ */
+    // ↓ tear down the shared GPU context when the last window is gone ↓
+    if (windowPool.count == 1)
+        vanirGPUDestroy();
 }
 /* ↑ pipeline lifecycle ↑ */
 
@@ -332,6 +333,12 @@ int isHovering(lua_State *L) {
 int isFocused(lua_State *L) {
     struct glfwWindow **w = (struct glfwWindow **)luaL_checkudata(L, 1, "window");
     
+    if (!*w) { 
+        lua_pushboolean(L, 0); 
+        
+        return 1; 
+    }
+    
     lua_pushboolean(L, (*w)->focused);
     
     return 1;
@@ -357,9 +364,7 @@ int getID(lua_State *L) {
 int getMouse(lua_State *L) {
     struct glfwWindow **window = (struct glfwWindow **)luaL_checkudata(L, 1, "window");
    
-    if (!*window) { lua_pushnil(L); lua_pushnil(L); return 2; }
-
-    if (!(*window)->hovering) { 
+    if (!*window || !(*window)->hovering) { 
         lua_pushnil(L);
         lua_pushnil(L);
         
@@ -433,6 +438,7 @@ int setPos(lua_State *L) {
     
     (*w)->x = x;
     (*w)->y = y;
+
     glfwSetWindowPos((*w)->window, x, y);
     
     return 0;
@@ -1245,6 +1251,7 @@ int createWindow(lua_State *L) {
     newWindow(window);
 
     if (!window->window) { 
+        throw("Window", name, "Window failed to load, freeing allocation");
         free(window);
         
         return 0;

@@ -14,7 +14,6 @@ extern struct windowPool windowPool;
 static int getInputName(lua_State *L) {
     int code = (int)luaL_checkinteger(L, 1);
 
-
     for (int i = 0; keys[i].name != NULL; ++i) {
         if (keys[i].value == code) {
             lua_pushstring(L, keys[i].name);
