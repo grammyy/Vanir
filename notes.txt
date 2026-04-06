@@ -13,6 +13,7 @@ do:
     make sure works with other stuff like joystick libraries
     optimize types later
     fix gpu resources being released when all windows closed, cuz dumb
+    previous commit/changelog
 
     the rest of this file lol
 
