@@ -3,6 +3,5 @@ stb_image.h
 Vanir.dll
 Vanir.so
 *.jpg
-tools/symbols.json
-tools/index.html
+docs/symbols.json
 .vscode/settings.json
